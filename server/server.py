@@ -1,5 +1,6 @@
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from config import PORT
+from exception_handler import str_wrap_exceptions
 
 REGISTERED_FUNCTIONS = []
 
@@ -15,10 +16,10 @@ class SMELLIEserver:
         self.server.serve_forever()
 
     def register(self):
+        # wrap all the functions available to redirect exceptions to server
         for function in REGISTERED_FUNCTIONS:
-            self.server.register_function(function)
-
+            self.server.register_function(str_wrap_exceptions(function))
 
 if __name__ == "__main__":
     s = SMELLIEserver()
-    s.serve_forever()
+    
