@@ -11,6 +11,7 @@ def process_exception(exception):
     of the format "SNODROP ERROR: <string representation of exception>"
     If the type is not recognised it is sent as Unhandled Exception!
     '''
+
     thrown_type = exception.__class__
     if thrown_type in HANDLED_EXCEPTIONS:
         return "SNODROP ERROR: {0}".format(repr(exception))
@@ -18,7 +19,7 @@ def process_exception(exception):
 
 
 
-def communicate_exceptions(orig_function):
+def str_wrap_exceptions(orig_function):
     '''
     A wrapper on a function that converts any thrown exceptions into an 
     error string and returns that
@@ -29,4 +30,12 @@ def communicate_exceptions(orig_function):
             return orig_function(*args, **kwargs)
         except Exception as e:
             return process_exception(e)
+
+    modified_function.__name__ = orig_function.__name__
     return modified_function    
+
+def test():
+    pass
+
+test2 = str_wrap_exceptions(test)
+print test.__name__, test2.__name__
