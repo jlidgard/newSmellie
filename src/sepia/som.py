@@ -15,7 +15,7 @@ def get_freq_trig_mode(dev_id, slot_id):
     :param slot_id: slot number, integer 000-989
     :type dev_id: int
 
-    :returns freq_trig_mode: of this module
+    :returns: freq_trig_mode of this module
     :type freq_trig_mode: int
     """
     mode = ctypes.c_int32()

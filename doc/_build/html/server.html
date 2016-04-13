@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>server package &mdash; SMELLIE  documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="SMELLIE  documentation" href="index.html" />
+    <link rel="next" title="system_state module" href="system_state.html" />
+    <link rel="prev" title="sepia package" href="sepia.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="system_state.html" title="system_state module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="sepia.html" title="sepia package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SMELLIE  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="server-package">
+<h1>server package<a class="headerlink" href="#server-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-server.exception_handler">
+<span id="server-exception-handler-module"></span><h2>server.exception_handler module<a class="headerlink" href="#module-server.exception_handler" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="server.exception_handler.process_exception">
+<code class="descclassname">server.exception_handler.</code><code class="descname">process_exception</code><span class="sig-paren">(</span><em>exception</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/exception_handler.html#process_exception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.exception_handler.process_exception" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translates exceptions to error strings</p>
+<p>longer explanation: return SNODROP Exception: &lt;string representation of exception&gt; for handled exceptions or SNODROP Unhandled Exception!!:&lt;string representation of exception&gt; for unhandled ones</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>exception</strong> &#8211; The exception to process</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An error string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="server.exception_handler.str_wrap_exceptions">
+<code class="descclassname">server.exception_handler.</code><code class="descname">str_wrap_exceptions</code><span class="sig-paren">(</span><em>orig_function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/exception_handler.html#str_wrap_exceptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.exception_handler.str_wrap_exceptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wrapper to catch any exceptions and return an error string using
+<a class="reference internal" href="#server.exception_handler.process_exception" title="server.exception_handler.process_exception"><code class="xref py py-func docutils literal"><span class="pre">process_exception()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>orig_function</strong> &#8211; The function to wrap</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A logically equivilent function, that returns an error string
+rather than raising exceptions.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-server.smellie_server">
+<span id="server-smellie-server-module"></span><h2>server.smellie_server module<a class="headerlink" href="#module-server.smellie_server" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="server.smellie_server.SmellieServer">
+<em class="property">class </em><code class="descclassname">server.smellie_server.</code><code class="descname">SmellieServer</code><span class="sig-paren">(</span><em>port</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/smellie_server.html#SmellieServer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.smellie_server.SmellieServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>XML-RPC Protocol server that exposes a list of functions to external 
+calls</p>
+<dl class="method">
+<dt id="server.smellie_server.SmellieServer.register">
+<code class="descname">register</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/smellie_server.html#SmellieServer.register"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.smellie_server.SmellieServer.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register methods with internal server, after wrapping with 
+<code class="xref py py-func docutils literal"><span class="pre">exception_handler.str_wrap_exceptions()</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="server.smellie_server.SmellieServer.serve_forever">
+<code class="descname">serve_forever</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/server/smellie_server.html#SmellieServer.serve_forever"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#server.smellie_server.SmellieServer.serve_forever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listen indefinitely for function calls to exectute</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-server">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-server" title="Permalink to this headline">¶</a></h2>
+<p>Code related to the XML-RPC server that runs on SNODROP</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">server package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-server.exception_handler">server.exception_handler module</a></li>
+<li><a class="reference internal" href="#module-server.smellie_server">server.smellie_server module</a></li>
+<li><a class="reference internal" href="#module-server">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="sepia.html"
+                        title="previous chapter">sepia package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="system_state.html"
+                        title="next chapter">system_state module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/server.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Christopher Jones, Jeff Lidgard, Luca Cavalli, Krishanu Majumdar, Jack Dunger.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.2</a>
+      
+      |
+      <a href="_sources/server.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>
