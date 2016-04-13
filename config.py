@@ -1,2 +1,15 @@
+# Sepia
 SEPIA_DLL_PATH = "C:\Users\LocalAdmin\Desktop\Pysepia\Sepia2_Lib.dll"
+SEPIA_STR_BUFFER_SIZE = 128 # min 64bytes
+
+# Server
 PORT = 5020
+
+# Fibre Switch 
+FIBRE_SWITCH_SERIAL_PORT = 0
+FIBRE_SWITCH_BAUD_RATE   = 57600
+FIBRE_SWITCH_WAIT_TIME   = 0.1 #s
+
+#interlock
+INTERLOCK_PORT = 3 # =COM4
+INTERLOCK_BAUD_RATE = 57600

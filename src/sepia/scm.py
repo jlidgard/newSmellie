@@ -16,7 +16,7 @@ def get_laser_soft_lock(dev_id, slot_id):
     
     :param slot_id: slot number, integer 000-989
     
-    :returns: contents as bool
+    :returns: is_locked as bool
     """
     contents = ctypes.c_ubyte()
     _dll.SEPIA2_SCM_GetLaserSoftLock(dev_id, slot_id, contents)
@@ -34,7 +34,7 @@ def set_laser_soft_lock(dev_id, slot_id, contents):
     :param slot_id: slot number, integer 000-989
     :type dev_id: int
 
-    :param contents: new soft lock register 
+    :param is_locked: new soft lock register 1
     :type contents: bool
 
     :returns: None
@@ -55,7 +55,7 @@ def get_laser_locked(dev_id, slot_id):
     :param slot_id: slot number, integer 000-989
     :type dev_id: int
 
-    :returns power_state: is power line active? 
+    :returns: power_state - is power line active? 
     :type power_state: bool    
     """
     state = ctypes.c_ubyte()

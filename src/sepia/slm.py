@@ -8,7 +8,7 @@ From the original C-API: SLM 828 modules can interface the huge families of puls
 
 @raise_on_error_code
 def get_pulse_parameters(dev_id, slot_id):
-    """get_pulse_parameters(dev_id, slot_id, iFreq)
+    """get_pulse_parameters(dev_id, slot_id)
     Get the pulse paramters for the SLM module
 
     :param dev_id: the sepia device number (ordered from 0)
@@ -17,13 +17,13 @@ def get_pulse_parameters(dev_id, slot_id):
     :param slot_id: slot number, integer 000-989
     :type slot_id:  int
     
-    :returns freq: the frequency mode of the module
+    :returns: freq the frequency mode of the module
     :type freq: int
     
-    :returns pulse_mode: In pulse mode? Otherwise continous (disabled)
+    :returns: pulse_mode In pulse mode? Otherwise continous (disabled)
     :type pulse_mode: bool
     
-    :returns head_type: 
+    :returns: head_type
     :type head_type: int
     """
     freq = ctypes.c_int32()
@@ -69,7 +69,7 @@ def decode_freq_trig_mode(freq_mode):
     :param freq_mode: must be 0-7
     :type freq_mode: int
     
-    :returns mode_sring:
+    :returns: mode_sring
     :type mode_string: string
     """
     
@@ -92,7 +92,7 @@ def get_intensity_fine_step(dev_id, slot_id):
     :param slot_id: slot number, integer 000-989
     :type slot_id:  int
     
-    :returns intensity: 
+    :returns: intensity
     :type intensity: int
     """
     intensity = ctypes.c_ushort()
@@ -131,7 +131,7 @@ def decode_head_type(head_type_code):
     :param head_type_code: must be 0-3
     :type head_type_code: int
 
-    :returns head_type:
+    :returns: head_type
     :type head_type: string    
     """
     if not head_type_code in xrange(4):

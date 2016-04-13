@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sepia.fwr &mdash; SMELLIE  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="SMELLIE  documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">SMELLIE  documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for sepia.fwr</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">_sepia</span> <span class="kn">import</span> <span class="n">dll</span><span class="p">,</span> <span class="n">string_buffer</span><span class="p">,</span> <span class="n">raise_on_error_code</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">From the original C-API &#39;The functions of this group directly access low level structures from the firmware of the PQ Laser Device to initialize the dynamic data layer of the library. Right after opening a PQ Laser Device, any program utilizing this API has to perform a call to the GetModuleMap function, before it can access any module of the laser device&#39;</span>
+
+<span class="sd">These functions are direct wraps into python, with parameter outputs replaced</span>
+<span class="sd">by return values</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="nd">@raise_on_error_code</span>
+<div class="viewcode-block" id="get_fwr_version"><a class="viewcode-back" href="../../sepia.html#sepia.fwr.get_fwr_version">[docs]</a><span class="k">def</span> <span class="nf">get_fwr_version</span><span class="p">(</span><span class="n">dev_id</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;get_fwr_version(dev_id)</span>
+<span class="sd">    Returns the current firmware version, laser must be online</span>
+<span class="sd">    </span>
+<span class="sd">    :param dev_id: the sepia device number (ordered from 0)</span>
+
+<span class="sd">    :returns: string containing the current version</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">vers</span> <span class="o">=</span> <span class="n">string_buffer</span><span class="p">()</span>
+    <span class="n">dll</span><span class="o">.</span><span class="n">SEPIA2_FWR_GetVersion</span><span class="p">(</span><span class="n">dev_id</span><span class="p">,</span> <span class="n">vers</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">vers</span>
+</div>
+<span class="nd">@raise_on_error_code</span>
+<div class="viewcode-block" id="get_module_map"><a class="viewcode-back" href="../../sepia.html#sepia.fwr.get_module_map">[docs]</a><span class="k">def</span> <span class="nf">get_module_map</span><span class="p">(</span><span class="n">dev_id</span><span class="p">,</span> <span class="n">do_soft_restart</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;get_module_map(dev_id, do_soft_restart = True)</span>
+
+<span class="sd">    Fetch the firmware mapping for the dll, must be called before laser use</span>
+<span class="sd">    if do_soft_restart is set to False, a power on/off is required to ensure</span>
+<span class="sd">    an up to date mapping, consult Page 11 of docs.</span>
+
+<span class="sd">    :param dev_id: the sepia device number (ordered from 0)</span>
+
+<span class="sd">    :param do_soft_restart: automatically trigger a booting cycle to ensure a correct mapping with no reboot</span>
+
+<span class="sd">    :returns: the current number of PQ Laser Device configurational elements</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">check_channel</span><span class="p">(</span><span class="n">dev_id</span><span class="p">,</span> <span class="s">&quot;get_module_map&quot;</span><span class="p">)</span>
+    <span class="n">module_count</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int32</span><span class="p">()</span>
+    <span class="n">dll</span><span class="o">.</span><span class="n">SEPIA2_FWR_GetVersion</span><span class="p">(</span><span class="n">dev_id</span><span class="p">,</span> 
+                               <span class="nb">bool</span><span class="p">(</span><span class="n">do_soft_restart</span><span class="p">),</span>
+                               <span class="n">module_count</span>
+                               <span class="p">)</span>
+    <span class="k">return</span> <span class="n">module_count</span>
+</div>
+<span class="nd">@raise_on_error_code</span>
+<div class="viewcode-block" id="free_module_map"><a class="viewcode-back" href="../../sepia.html#sepia.fwr.free_module_map">[docs]</a><span class="k">def</span> <span class="nf">free_module_map</span><span class="p">(</span><span class="n">dev_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;free_module_map(dev_id)</span>
+
+<span class="sd">    Restitute the memory allocated for the module map, should be called</span>
+<span class="sd">    at the end of any procedure calling :func:`get_module_map`</span>
+
+<span class="sd">    :param dev_id: the sepia device number (ordered from 0)</span>
+
+<span class="sd">    :returns: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_channel</span><span class="p">(</span><span class="n">dev_id</span><span class="p">,</span> <span class="s">&quot;free_module_map&quot;</span><span class="p">)</span>
+    <span class="n">dll</span><span class="o">.</span><span class="n">SEPIA2_FWR_FreeModuleMap</span><span class="p">(</span><span class="n">dev_id</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Christopher Jones, Jeff Lidgard, Luca Cavalli, Krishanu Majumdar, Jack Dunger.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.2</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

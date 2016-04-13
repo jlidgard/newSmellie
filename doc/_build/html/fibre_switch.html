@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>fibre_switch module &mdash; SMELLIE  documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="SMELLIE  documentation" href="index.html" />
+    <link rel="next" title="interlock package" href="interlock.html" />
+    <link rel="prev" title="debug module" href="debug.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="interlock.html" title="interlock package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="debug.html" title="debug module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">SMELLIE  documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-fibre_switch">
+<span id="fibre-switch-module"></span><h1>fibre_switch module<a class="headerlink" href="#module-fibre_switch" title="Permalink to this headline">¶</a></h1>
+<dl class="exception">
+<dt id="fibre_switch.FiberSwitchHWError">
+<em class="property">exception </em><code class="descclassname">fibre_switch.</code><code class="descname">FiberSwitchHWError</code><a class="reference internal" href="_modules/fibre_switch.html#FiberSwitchHWError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FiberSwitchHWError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<p>Thrown <em>after</em> a hardware instruction is exectued, if a discrepancy is detected</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="fibre_switch.FiberSwitchLogicError">
+<em class="property">exception </em><code class="descclassname">fibre_switch.</code><code class="descname">FiberSwitchLogicError</code><a class="reference internal" href="_modules/fibre_switch.html#FiberSwitchLogicError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FiberSwitchLogicError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<p>Thrown on inconsistencies noticed <em>before</em> any directions to the hardware</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fibre_switch.FibreSwitch">
+<em class="property">class </em><code class="descclassname">fibre_switch.</code><code class="descname">FibreSwitch</code><a class="reference internal" href="_modules/fibre_switch.html#FibreSwitch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FibreSwitch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Controlles the fibre switch via commands sent down a serial port.
+Port and baud rate are set in config.py</p>
+<dl class="method">
+<dt id="fibre_switch.FibreSwitch.execute_message">
+<code class="descname">execute_message</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#FibreSwitch.execute_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FibreSwitch.execute_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a command message over the serial port, followed by \r\n
+to exectute (so you do not need to add this)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>msg</strong> (<em>string</em>) &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fibre_switch.FibreSwitch.get_channel">
+<code class="descname">get_channel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#FibreSwitch.get_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FibreSwitch.get_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll the hardware for the current channel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">current channel</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fibre_switch.FibreSwitch.get_fwr_version">
+<code class="descname">get_fwr_version</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#FibreSwitch.get_fwr_version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FibreSwitch.get_fwr_version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current fwr version as a string</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fibre_switch.FibreSwitch.read_back">
+<code class="descname">read_back</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#FibreSwitch.read_back"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FibreSwitch.read_back" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait a configuration determined time, and read back a line 
+from the HW</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">message</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fibre_switch.FibreSwitch.set_channel">
+<code class="descname">set_channel</code><span class="sig-paren">(</span><em>channel_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#FibreSwitch.set_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FibreSwitch.set_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the fibre switch channel, and check that it suceeded</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>channel_num</strong> &#8211; requested new channel</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#fibre_switch.FiberSwitchLogicError" title="fibre_switch.FiberSwitchLogicError"><code class="xref py py-class docutils literal"><span class="pre">FiberSwitchLogicError</span></code></a>: if the channel is unphysical</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#fibre_switch.FiberSwitchHWError" title="fibre_switch.FiberSwitchHWError"><code class="xref py py-class docutils literal"><span class="pre">FiberSwitchHWError</span></code></a> if the command is unsucessful</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fibre_switch.FibreSwitch.set_io_channels">
+<code class="descname">set_io_channels</code><span class="sig-paren">(</span><em>in_channel</em>, <em>out_channel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#FibreSwitch.set_io_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.FibreSwitch.set_io_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the channel number using an input and output channel</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>in_channel</strong> &#8211; Input</li>
+<li><strong>out_channel</strong> &#8211; Output</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><a class="reference internal" href="#fibre_switch.FiberSwitchLogicError" title="fibre_switch.FiberSwitchLogicError"><code class="xref py py-class docutils literal"><span class="pre">FiberSwitchLogicError</span></code></a> if channel is unphysical</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#fibre_switch.FiberSwitchHWError" title="fibre_switch.FiberSwitchHWError"><code class="xref py py-class docutils literal"><span class="pre">FiberSwitchHWError</span></code></a> if the command is unsucessful</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fibre_switch.check_channel">
+<code class="descclassname">fibre_switch.</code><code class="descname">check_channel</code><span class="sig-paren">(</span><em>channel_num</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#check_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.check_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fibre switch is limited to 70 channels input =  [1, 5], output = [1, 14]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>channel_num</strong> &#8211; The channel number to check</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#fibre_switch.FiberSwitchLogicError" title="fibre_switch.FiberSwitchLogicError"><code class="xref py py-class docutils literal"><span class="pre">FiberSwitchLogicError</span></code></a> if the channel is unphysical</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fibre_switch.global_channel_number">
+<code class="descclassname">fibre_switch.</code><code class="descname">global_channel_number</code><span class="sig-paren">(</span><em>in_chan</em>, <em>out_chan</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fibre_switch.html#global_channel_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#fibre_switch.global_channel_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an (input channel, output channel) to a global channelID</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="debug.html"
+                        title="previous chapter">debug module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="interlock.html"
+                        title="next chapter">interlock package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/fibre_switch.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Christopher Jones, Jeff Lidgard, Luca Cavalli, Krishanu Majumdar, Jack Dunger.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.2</a>
+      
+      |
+      <a href="_sources/fibre_switch.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

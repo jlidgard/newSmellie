@@ -6,8 +6,8 @@ model type.
 """
     
 @raise_on_error_code
-def get_module_type(dev_id, slot_id, iGetPrimary):
-    """get_module_type(dev_id, slot_idm, iGetPrimary)
+def get_module_type(dev_id, slot_id, get_primary):
+    """get_module_type(dev_id, slot_idm, get_primary)
 
     :param dev_id: the sepia device number (ordered from 0)
     
