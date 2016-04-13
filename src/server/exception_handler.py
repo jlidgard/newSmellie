@@ -1,3 +1,4 @@
+from functools import wraps
 '''
 Processes exceptions thrown by the software, converting them to 
 error strings to be sent over the server
@@ -6,11 +7,15 @@ error strings to be sent over the server
 HANDLED_EXCEPTIONS = []
 
 def process_exception(exception):
-    '''
-    Searches through the list of SNODROP exception types, produces a string
-    of the format "SNODROP ERROR: <string representation of exception>"
-    If the type is not recognised it is sent as Unhandled Exception!
-    '''
+    """
+    Translates exceptions to error strings
+
+    longer explanation: return SNODROP Exception: <string representation of exception> for handled exceptions or SNODROP Unhandled Exception!!:<string representation of exception> for unhandled ones
+    
+    :param exception: The exception to process
+    
+    :returns: An error string
+    """
     thrown_type = exception.__class__
     if thrown_type in HANDLED_EXCEPTIONS:
         return "SNODROP ERROR: {0}".format(repr(exception))
@@ -19,15 +24,19 @@ def process_exception(exception):
 
 def str_wrap_exceptions(orig_function):
     '''
-    A wrapper on a function that converts any thrown exceptions into an 
-    error string and returns that
-    '''
+    Function wrapper to catch any exceptions and return an error string using
+    :func:`process_exception`
+    
+    :param orig_function: The function to wrap
 
+    :returns: A logically equivilent function, that returns an error string
+              rather than raising exceptions.
+    '''    
+    @wraps(orig_function)
     def modified_function(*args, **kwargs):
         try:
             return orig_function(*args, **kwargs)
         except Exception as e:
             return process_exception(e)
-
-    modified_function.__name__ = orig_function.__name__
+        
     return modified_function    
