@@ -1,4 +1,4 @@
-from _sepia import dll, raise_on_error_code
+from sepia import dll, raise_on_error_code
 import ctypes
 """
 Basic Oscillator Functions (SOM)

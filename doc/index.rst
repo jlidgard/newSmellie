@@ -1,10 +1,10 @@
-.. SMELLIE documentation master file, created by
-   sphinx-quickstart on Wed Apr 13 15:50:22 2016.
+.. src documentation master file, created by
+   sphinx-quickstart on Tue Apr 19 15:21:24 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SMELLIE's documentation!
-===================================
+Welcome to src's documentation!
+===============================
 
 Contents:
 
@@ -14,6 +14,8 @@ Contents:
    debug
    fibre_switch
    interlock
+   laser_driver
+   laser_switch
    sepia
    server
    system_state

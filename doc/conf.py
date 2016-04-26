@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# SMELLIE documentation build configuration file, created by
-# sphinx-quickstart on Wed Apr 13 15:50:22 2016.
+# src documentation build configuration file, created by
+# sphinx-quickstart on Tue Apr 19 15:21:24 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -48,9 +48,9 @@ source_suffix = ['.rst']
 master_doc = 'index'
 
 # General information about the project.
-project = u'SMELLIE'
-copyright = u'2016, Christopher Jones, Jeff Lidgard, Luca Cavalli, Krishanu Majumdar, Jack Dunger'
-author = u'Christopher Jones, Jeff Lidgard, Luca Cavalli, Krishanu Majumdar, Jack Dunger'
+project = u'src'
+copyright = u'2016, Author'
+author = u'Author'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -202,7 +202,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'SMELLIEdoc'
+htmlhelp_basename = 'srcdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -224,8 +224,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'SMELLIE.tex', u'SMELLIE Documentation',
-   u'Christopher Jones, Jeff Lidgard, Luca Cavalli, Krishanu Majumdar, Jack Dunger', 'manual'),
+  (master_doc, 'src.tex', u'src Documentation',
+   u'Author', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -254,7 +254,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'smellie', u'SMELLIE Documentation',
+    (master_doc, 'src', u'src Documentation',
      [author], 1)
 ]
 
@@ -268,8 +268,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'SMELLIE', u'SMELLIE Documentation',
-   author, 'SMELLIE', 'One line description of project.',
+  (master_doc, 'src', u'src Documentation',
+   author, 'src', 'One line description of project.',
    'Miscellaneous'),
 ]
 

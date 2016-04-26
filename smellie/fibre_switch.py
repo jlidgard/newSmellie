@@ -32,8 +32,8 @@ def check_channel(channel_num):
 
     :raises: :class:`.FiberSwitchLogicError` if the channel is unphysical
     '''
-    if not ((channel_num > 1) and (channel_num < 70)):
-        raise FiberSwitchError("Invalid Fibre Switch channel {0} requested, must be 1-70 or input = 1-5 output = 1-14")
+    if not channel_num in xrange(70):
+        raise FiberSwitchLogicError("Invalid Fibre Switch channel {0} requested, must be 1-70 or input = 1-5 output = 1-14")
 
 
 class FibreSwitch(object):
@@ -115,4 +115,5 @@ class FibreSwitch(object):
         Get the current fwr version as a string
         """
         self.execute_message("firmware?")
-        return self.read_back()
+        return self.read_back()    
+        """

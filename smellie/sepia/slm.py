@@ -1,4 +1,4 @@
-from _sepia import string_buffer, dll, raise_on_error_code, SepiaLogicError
+from sepia import string_buffer, dll, raise_on_error_code, SepiaLogicError
 import ctypes
 
 """

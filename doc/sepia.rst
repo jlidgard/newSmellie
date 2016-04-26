@@ -28,6 +28,14 @@ sepia.scm module
     :undoc-members:
     :show-inheritance:
 
+sepia.sepia module
+------------------
+
+.. automodule:: sepia.sepia
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 sepia.slm module
 ----------------
 

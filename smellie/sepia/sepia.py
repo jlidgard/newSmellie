@@ -6,16 +6,6 @@ from functools import wraps
 import ctypes
 import os
 
-# Open the dll on import
-#if not os.path.exists(SEPIA_DLL_PATH):
- #   raise SepiaLogicError("Cannot open dll on path {0}".format(SEPIA_DLL_PATH))
-# try:
-#     dll = ctypes.OleDLL(dll_path)
-# except:
-#     raise SepiaLogicError("Opening dll failed!")
-
-dll = None
-
 def string_buffer():
     '''    
     :returns: ctype friendly string buffer, size set in :mod:config
@@ -34,8 +24,17 @@ class SepiaLogicError(Exception):
     """
     pass
 
+
+# Open the dll on import
+#if not os.path.exists(SEPIA_DLL_PATH):
+ #   raise SepiaLogicError("Cannot open dll on path {0}".format(SEPIA_DLL_PATH))
+# try:
+#     dll = ctypes.OleDLL(dll_path)
+# except:
+#     raise SepiaLogicError("Opening dll failed!")
+dll = None
 '''
-Convienience functions for interacting with the dll.
+The dll itself
 '''
 
 def string_buffer():
