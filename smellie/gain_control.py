@@ -1,15 +1,15 @@
 import daqmx.fuctions
-
+from config import GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ
 class GainContolLogicError(Exception):
     pass
 
 class GainVoltageGenerator(object):
-    def __init__(self, number_of_samples, sampling_frequency):
+    def __enter__(self)
         taskHandle = TaskHandle(0)
         DAQmxCreateTask("",byref(taskHandle))
-        self.number_of_samples = number_of_samples
+        self.number_of_samples = GAIN_CONTROL_N_SAMPLES
 
-        self.sampling_frequency = sampling_frequency
+        self.sampling_frequency = GAIN_CONTROL_SAMP_FREQ
         self.taskHandle = taskHandle
         aoDetails = str(devName + analogueOutputPin)
         #not in use below\ for testing purposes. Forced with "Dev1/ao1" argument.
@@ -23,10 +23,6 @@ class GainVoltageGenerator(object):
 AQmx_Val_Volts,None)
         DAQmxCfgSampClkTiming(taskHandle,"",sampling_frequency,DAQmx_\
 Val_Rising,DAQmx_Val_ContSamps,self.number_of_samples)
-
-
-    def __enter__(self):
-        pass
 
     def set_voltage(self):
         #Creating and shaping the data buffer:
