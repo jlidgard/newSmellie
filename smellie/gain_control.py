@@ -11,7 +11,7 @@ class GainVoltageGenerator(object):
         self.number_of_samples = GAIN_CONTROL_N_SAMPLES
 
         self.sampling_frequency = GAIN_CONTROL_SAMP_FREQ
-        #not in use below for testing purposes. Forced with "Dev1/ao1" argument.
+        # not in use below for testing purposes. Forced with "Dev1/ao1" argument.
         vMin = 0.0
         vMax = 1.0
         vRes = 0.0044 # Residual voltage on MPU
