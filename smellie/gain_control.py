@@ -7,7 +7,7 @@ class GainContolLogicError(Exception):
 class GainVoltageGenerator(object):
     def __enter__(self)
         taskHandle = TaskHandle(0)
-        DAQmxCreateTask("",byref(taskHandle))
+        functions.DAQmxCreateTask("",byref(taskHandle))
         self.number_of_samples = GAIN_CONTROL_N_SAMPLES
 
         self.sampling_frequency = GAIN_CONTROL_SAMP_FREQ
@@ -20,11 +20,11 @@ class GainVoltageGenerator(object):
                                            vMin, vMax, 
                                            constants.DAQmx_Val_Volts,
                                            None)
-        DAQmxCfgSampClkTiming(self.taskHandle, "", 
-                              self.sampling_frequency,
-                              constants.DAQmx_Val_Rising,
-                              constants.DAQmx_Val_ContSamps,
-                              self.number_of_samples)
+        functions.DAQmxCfgSampClkTiming(self.taskHandle, "", 
+                                        self.sampling_frequency,
+                                        constants.DAQmx_Val_Rising,
+                                        constants.DAQmx_Val_ContSamps,
+                                        self.number_of_samples)
 
     def set_voltage(self, voltage):
         # FIXME: 0.1 or 0.0124????
@@ -43,7 +43,7 @@ class GainVoltageGenerator(object):
                                           DAQmx_Val_GroupByChannel, 
                                           data, None, None)
 
-        DAQmxStartTask(self.taskHandle)
+        functions.DAQmxStartTask(self.taskHandle)
 
     def __exit__(self):
         functions.DAQmxStopTask(self.taskHandle)
