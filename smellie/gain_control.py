@@ -5,7 +5,7 @@ class GainContolLogicError(Exception):
     pass
 
 class GainVoltageGenerator(object):
-    def __enter__(self)
+    def __enter__(self):
         self.taskHandle = TaskHandle(0)
         functions.DAQmxCreateTask("",byref(self.taskHandle))
         self.number_of_samples = GAIN_CONTROL_N_SAMPLES
