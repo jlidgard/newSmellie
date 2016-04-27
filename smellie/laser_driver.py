@@ -1,5 +1,5 @@
 from sepia.usb import close_usb_device, open_usb_device
-from sepia.fwr import free_module_map, get_module_map
+from sepia.fwr import free_module_map, get_module_map, get_fwr_version
 from sepia.slm import set_intensity_fine_step, get_pulse_parameters, set_pulse_parameters
 from sepia.scm import set_laser_soft_lock, get_laser_soft_lock
 from sepia.com import get_module_type, decode_module_type
@@ -33,6 +33,15 @@ class LaserDriver(object):
 
     def set_frequency_mode(self, freqency_mode):
         set_pulse_params(self.dev_id, self.slot_id, freqency_mode)
+
+    def get_frequency_mode(self):
+        return self.get_pulse_params()[0]
+
+    def get_pulse_mode(self):
+        return self.get_pulse_params()[1]
+
+    def get_head_type(self):
+        return self.get_pulse_params()[2]
         
     def check_pulse_mode(self):
         if not self.get_pulse_parameters()[1] == 1:
@@ -56,3 +65,24 @@ class LaserDriver(object):
         self.set_soft_lock(is_locked = True)
         self.set_frequency(6)
         self.set_intensity(0)
+
+    def get_firmware_version(self):
+        return get_fwr_version(self.dev_id)
+
+
+    def current_state(self):
+        """
+        Returns a formatted string with the current harware settings
+        """
+        return """Soft Lock : {0}
+Intensity : {1}/1000
+Pulse Mode : {2}
+Pulse Parameters : {3}
+Frequency Mode : {4}
+Firmware Version : {5}
+""".format("On " if self.get_laser_soft_lock() else "Off",
+           self.get_pulse_mode()
+           ", ".join(srt(x) for x in self.get_pulse_params()),
+           self.get_frequency_mode(),
+           self.get_fwr_version()
+           )

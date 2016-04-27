@@ -116,4 +116,11 @@ class FibreSwitch(object):
         """
         self.execute_message("firmware?")
         return self.read_back()    
+
+    def current_state(self):
         """
+        Returns a formatted string with the current harware settings
+        """
+        return """Firmware version : {0}
+Fiber Switch Channel : {1}
+""".format(get_channel(), get_fwr_version())
