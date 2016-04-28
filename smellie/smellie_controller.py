@@ -1,6 +1,6 @@
 from laser_driver import LaserDriver
 from laser_switch import LaserSwitch
-from fiber_switch import FibreSwitch
+from fibre_switch import FibreSwitch
 from time import sleep
 from ni_box import TriggerGenerator, GainVoltageGenerator
 import system_state
@@ -9,7 +9,7 @@ class SmellieController(object):
     def __enter__(self):
         """Open the SMELLIE CONTROLLER, hardware in deactivated mode
         """        
-        self.fiber_switch = FibreSwitch()              
+        self.fibre_switch = FibreSwitch()              
         self.laser_switch = LaserSwitch()              
         self.gain_voltage_gen = GainVoltageGenerator() 
         self.laser_driver = LaserDriver()              
@@ -32,16 +32,16 @@ class SmellieController(object):
 
     def deactivate(self):
         self.go_safe()
-        self.laser_switch.set_channel(0)
+        self.laser_switch.set_active_channel(0)
         return 0
 
     def pulse_master_mode(self, freq, n_pulses, 
                           fs_input_chan, fs_output_chan,
                           ls_chan, intensity
                           ):
-        self.laser_switch.set_channel(ls_chan)
+        self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
-        self.fiber_switch.set_channel(input_channel, output_channel)
+        self.fibre_switch.set_io_channel_numbers(input_channel, output_channel)
         
         with TriggerGenerator() as trig:
             trig.generate(n_pulses)
@@ -51,9 +51,9 @@ class SmellieController(object):
 
     def enter_slave_mode(self, fs_input_chan, fs_output_chan, 
                          ls_chan, intensity, time):
-        self.laser_switch.set_channel(ls_chan)
+        self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
-        self.fiber_switch.set_channel(fs_input_chan, fs_output_chan)
+        self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
         sleep(time)
         self.go_safe()
         return 0
@@ -84,6 +84,6 @@ GAIN CONTROL:
            system_state.get_config_str(),
            laser_driver_state,
            self.laser_switch.current_state(),
-           self.fiber_switch.current_state(),
+           self.fibre_switch.current_state(),
            self.gain_voltage_gen.current_state()
            )
