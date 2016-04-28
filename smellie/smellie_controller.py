@@ -1,5 +1,4 @@
-from config import LASER_DRIVER_DEV_ID, LASER_DRIVER_SLOT_ID
-from laser_driver import LaserDriverConnection
+from laser_driver import LaserDriver
 from laser_switch import LaserSwitch
 from fiber_switch import FibreSwitch
 from time import sleep
@@ -9,14 +8,15 @@ import system_state
 class SmellieController(object):    
     def __enter__(self):
         """Open the SMELLIE CONTROLLER, hardware in deactivated mode
-        """
-        self.fiber_switch = FibreSwitch()
-        self.laser_switch = LaserSwitch()
-        self.gain_voltage_gen = GainVoltageGenerator()
-        self.laser_driver = LaserDriver()
-        self.laser_driver.open_connection()
-
-        self.deactivate()
+        """        
+        self.fiber_switch = FibreSwitch()              
+        self.laser_switch = LaserSwitch()              
+        self.gain_voltage_gen = GainVoltageGenerator() 
+        self.laser_driver = LaserDriver()              
+        self.laser_driver.open_connection()            
+                                                       
+        self.deactivate()                              
+        
         
     def __exit__(self, type, value, traceback):
         """Clean up code goes here, it's guaranteed to get called even if
@@ -64,8 +64,7 @@ class SmellieController(object):
         return 0
 
     def system_state(self):
-        with LaserDriverConnection() as ld:
-            laser_driver_state = ld.laser_driver.current_state()
+        laser_driver_state = self.laser_driver.current_state()
         return """ SMELLIE git SHA: {0}
 CONFIGURATION:
 {1}
@@ -85,6 +84,6 @@ GAIN CONTROL:
            system_state.get_config_str(),
            laser_driver_state,
            self.laser_switch.current_state(),
-           self.fiber_switch.current_state()
+           self.fiber_switch.current_state(),
            self.gain_voltage_gen.current_state()
            )
