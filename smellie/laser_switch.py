@@ -71,9 +71,9 @@ class LaserSwitch(object):
         :returns: selected channel
         :type selected channel: int
         """
-        return translate_bits(self.connection.eDigitalIn(2),
-                              self.connection.eDigitalIn(3),
-                              self.connection.eDigitalIn(4))
+        return translate_bits(self.connection.eDigitalIn(2, readD = 1),
+                              self.connection.eDigitalIn(3, readD = 1),
+                              self.connection.eDigitalIn(4, readD = 1))
 
     def get_active_channel(self):
         """
@@ -84,9 +84,9 @@ class LaserSwitch(object):
 
         :raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
         """
-        channel = translate_bits(self.connection.eDigitalIn(5),
-                                 self.connection.eDigitalIn(6),
-                                 self.connection.eDigitalIn(7))
+        channel = translate_bits(self.connection.eDigitalIn(5, readD = 1),
+                                 self.connection.eDigitalIn(6, readD = 1),
+                                 self.connection.eDigitalIn(7, readD = 1))
         if not channel in xrange(6):
             raise LaserSwitchHWError("Laser Switch returned unphysical active channel number!  It should be between 0 and 5 inclusive.")
         return channel
