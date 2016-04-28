@@ -6,19 +6,19 @@ Control of the Laser Switch hardware
 """
 
 def invert(bit):
-    '''
+    """
     Invert the input bit, i.e. convert 0 to 1, or 1 to 0
 
     :param bit: the input bit
-    '''
+    """
     if bit in (0, 1):
         return (not bit)
     raise TypeError("Cannot invert bit - not a boolean!")
 
-def translate_bits_big_endian(b1, b2, b3):
-    '''
+def translate_bits(b1, b2, b3):
+    """
     Convert a binary value into a sequence of bytes, according to big-endian ordering
-    '''
+    """
     return int("{2}{1}{0}".format(b1, b2, b3), 2)
 
 class LaserSwitchLogicError(Exception):
@@ -34,10 +34,10 @@ class LaserSwitchHWError(Exception):
     pass
 
 class LaserSwitch(object):
-    '''
+    """
     Controls the Laser Switch via commands sent down a USB port.
     The port number is set in config.py .
-    '''
+    """
     def __init__(self):
         self.com_channel = RELAY_COM_CHANNEL
         self.connection = U12()
@@ -82,7 +82,7 @@ class LaserSwitch(object):
         :returns: active channel
         :type active channel: int
 
-		:raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
+        :raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
         """
         channel = translate_bits_big_endian(self.connection.eDigitalIn(5),
                                             self.connection.eDigitalIn(6),
