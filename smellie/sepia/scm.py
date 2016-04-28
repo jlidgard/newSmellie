@@ -1,4 +1,4 @@
-from _sepia import dll, raise_on_error_code
+from sepia import dll, raise_on_error_code
 """
 Device Operational Safety Controller Functions (SCM)
 From the original C-API:
