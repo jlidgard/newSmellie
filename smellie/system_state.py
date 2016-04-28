@@ -3,9 +3,9 @@ import config
 import os
 
 def get_SHA():
-    '''
+    """
     Returns the current git SHA of the SMELLIE software
-    '''
+    """
     return check_output(["git", "describe", "--always", "--tag"]).strip()
 
 def get_config_str():
