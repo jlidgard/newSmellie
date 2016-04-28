@@ -19,31 +19,31 @@ class FibreSwitchHWError(Exception):
     pass
 
 def find_global_channel_number(in_chan, out_chan):
-    '''
+    """
     Convert a specific combination of (input channel, output channel) into a global Fibre Switch channel number
 
     :returns: global channel
     :type global channel: int
-    '''
+    """
     return ((in_chan - 1) * 14) + out_chan
 
 def check_global_channel_number(channel_num):
-    '''
+    """
     Check the validity of the desired global Fibre Switch channel number, which must be at most = 70 (input channel = [1, 5], output channel = [1, 14])
 
     :param channel_num: the global channel number to check
 
     :raises: :class:`.FibreSwitchLogicError` if the channel is unphysical, i.e. not between 1 and 70
-    '''
+    """
     if not channel_num in xrange(70):
         raise FibreSwitchLogicError("Invalid Fibre Switch channel {0} requested ... must be 1 - 70, or input = 1 - 5 and output = 1 - 14")
 
 
 class FibreSwitch(object):
-    '''
+    """
     Controls the Fibre Switch via commands sent down a serial port.
     The port number and baud rate are set in config.py .
-    '''
+    """
     def __init__(self):
         self.channel_num = None
         self.serial = Serial()
