@@ -33,24 +33,21 @@ def get_pulse_parameters(dev_id, slot_id):
     return freq, pulse_mode, head_type
 
 @raise_on_error_code
-def set_pulse_parameters(dev_id, slot_id, freq_mode):
+def set_pulse_parameters(dev_id, slot_id):
     """
     Set the pulse parameters for the SLM module
+    The original C-API has a parameter `bPulseMode` = 1 for pulsing, 0 for continuous light).  Using 0 can cause damage to the laser heads and so bPulseMode is hard coded to 1.    
+    The `frequency mode` must be = 6 (triggering from the rising edge of the external trigger signal). The internal SEPIA triggers are MHz rate, and will damage the detector.
 
     :param dev_id: the SEPIA device number, ordered from 0
     :type dev_id: int
 
     :param slot_id: the slot number, between 000 and 989
     :type slot_id: int
-
-    :param freq_mode: the frequency mode - 0 (80MHz), 1 (40MHz), 2 (20MHz), 3 (10MHz), 4 (5MHz), 5 (2.5MHz), 6 (external pulse, rising edge), 7 (external pulse, falling edge)
-    :type freq_mode: int
     """
-    if not freq_mode in xrange(8):
-        raise SepiaLogicError("Cannot set the frequency mode - must be an integer between 0 and 7 inclusive")
 
-    # The last parameter is the pulse mode - DO NOT CHANGE (see __init__.py)!
-    dll.SetPulseParameters(dev_id, slot_id, freq_mode, c_ubyte(1))
+    # The last two parameters are the pulse and frequency modes - DO NOT CHANGE  (see above and __init__.py)!
+    dll.SetPulseParameters(dev_id, slot_id, ctypes.c_int32(6), c_ubyte(1))
 
 @raise_on_error_code
 def decode_freq_trig_mode(freq_mode):

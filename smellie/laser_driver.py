@@ -1,6 +1,6 @@
 from sepia.usb import close_usb_device, open_usb_device
 from sepia.fwr import free_module_map, get_module_map, get_fwr_version
-from sepia.slm import set_intensity_fine_step, get_pulse_parameters, set_pulse_parameters
+from sepia.slm import set_intensity_fine_step, get_pulse_parameters, set_pulse_parameters, decode_freq_trig_mode
 from sepia.com import get_module_type, decode_module_type
 from config import LASER_DRIVER_DEV_ID, LASER_DRIVER_SLOT_ID
 
@@ -27,14 +27,19 @@ class LaserDriver(object):
     def __init__(self):
         self.dev_id  = LASER_DRIVER_DEV_ID
         self.slot_id = LASER_DRIVER_SLOT_ID
-    
+        
     def open_connection(self):
         """
         Open the USB connection to SEPIA
         """
         open_usb_device(self.dev_id)
         get_module_map(self.dev_id)
-        
+        # Sets the laser into pulse mode, with the frequency mode = rising edge of the external trigger pulse.
+        # Do not change this for Detector Safety reasons!
+        self.set_pulse_parameters(self.dev_id, self.slot_id)
+        self.check_pulse_mode()
+        self.check_trig_mode()
+
     def close_connection(self):
         """
         (Cleanly!) close the USB connection to SEPIA
@@ -51,15 +56,6 @@ class LaserDriver(object):
         """
         return get_pulse_parameters(self.dev_id, self.slot_id)
 
-    def set_frequency_mode(self, frequency_mode):
-        """
-        Set the SEPIA frequency mode: 0 (80MHz), 1 (40MHz), 2 (20MHz), 3 (10MHz), 4 (5MHz), 5 (2.5MHz), 6 (external pulse, rising edge), 7 (external pulse, falling edge)
-
-        :param frequency_mode: requested frequency mode
-        :type frequency_mode: int
-        """
-        set_pulse_params(self.dev_id, self.slot_id, freqency_mode)
-
     def get_frequency_mode(self):
         """
         Poll SEPIA for the currently set frequency mode: 0 (80MHz), 1 (40MHz), 2 (20MHz), 3 (10MHz), 4 (5MHz), 5 (2.5MHz), 6 (external pulse, rising edge), 7 (external pulse, falling edge)
@@ -67,7 +63,7 @@ class LaserDriver(object):
         :returns: frequency_mode
         :type frequency_mode: int
         """
-        return self.get_pulse_params()[0]
+        return decode_freq_trig_mode(self.get_pulse_params()[0])
 
     def get_pulse_mode(self):
         """
@@ -95,6 +91,10 @@ class LaserDriver(object):
         """
         if not self.get_pulse_parameters()[1] == 1:
             raise LaserDriverHWError("Laser Driver is not in pulsed mode!!")
+
+    def check_trig_mode(self):
+        if not self.get_pulse_parameters()[0] == 6:
+            raise LaserDriverHWError("Laser Driver is not in external trigger  (rising edge) mode!")
 
     def get_intensity(self):
         """
@@ -132,11 +132,11 @@ class LaserDriver(object):
 
     def go_safe(self):
         """
-        Set SEPIA into its safe state: soft-lock = on, frequency mode = 6 (external, rising edge), intensity = 0%
+        Set SEPIA into its safe state: soft-lock = on, intensity = 0%
         """
         self.set_soft_lock(is_locked = True)
-        self.set_frequency_mode(6)
         self.set_intensity(0)
+        self.set_pulse_parameters()
 
     def get_firmware_version(self):
         """
