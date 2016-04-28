@@ -1,8 +1,8 @@
 from sepia.usb import close_usb_device, open_usb_device
 from sepia.fwr import free_module_map, get_module_map, get_fwr_version
 from sepia.slm import set_intensity_fine_step, get_pulse_parameters, set_pulse_parameters
-from sepia.scm import set_laser_soft_lock, get_laser_soft_lock
 from sepia.com import get_module_type, decode_module_type
+from config import LASER_DRIVER_DEV_ID, LASER_DRIVER_SLOT_ID
 
 class LaserDriverLogicError(Exception):
     pass
@@ -11,20 +11,15 @@ class LaserDriverHWError(Exception):
     pass
 
 class LaserDriver(object):
-    def __init__(self, dev_id, slot_id):
-        self.dev_id   = dev_id
-        self.slot_id  = slot_id
-        self.mod_type = decode_module_type(get_module_type(self.dev_id, 
-                                                           self.slot_id))
-    def __enter__(self):
+    def __init__(self):
+        self.dev_id  = LASER_DRIVER_DEV_ID
+        self.slot_id = LASER_DRIVER_SLOT_ID
+    
+    def open_connection(self):
         open_usb_device(self.dev_id)
-        self.mod_map = get_module_map(self.dev_id)
-        self.go_safe()
-        self.check_pulse_mode()
-        self.set_soft_lock(is_locked = False)
-
-    def __exit__(self):
-        self.go_safe()
+        get_module_map(self.dev_id)
+        
+    def close_connection(self):
         free_module_map(self.dev_id)
         close_device(self.dev_id)
 
@@ -34,7 +29,7 @@ class LaserDriver(object):
     def set_frequency_mode(self, freqency_mode):
         set_pulse_params(self.dev_id, self.slot_id, freqency_mode)
 
-    def get_frequency_mode(self):
+    def get_frequency_mode(self):        
         return self.get_pulse_params()[0]
 
     def get_pulse_mode(self):

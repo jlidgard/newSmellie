@@ -58,9 +58,6 @@ class LaserSwitch(object):
             self.channel_up()
             
         self.execute()
-
-    def go_safe(self):
-        self.set_channel(0)
     
     def current_state(self):
         return """Active Channel : {0}
