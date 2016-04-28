@@ -1,8 +1,5 @@
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from exception_handler import str_wrap_exceptions
-from fake_function import test
-
-REGISTERED_FUNCTIONS = []
 
 class SmellieServer:
     """
@@ -17,8 +14,7 @@ class SmellieServer:
         :param port: port
         """
         
-        self.server = SimpleXMLRPCServer(("0.0.0.0", port), 
-                                         allow_none = True)
+        self.server = SimpleXMLRPCServer(("0.0.0.0", port))
         self.register()
 
     def serve_forever(self):
