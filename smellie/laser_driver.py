@@ -120,9 +120,19 @@ class LaserDriver(object):
         if not self.get_intensity() == intensity:
             raise LaserDriverHWError("Cannot set Laser head intensity!")
 
+    def is_laser_locked(self):
+        """
+        Poll SEPIA for the lock status.
+        
+        :returns: False if the power is off, the soft-lock is on or the sepia key is locked
+        """
+        return get_laser_locked(self.dev_id, self.slot_id)
+
     def is_soft_lock_on(self):
         """
         Poll SEPIA for the status of the soft-lock
+        
+        :returns: True if the soft lock is on
         """
         return get_laser_soft_lock(self.dev_id, self.slot_id)
 
@@ -150,13 +160,15 @@ class LaserDriver(object):
         """
         Returns a formatted string with the current hardware settings
         """
-        return """Soft Lock : {0}
-Intensity : {1}/1000
-Pulse Mode : {2}
-Pulse Parameters : {3}
-Frequency Mode : {4}
-Firmware Version : {5}
-""".format("On " if self.get_laser_soft_lock() else "Off", 
+        return """Laser Locked : {0}
+Soft Lock : {1}
+Intensity : {2}/1000
+Pulse Mode : {3}
+Pulse Parameters : {4}
+Frequency Mode : {5}
+Firmware Version : {6}
+""".format("On " if self.is_laser_locked() else "Off", 
+           "On " if self.is_soft_lock_on() else "Off", 
            self.get_intensity(), 
            self.get_pulse_mode(), 
            ", ".join(srt(x) for x in self.get_pulse_params()),
