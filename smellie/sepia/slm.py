@@ -71,7 +71,7 @@ def decode_freq_trig_mode(freq_mode):
 @raise_on_error_code
 def get_intensity_fine_step(dev_id, slot_id):
     """
-    Get the current intensity value of a given SLM driver module, in 1/1000th increments of the laser head's control voltage
+    Get the current intensity value of a given SLM driver module - an integer between 0 and 1000, where 1000 corresponds to 100% of the laser head's maximum control voltage (i.e. each integer increment represents 0.1% of the voltage)
 
     :param dev_id: the SEPIA device number, ordered from 0
     :type dev_id: int
@@ -80,7 +80,7 @@ def get_intensity_fine_step(dev_id, slot_id):
     :type slot_id: int
 
     :returns: intensity
-    :type intensity: double
+    :type intensity: int
     """
     intensity = ctypes.c_ushort()
     dll.SEPIA2_SLM_GetIntensityFineStep(dev_id, slot_id, intensity)
@@ -89,7 +89,7 @@ def get_intensity_fine_step(dev_id, slot_id):
 @raise_on_error_code
 def set_intensity_fine_step(dev_id, slot_id, intensity):
     """
-    Set the intensity value of a given SLM driver module, in 1/1000th increments of the laser head's control voltage
+    Set the intensity value of a given SLM driver module - an integer between 0 and 1000, where 1000 corresponds to 100% of the laser head's maximum control voltage (i.e. each integer increment represents 0.1% of the voltage)
 
     :param dev_id: the SEPIA device number, ordered from 0
     :type dev_id: int
@@ -98,10 +98,10 @@ def set_intensity_fine_step(dev_id, slot_id, intensity):
     :type slot_id: int
 
     :param intensity: the requested laser head intensity
-    :type intensity: double
+    :type intensity: int
     """
     if not intensity in xrange(int(1e3)):
-        raise SepiaLogicError("Cannot set the intensity fine step - must be between 0 and 1000")
+        raise SepiaLogicError("Cannot set the intensity fine step - must be an integer between 0 and 1000")
     dll.SEPIA2_SLM_SetIntensityFineStep(dev_id, slot_id, intensity)
 
 @raise_on_error_code
@@ -118,7 +118,7 @@ def decode_head_type(head_type_code):
     :raises: :class:`.SepiaLogicError` if the head_type_code is invalid, i.e. not between 0 and 3	
     """
     if not head_type_code in xrange(4):
-        raise SepiaLogicError("Cannot decode head type - must be between 0 and 3")
-    type = string_buffer()
-    dll.SEPIA2_SLM_DecodeHeadType(head_type_code, type)
-    return type
+        raise SepiaLogicError("Cannot decode head type code - must be between 0 and 3")
+    head_type = string_buffer()
+    dll.SEPIA2_SLM_DecodeHeadType(head_type_code, head_type)
+    return head_type
