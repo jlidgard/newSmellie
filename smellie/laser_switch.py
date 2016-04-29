@@ -15,11 +15,15 @@ def invert(bit):
         return (not bit)
     raise TypeError("Cannot invert bit - not a boolean!")
 
-def translate_bits(b1, b2, b3):
+def translate_bits(b0, b1, b2):
     """
-    Convert a binary value into a sequence of bytes, according to big-endian ordering
+    Convert a binary value into an integer, according to big-endian ordering
+    
+    :param b0: bit 0
+    :param b1: bit 1    
+    :param b2: bit 2
     """
-    return int("{2}{1}{0}".format(b1, b2, b3), 2)
+    return int("{2}{1}{0}".format(b0, b1, b2), 2)
 
 class LaserSwitchLogicError(Exception):
     """
