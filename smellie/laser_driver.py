@@ -51,8 +51,10 @@ class LaserDriver(object):
         """
         Poll SEPIA for a summary of the current device parameters: frequency mode, pulse mode and head type
 
-        :returns: parameters
-        :type parameters: string
+        :returns: frequency_mode
+        :returns: pulse_mode 
+        :returns: head_type
+        :rtype: (int, bool, int) tuple
         """
         return get_pulse_parameters(self.dev_id, self.slot_id)
 
