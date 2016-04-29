@@ -63,7 +63,7 @@ class LaserDriver(object):
         Poll SEPIA for the currently set frequency mode: 0 (80MHz), 1 (40MHz), 2 (20MHz), 3 (10MHz), 4 (5MHz), 5 (2.5MHz), 6 (external pulse, rising edge), 7 (external pulse, falling edge)
 
         :returns: frequency_mode
-        :type frequency_mode: int
+        :rtype:
         """
         return decode_freq_trig_mode(self.get_pulse_params()[0])
 
@@ -72,7 +72,7 @@ class LaserDriver(object):
         Poll SEPIA for the currently set pulse mode: 0 (continuous), 1 (pulsed)
 
         :returns: pulse_mode
-        :type pulse_mode: int
+        :rtype: int
         """
         return self.get_pulse_params()[1]
 
@@ -81,7 +81,7 @@ class LaserDriver(object):
         Poll SEPIA for the currently set head type
 
         :returns: head_type
-        :type head_type: int
+        :rtype: int
         """
         return self.get_pulse_params()[2]
         
@@ -103,7 +103,7 @@ class LaserDriver(object):
         Poll SEPIA for the currently set laser head intensity: a percentage between 0 and 100, in increments of 0.1%
 
         :returns: intensity
-        :type intensity: double
+        :rtype: int
         """
         return get_intensity_fine_step(self.dev_id, self.slot_id, intensity)
 
