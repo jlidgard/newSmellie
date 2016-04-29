@@ -1,6 +1,8 @@
-# SEPIA
+# SEPIA Laser Driver
 SEPIA_DLL_PATH        = "C:\Users\LocalAdmin\Desktop\Pysepia\Sepia2_Lib.dll"
 SEPIA_STR_BUFFER_SIZE = 128  # must be at minimum = 64 bytes
+LASER_DRIVER_DEV_ID   = 0
+LASER_DRIVER_SLOT_ID  = 200
 
 # Server
 PORT = 5020
