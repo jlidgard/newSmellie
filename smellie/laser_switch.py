@@ -17,7 +17,7 @@ def invert(bit):
 
 def translate_bits(b0, b1, b2):
     """
-    Convert a binary value into an integer, according to big-endian ordering
+    Convert a binary bit string into an integer, according to big-endian ordering
     
     :param b0: bit 0
     :param b1: bit 1    
