@@ -19,3 +19,13 @@ INTERLOCK_BAUD_RATE = 57600
 # Laser Switch
 RELAY_COM_CHANNEL = 1
 RELAY_SLEEP       = 30  # in seconds
+
+# NI Unit - Gain Control and Trigger Generator
+NI_DEV_NAME               = "Dev1"
+GAIN_CONTROL_N_SAMPLES    = 100
+GAIN_CONTROL_SAMP_FREQ    = 3000
+GAIN_CONTROL_PIN_OUT      = "/ao0"
+TRIG_GEN_HIGH_TIME        = 0.0000005  # in seconds
+TRIG_GEN_FREQUENCY        = 1000  # in Hz
+TRIG_GEN_MINIMUM_LOW_TIME = 0.0001  # in seconds
+TRIG_GEN_PIN_OUT          = "/Ctr0"

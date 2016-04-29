@@ -1,7 +1,6 @@
 from ctypes import *
 
-# New types definitions
-# Correspondance between the name used in the NiDAQmx.h file and ctypes
+# New type definitions and the correspondence between the names used in the NiDAQmx.h file and ctypes
 int8 = c_byte
 uInt8 = c_ubyte
 int16 = c_short

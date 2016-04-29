@@ -2,24 +2,20 @@ import sys
 import platform
 
 if sys.platform.startswith('win'):
-    # Full path of the NIDAQmx.h file
-    # Default location on Windows XP
+    # This is the full path of the NIDAQmx.h file if it is installed on a Windows XP machine, which (as of 29/04/16) is also the default location
     dot_h_file =  r'C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h'
 
-    if platform.release()=='7' and platform.architecture()[0]=='64bit':
+    # This is the full path of the NIDAQmx.h file if it is installed on a 64-bit Windows 7 machine, which (as of 29/04/16) is also the default location
+    if platform.release() == '7' and platform.architecture()[0] == '64bit':
         dot_h_file = r'C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h'
 
-    # Name (and eventually path) of the library
-    # Default on Windows is nicaiu
+    # The name and path of the library (the default name is `nicaiu`)
     lib_name = "nicaiu"
 
 elif sys.platform.startswith('linux'):
-    # On linux you can use the command find_library('nidaqmx')
-
-    # Full path of the NIDAQmx.h file
+    # This is the full paths and name of the NIDAQmx.h file and library if they are installed on a Linux machine, which (as of 29/04/16) are also the default location and name
+    # To find the file, use the command: `find_library('nidaqmx')`
     dot_h_file = '/usr/local/natinst/nidaqmx/include/NIDAQmx.h'
-
-    # Name (and eventually path) of the library
     lib_name = 'libnidaqmx.so'
 
 else:
