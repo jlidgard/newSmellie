@@ -29,3 +29,10 @@ TRIG_GEN_HIGH_TIME        = 0.0000005  # in seconds
 TRIG_GEN_FREQUENCY        = 1000  # in Hz
 TRIG_GEN_MINIMUM_LOW_TIME = 0.0001  # in seconds
 TRIG_GEN_PIN_OUT          = "/Ctr0"
+
+# DAQMX Library
+FILE_LOC_WINXP      = "C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"
+FILE_LOC_WIN7_64BIT = "C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"
+FILE_LOC_LINUX      = "/usr/local/natinst/nidaqmx/include/NIDAQmx.h"
+LIB_NAME_WIN        = "nicaiu"
+LIB_NAME_LINUX      = "libnidaqmx.so"
