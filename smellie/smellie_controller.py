@@ -26,17 +26,27 @@ class SmellieController(object):
         self.deactivate()
         self.laser_driver.close_connection()
 
-    def go_safe(self):        
+    def go_safe(self):
+        """
+        Send the entire SMELLIE system into `safe mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V
+        """		
         self.laser_driver.go_safe()
         self.gain_voltage.go_safe()
         return 0
 
     def deactivate(self):
+        """
+        Send the entire SMELLIE system into `deactivated mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V, active Laser Switch channel = 0 (no laser head attached to this channel), Fibre Switch input channel = 5 and output channel = 14 (no detector fibre attached to this output channel)
+        """
         self.go_safe()
         self.laser_switch.set_active_channel(0)
+        self.fibre_switch.set_io_channel_numbers(5, 14)
         return 0
 
     def laserheads_master_mode(self, ls_chan, intensity, fs_input_chan, fs_output_chan, n_pulses):
+        """
+        Run the SMELLIE system in Master Mode (NI Unit provides the trigger signal for both the lasers and the detector) using the PicoQuant Laser Heads
+        """
         self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
@@ -46,6 +56,9 @@ class SmellieController(object):
         return 0
 
     def laserheads_slave_mode(self, ls_chan, intensity, fs_input_chan, fs_output_chan, time):
+        """
+        Run the SMELLIE system in Slave Mode (SNO+ MTC/D provides the trigger signal for both the lasers and the detector) using the PicoQuant Laser Heads
+        """
         self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
@@ -53,14 +66,24 @@ class SmellieController(object):
         self.go_safe()
         return 0
 
-    # def superK_master_mode function to be completed here
+    def superK_master_mode() # incomplete function!!
+        """
+        Run the SMELLIE system in Master Mode (NI Unit provides the trigger signal for both the lasers and the detector) using the SuperK Supercontinuum laser
+        """
+        return 0
 
     def set_gain_control(self, voltage):
+        """
+        Set the Gain Voltage of the MPU's PMT ... applicable to both Master and Slave modes and both the Laser Heads and the SuperK laser
+        """
         with GainVoltageGenerator() as gainGen:
             gainGen.generate_voltage(voltage)
         return 0
 
     def system_state(self):
+        """
+        Return a formatted string with the current system settings
+        """
         return """ SMELLIE git SHA: {0}
 CONFIGURATION:
 {1}
