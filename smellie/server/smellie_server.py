@@ -5,8 +5,13 @@ from inspect import getmembers, isroutine
 
 def wrap_all_methods(instance, *wrappers):
     '''
-    Wrap every memeber function of instance with wrapper. Used to apply str_wrap_exceptions and dummy mode
+    Wrap every member function of instance with each wrapper in turn. 
+    Used to apply str_wrap_exceptions and dummy mode
     to the smellie controller instance
+
+    :param instance: the object to wrap
+
+    :param wrappers: tuple of function wrappers
     '''
     for wrapper in wrappers:
         for name, method in getmembers(instance, isroutine):
