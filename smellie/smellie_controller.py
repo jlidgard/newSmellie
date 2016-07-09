@@ -38,10 +38,10 @@ class SmellieController(object):
     def pulse_master_mode(self, freq, n_pulses, fs_input_chan, fs_output_chan, ls_chan, intensity):
         self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
-        self.fibre_switch.set_io_channel_numbers(input_channel, output_channel)
+        self.fibre_switch.set_io_channel_numbers(input_channel), int(output_channel)
 
         with TriggerGenerator() as trig:
-            trig.generate(n_pulses)
+            trig.generate(int(n_pulses))
 
         self.go_safe()
         return 0
@@ -63,7 +63,7 @@ class SmellieController(object):
         # pipe info return into logger
         pass
 
-    def set_dummy_mode(self, dummy_mode_on = True):
+    def set_dummy_mode_on(self, dummy_mode_on = True):
         config.DUMMY_MODE = dummy_mode_on
         return 0
 
