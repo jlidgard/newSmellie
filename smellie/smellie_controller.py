@@ -4,6 +4,7 @@ from fibre_switch import FibreSwitch
 from time import sleep
 from ni_box import TriggerGenerator, GainVoltageGenerator
 import system_state
+import config
 
 class SmellieController(object):    
     def __enter__(self):
@@ -58,25 +59,37 @@ class SmellieController(object):
             g.set_voltage(voltage)
         return 0
 
-    def system_state(self):
-        return """ SMELLIE git SHA: {0}
-CONFIGURATION:
-{1}
+    def log_info(self):
+        # pipe info return into logger
+        pass
 
-LASER DRIVER:
+    def set_dummy_mode(self, dummy_mode_on = True):
+        config.DUMMY_MODE = dummy_mode_on
+        return 0
+
+    def info(self):
+        return """ SMELLIE git SHA: {0}
+git repository dirty : {1}
+
+CONFIGURATION:
 {2}
 
-LASER SWITCH:
+LASER DRIVER:
 {3}
 
-FIBRE SWITCH:
+LASER SWITCH:
 {4}
 
-GAIN CONTROL:
+FIBRE SWITCH:
 {5}
+
+GAIN CONTROL:
+{6}
 """.format(system_state.get_SHA(),
+           True if system_state.git_is_dirty() else False,
            system_state.get_config_str(),
            self.laser_driver.current_state(),
            self.laser_switch.current_state(),
            self.fibre_switch.current_state(),
-           self.gain_voltage_gen.current_state())
+           self.gain_voltage_gen.current_state()
+           )

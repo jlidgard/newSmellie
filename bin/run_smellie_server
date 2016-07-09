@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 from smellie_controller import SmellieController
 from SimpleXMLRPCServer import SimpleXMLRPCServer
+from config import PORT
 
-server = SimpleXMLRPCServer(("0.0.0.0", port))
-
+server = SimpleXMLRPCServer(("0.0.0.0", PORT))
 try:
     with SmellieController() as controller:
-        server.regiser_instance(controller)
+        server.register_instance(controller)    
         server.serve_forever()
 
 except KeyboardInterrupt:
-    print "Server by keyboard interrupt"
+    print "Server terminated by keyboard interrupt"

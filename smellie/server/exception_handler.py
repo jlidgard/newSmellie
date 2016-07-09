@@ -37,6 +37,5 @@ def str_wrap_exceptions(orig_function):
         try:
             return orig_function(*args, **kwargs)
         except Exception as e:
-            return process_exception(e)
-        
+            return process_exception(e)        
     return modified_function    
