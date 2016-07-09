@@ -1,8 +1,9 @@
+import smellie.sepia
 from sepia.usb import close_usb_device, open_usb_device
 from sepia.fwr import free_module_map, get_module_map, get_fwr_version
 from sepia.slm import set_intensity_fine_step, get_pulse_parameters, set_pulse_parameters, decode_freq_trig_mode
 from sepia.com import get_module_type, decode_module_type
-from config import LASER_DRIVER_DEV_ID, LASER_DRIVER_SLOT_ID
+from smellie.config import LASER_DRIVER_DEV_ID, LASER_DRIVER_SLOT_ID
 
 """
 Control of the SEPIA II Laser Driver hardware
