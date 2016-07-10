@@ -4,6 +4,14 @@ server package
 Submodules
 ----------
 
+server.dummy_mode module
+------------------------
+
+.. automodule:: server.dummy_mode
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 server.exception_handler module
 -------------------------------
 
