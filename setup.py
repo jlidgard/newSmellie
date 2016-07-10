@@ -1,5 +1,5 @@
 from setuptools import setup
-import os
+from glob import glob
 
 setup(name = "smellie",
       version = "1.0.1",
@@ -7,8 +7,7 @@ setup(name = "smellie",
       author= "Luca Cavalli, Jack Dunger, Chris Jones, Jeff Lidgard and Krishanu Majumdar",
       maintainer = "Jack Dunger, Jeff Lidgard",
       author_email = "jack.dunger@physics.ox.ac.uk",
-      packages = ["smellie", "sepia", 
-                  "server", "daqmx"], 
+      packages = ["smellie"],
       py_modules = ["config"],
       install_requires = ["pyserial", "hiredis", "LabJackPython"]
       )

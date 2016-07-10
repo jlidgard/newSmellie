@@ -1,22 +1,24 @@
-.. SMELLIE documentation master file, created by
-   sphinx-quickstart on Sun Jul 10 22:23:57 2016.
+.. src documentation master file, created by
+   sphinx-quickstart on Tue Apr 19 15:21:24 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to SMELLIE's documentation!
-===================================
+Welcome to src's documentation!
+===============================
 
 Contents:
 
 .. toctree::
    :maxdepth: 4
 
-   config
-   daqmx
+   debug
+   fibre_switch
+   interlock
+   laser_driver
+   laser_switch
    sepia
    server
-   setup
-   smellie
+   system_state
 
 
 Indices and tables

@@ -1,6 +1,6 @@
 import daqmx.functions
 import daqmx.constants
-from config import NI_HIGH_TIME, NI_FREQUENCY, NI_MINIMUM_LOW_TIME
+from smellie.config import NI_HIGH_TIME, NI_FREQUENCY, NI_MINIMUM_LOW_TIME
 class TriggerGenerator(object):
     def __enter__(self):
         self.high_time = NI_HIGH_TIME
