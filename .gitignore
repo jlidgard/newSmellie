@@ -1,5 +1,8 @@
 *~
 #*
 *.pyc
+
 venv/*
 hiredis*
+doc/_build/*
+
