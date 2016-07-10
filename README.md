@@ -1,0 +1,1 @@
+Control software for the SMELLIE optical calibration system via XMLPRC.
