@@ -5,4 +5,7 @@
 venv/*
 hiredis*
 doc/_build/*
-
+smellie.egg-info
+venv/*
+dist
+build/*
