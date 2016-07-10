@@ -8,5 +8,6 @@ setup(name = "smellie",
       maintainer = "Jack Dunger, Jeff Lidgard",
       author_email = "jack.dunger@physics.ox.ac.uk",
       packages = ["smellie"],
+      py_modules = ["config"],
       install_requires = ["pyserial", "hiredis", "LabJackPython"]
       )
