@@ -9,7 +9,7 @@ Running the SMELLIE HW server requires you first:
 * you install the PQ drivers - 
 * clone this repository `git clone https://github.com/jackdunger/newSmellie.git`
 
-It is then recomended that you run SMELLIE in a virtual env, if not already installed get venv with `pip install virtualenv`:
+It is assumed that you run SMELLIE in a virtual environment. If not already installed get venv with `pip install virtualenv`:
 * First create the virtual env  `virtualenv venv`
 * Then activate it  `source venv/bin/activate`
 
