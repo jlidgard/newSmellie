@@ -21,4 +21,4 @@ server.register_introspection_functions()
 try:
     server.serve_forever()
 except KeyboardInterruptError:
-    pass
+     print "Server terminated by keyboard interrupt"
