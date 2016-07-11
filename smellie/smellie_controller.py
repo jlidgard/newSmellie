@@ -4,11 +4,8 @@ from fibre_switch import FibreSwitch
 from ni_trigger_generator import TriggerGenerator
 from ni_gain_control import GainVoltageGenerator
 import system_state
-<<<<<<< HEAD
 import config
-=======
 from time import sleep
->>>>>>> e565c76c18b86af8f012ae960544c2865c619d46
 
 class SmellieController(object):    
     def __enter__(self):
@@ -19,7 +16,7 @@ class SmellieController(object):
         self.laser_switch = LaserSwitch()              
         self.gain_voltage = GainVoltageGenerator()
         self.trig_signals = TriggerGenerator()
-        self.laser_driver = LaserDriver()              
+        self.laser_driver = LaserDriver()
         self.laser_driver.open_connection()            
         self.deactivate()                              
 
@@ -42,7 +39,7 @@ class SmellieController(object):
         Send the entire SMELLIE system into `deactivated mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V, active Laser Switch channel = 0 (no laser head attached to this channel), Fibre Switch input channel = 5 and output channel = 14 (no detector fibre attached to this output channel)
         """
         self.go_safe()
-        self.gain_voltage_gen.go_safe()
+        self.gain_voltage.go_safe()
         self.laser_switch.set_active_channel(0)
         self.fibre_switch.set_io_channel_numbers(5, 14)
         return 0
@@ -54,8 +51,7 @@ class SmellieController(object):
         self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
-        with TriggerGenerator() as trigGen:
-            trigGen.generate_triggers(n_pulses)
+        self.trig_signals.generate_triggers(n_pulses)
         self.go_safe()
         return 0
 
@@ -80,8 +76,7 @@ class SmellieController(object):
         """
         Set the Gain Voltage of the MPU's PMT ... applicable to both Master and Slave modes and both the Laser Heads and the SuperK laser
         """
-        with GainVoltageGenerator() as gainGen:
-            gainGen.generate_voltage(voltage)
+        self.gain_voltage.generate_voltage(voltage)
         return 0
 
     def log_info(self):
@@ -122,5 +117,5 @@ GAIN CONTROL:
            self.laser_driver.current_state(),
            self.laser_switch.current_state(),
            self.fibre_switch.current_state(),
-           self.gain_voltage_gen.current_state()
+           self.gain_voltage.current_state()
            )
