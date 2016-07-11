@@ -14,5 +14,5 @@ It is then recomended that you run SMELLIE in a virtual env, if not already inst
 * Then activate it  `source venv/bin/activate`
 
 Then install the SMELLIE software with:
-* `python setup.py install`
+`python setup.py install`
 
