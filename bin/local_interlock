@@ -4,7 +4,7 @@ Keep the interlock closed  with pulses along the serial port from this computer
 """
 
 from serial import Serial
-from config import INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE
+from smellie_config import INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE
 
 interlock_serial = Serial(INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE)
 try:

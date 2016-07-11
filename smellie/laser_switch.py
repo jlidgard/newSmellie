@@ -1,4 +1,4 @@
-from config import RELAY_COM_CHANNEL, RELAY_SLEEP
+from smellie_config import RELAY_COM_CHANNEL, RELAY_SLEEP
 from time import sleep
 
 """

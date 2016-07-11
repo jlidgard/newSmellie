@@ -1,6 +1,6 @@
 import daqmx.functions
 import daqmx.constants
-from config import GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ
+from smellie_config import GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ
 class GainContolLogicError(Exception):
     pass
 

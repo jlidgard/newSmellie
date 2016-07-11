@@ -1,5 +1,5 @@
 from subprocess import check_output
-import config
+import smellie_config
 import os
 
 def get_SHA():
@@ -10,7 +10,7 @@ def get_SHA():
 
 def git_is_dirty():
     '''
-    
+    Are there any uncommited changes in the repository?
     '''
     return True if check_output(["git", "status", "--porcelain"]) else False
 

@@ -1,7 +1,7 @@
 #!../venv/bin/python
 from smellie.smellie_controller import SmellieController
 from server.smellie_server import SmellieServer
-from config import PORT
+from smellie_config import PORT
 
 server = SmellieServer(("0.0.0.0", PORT))
 try:

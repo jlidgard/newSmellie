@@ -1,7 +1,5 @@
 from functools import wraps
 
-DUMMY_MODE = True
-
 def signature(func, args, kwargs):
     """
     Print the signature of a function call
@@ -21,7 +19,7 @@ def has_dummy_mode(orig_func):
     '''
     @wraps(orig_func)
     def wrapped_function(*args, **kwargs):
-        if DUMMY_MODE is False:
+        if smellie_config.DUMMY_MODE is False:
             return orig_func(*args, **kwargs)
         else:
             print signature(orig_func, args, kwargs)

@@ -4,7 +4,7 @@ Listen on an xmlrpc server for pulses to forward onto the interlock along a seri
 """
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from serial import Serial
-from config import INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE, INTERLOCK_SERVER_PORT
+from smellie_config import INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE, INTERLOCK_SERVER_PORT
 
 interlock_serial = Serial(INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE)
 def keep_alive_pulse():

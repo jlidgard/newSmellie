@@ -4,7 +4,7 @@ from fibre_switch import FibreSwitch
 from ni_trigger_generator import TriggerGenerator
 from ni_gain_control import GainVoltageGenerator
 import system_state
-import config
+import smellie_config
 from time import sleep
 
 class SmellieController(object):    
@@ -113,7 +113,7 @@ class SmellieController(object):
         
         :param dummy_mode_on: True for dummy mode/False for normal functioning
         '''
-        config.DUMMY_MODE = dummy_mode_on
+        smellie_config.DUMMY_MODE = dummy_mode_on
         return 0
 
     def info(self):

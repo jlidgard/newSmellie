@@ -1,6 +1,6 @@
 import daqmx.functions
 import daqmx.constants
-from config import NI_DEV_NAME, GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ, GAIN_CONTROL_PIN_OUT
+from smellie_config import NI_DEV_NAME, GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ, GAIN_CONTROL_PIN_OUT
 
 """
 Generation of the MPU Gain Voltage using the National Instruments (NI) Unit
