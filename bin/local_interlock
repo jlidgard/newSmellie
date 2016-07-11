@@ -1,0 +1,16 @@
+#!../venv/bin/python
+"""
+Keep the interlock closed  with pulses along the serial port from this computer
+"""
+
+from serial import Serial
+from config import INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE
+
+interlockSerial = Serial(INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE)
+try:
+    while True:
+        interlockSerial.write("a\r\n")
+    except KeyboardInterrupt:
+        print "interlockSMELLIE::Keyboard Interrupt has locked the Laser. Please Restart"
+        interlockSerial.close()
+        break
