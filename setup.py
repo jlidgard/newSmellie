@@ -10,5 +10,5 @@ setup(name = "smellie",
       packages = ["smellie", "sepia", 
                   "server", "daqmx"], 
       py_modules = ["config"],
-      install_requires = ["pyserial", "hiredis", "LabJackPython"]
+      install_requires = ["pyserial", "hiredis", "LabJackPython", "numpy"]
       )
