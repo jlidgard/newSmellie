@@ -17,8 +17,7 @@ def process_exception(exception):
     thrown_type = exception.__class__
     if thrown_type in HANDLED_EXCEPTIONS:
         return "SNODROP ERROR: {0}".format(repr(exception))
-    else:
-        return "SNODROP ERROR: Unhandled exception!! {0}".format(repr(exception))
+    return "SNODROP ERROR: Unhandled exception!! {0}".format(repr(exception))
 
 def str_wrap_exceptions(orig_function):
     """
