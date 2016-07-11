@@ -1,3 +1,9 @@
+"""
+The SMELLIE server is a python SimpleXMLRPCServer but wrapped so that each method of the exposed instance is wrapped by 
+:func:`exception_handler.str_wrap_exceptions` and :func:`dummy_mode.has_dummy_mode`, so that any exceptions thrown are translated as strings over the server, and to allow 
+running in dummy mode - where each function call just results in a signature print, and no logic.
+"""
+
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from exception_handler import str_wrap_exceptions
 from dummy_mode import has_dummy_mode
