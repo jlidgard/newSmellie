@@ -1,12 +1,12 @@
-""" Initialize the constants from the NIDAQmx.h file
-
-Read the NIDAQmx.h file and "execute" the #define command
-"""
-
 import re
 from config import dot_h_file
 
-include_file = open(dot_h_file,'r') #Open NIDAQmx.h file
+"""
+Initialise the constants from the NIDAQmx.h file
+Read the NIDAQmx.h file and `execute` the #define command
+"""
+
+include_file = open(dot_h_file,'r') # Open NIDAQmx.h file
 
 # Regular expression to parse the #define line
 # Parse line like : #define PI 3.141592
