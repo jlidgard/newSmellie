@@ -38,6 +38,8 @@ class TriggerGenerator(object):
     def generate_triggers(self, n_pulses):
         """
         Start the Trigger Generation task using the single-pulse parameters previously set up in the __enter__ function, and the requested number of pulses
+
+        :param n_pulses:
         """
         try:
             self._setup()

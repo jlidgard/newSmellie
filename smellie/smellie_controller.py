@@ -47,6 +47,16 @@ class SmellieController(object):
     def laserheads_master_mode(self, ls_chan, intensity, fs_input_chan, fs_output_chan, n_pulses):
         """
         Run the SMELLIE system in Master Mode (NI Unit provides the trigger signal for both the lasers and the detector) using the PicoQuant Laser Heads
+        
+        :param ls_chan: the laser switch channel
+        
+        :param intensity: the laser intensity in per mil
+        
+        :param fs_input_channel: the fibre switch input channel
+
+        :param fs_output_channel: the fibre switch output channel
+
+        :param n_pulses: the number of pulses
         """
         self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
@@ -58,6 +68,18 @@ class SmellieController(object):
     def laserheads_slave_mode(self, ls_chan, intensity, fs_input_chan, fs_output_chan, time):
         """
         Run the SMELLIE system in Slave Mode (SNO+ MTC/D provides the trigger signal for both the lasers and the detector) using the PicoQuant Laser Heads
+
+        :param ls_chan: the laser switch channel
+        
+        :param intensity: the laser intensity in per mil
+        
+        :param fs_input_channel: the fibre switch input channel
+
+        :param fs_output_channel: the fibre switch output channel
+
+        :param n_pulses: the number of pulses
+        
+        :param time: time until SNODROP exits slave mode
         """
         self.laser_switch.set_active_channel(ls_chan)
         self.laser_driver.set_intensity(intensity)
@@ -75,6 +97,8 @@ class SmellieController(object):
     def set_gain_control(self, voltage):
         """
         Set the Gain Voltage of the MPU's PMT ... applicable to both Master and Slave modes and both the Laser Heads and the SuperK laser
+        
+        :param voltage: PMU gain voltage set value
         """
         self.gain_voltage.generate_voltage(voltage)
         return 0
@@ -84,6 +108,11 @@ class SmellieController(object):
         pass
 
     def set_dummy_mode_on(self, dummy_mode_on = True):
+        '''
+        Put SNODROP into dummy mode, where all server function calls just result print the call signature
+        
+        :param dummy_mode_on: True for dummy mode/False for normal functioning
+        '''
         config.DUMMY_MODE = dummy_mode_on
         return 0
 
@@ -91,10 +120,10 @@ class SmellieController(object):
         pass
 
     def system_state(self):
-        """
+        '''
         Return a formatted string with the current system settings
-        """
-        return """ SMELLIE git SHA: {0}
+        '''
+        return ''' SMELLIE git SHA: {0}
 git repository dirty : {1}
 
 CONFIGURATION:
@@ -111,7 +140,7 @@ FIBRE SWITCH:
 
 GAIN CONTROL:
 {6}
-""".format(system_state.get_SHA(),
+'''.format(system_state.get_SHA(),
            True if system_state.git_is_dirty() else False,
            system_state.get_config_str(),
            self.laser_driver.current_state(),
