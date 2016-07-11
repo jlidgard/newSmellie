@@ -1,5 +1,5 @@
 .. SMELLIE documentation master file, created by
-   sphinx-quickstart on Sun Jul 10 22:23:57 2016.
+   sphinx-quickstart on Mon Jul 11 21:10:07 2016.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -11,12 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 4
 
-   config
    daqmx
    sepia
    server
    setup
    smellie
+   smellie_config
 
 
 Indices and tables

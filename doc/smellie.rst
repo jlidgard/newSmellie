@@ -4,14 +4,6 @@ smellie package
 Submodules
 ----------
 
-smellie.fiber_switch module
----------------------------
-
-.. automodule:: smellie.fiber_switch
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 smellie.fibre_switch module
 ---------------------------
 
@@ -24,14 +16,6 @@ smellie.gain_control module
 ---------------------------
 
 .. automodule:: smellie.gain_control
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-smellie.keep_alive module
--------------------------
-
-.. automodule:: smellie.keep_alive
     :members:
     :undoc-members:
     :show-inheritance:
@@ -52,10 +36,18 @@ smellie.laser_switch module
     :undoc-members:
     :show-inheritance:
 
-smellie.ni_box module
----------------------
+smellie.ni_gain_control module
+------------------------------
 
-.. automodule:: smellie.ni_box
+.. automodule:: smellie.ni_gain_control
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+smellie.ni_trigger_generator module
+-----------------------------------
+
+.. automodule:: smellie.ni_trigger_generator
     :members:
     :undoc-members:
     :show-inheritance:

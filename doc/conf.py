@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # SMELLIE documentation build configuration file, created by
-# sphinx-quickstart on Sun Jul 10 22:23:57 2016.
+# sphinx-quickstart on Mon Jul 11 21:10:07 2016.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
