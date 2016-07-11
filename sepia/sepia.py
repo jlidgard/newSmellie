@@ -70,7 +70,7 @@ def decode_error(iErr):
         dll.SEPIA2_LIB_DecodeError(iErr, str_buff)
         return str_buff
     except WindowsError:
-        return "SEPIA Library: unknown error code"
+        return "SEPIA Library: unknown error code {0}".format(iErr)
 
 def raise_on_error_code(in_function):
     """
