@@ -27,11 +27,11 @@ class SmellieController(object):
 
     def go_safe(self):        
         self.laser_driver.go_safe()
-        self.gain_voltage_gen.go_safe()
         return 0
 
     def deactivate(self):
         self.go_safe()
+        self.gain_voltage_gen.go_safe()
         self.laser_switch.set_active_channel(0)
         return 0
 
