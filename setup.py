@@ -1,5 +1,5 @@
 from setuptools import setup
-import os
+from glob import glob
 
 setup(name = "smellie",
       version = "1.0.1",
@@ -10,5 +10,6 @@ setup(name = "smellie",
       packages = ["smellie", "sepia", 
                   "server", "daqmx"], 
       py_modules = ["config"],
-      install_requires = ["pyserial", "hiredis", "LabJackPython", "numpy"]
+      install_requires = ["pyserial==2.7", "hiredis", "LabJackPython", "numpy"], 
+      scripts=glob("bin/*")
       )

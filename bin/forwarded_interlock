@@ -1,0 +1,24 @@
+#!../venv/bin/python
+"""
+Listen on an xmlrpc server for pulses to forward onto the interlock along a serial port
+"""
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+from serial import Serial
+from config import INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE, INTERLOCK_SERVER_PORT
+
+interlock_serial = Serial(INTERLOCK_SERIAL_PORT, INTERLOCK_BAUD_RATE)
+def keep_alive_pulse():
+    """
+    Send a keep alive pulse to the interlock along the serial port
+    """
+    interlock_serial.write("a\r\n")
+
+
+server = SimpleXMLRPCServer("0.0.0.0", INTERLOCK_SERVER_PORT)
+server.register_function(keep_alive_pulse)
+server.register_introspection_functions()
+
+try:
+    server.serve_forever()
+except KeyboardInterruptError:
+    pass
