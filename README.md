@@ -10,8 +10,8 @@ Running the SMELLIE HW server requires you first:
 * clone this repository
 
 It is then recomended that you run SMELLIE in a virtual env, if not already installed get venv with `pip install virtualenv`:
-* First create the virtual env : `virtualenv venv`
-* Then activate it : `source venv/bin/activate`
+* First create the virtual env  `virtualenv venv`
+* Then activate it  `source venv/bin/activate`
 
 Then install the SMELLIE software with:
 * `python setup.py install`
