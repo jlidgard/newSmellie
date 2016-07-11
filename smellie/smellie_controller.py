@@ -88,7 +88,7 @@ class SmellieController(object):
         self.go_safe()
         return 0
 
-    def superK_master_mode() # incomplete function!!
+    def superK_master_mode(): # incomplete function!!
         """
         Run the SMELLIE system in Master Mode (NI Unit provides the trigger signal for both the lasers and the detector) using the SuperK Supercontinuum laser
         """

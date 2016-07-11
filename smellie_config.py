@@ -38,8 +38,8 @@ TRIG_GEN_MINIMUM_LOW_TIME = 0.0001  # in seconds
 TRIG_GEN_PIN_OUT          = "/Ctr0"
 
 # DAQMX Library
-FILE_LOC_WINXP      = "C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP
-FILE_LOC_WIN7_64BIT = "C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows 7 64-bit
+FILE_LOC_WINXP      = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP
+FILE_LOC_WIN7_64BIT = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows 7 64-bit
 FILE_LOC_LINUX      = "/usr/local/natinst/nidaqmx/include/NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Linux
 LIB_NAME_WIN        = "nicaiu" # name and path of the library if installed on Windows (any version)
 LIB_NAME_LINUX      = "libnidaqmx.so"  # name and path of the library if installed on Linux (to find it, use the command: `find_library('nidaqmx')`
