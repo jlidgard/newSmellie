@@ -1,4 +1,4 @@
-from smellie.config import SEPIA_DLL_PATH, SEPIA_STR_BUFFER_SIZE
+from smellie_config import SEPIA_DLL_PATH, SEPIA_STR_BUFFER_SIZE
 from functools import wraps
 import ctypes
 import os
