@@ -51,7 +51,6 @@ def check_global_channel_number(channel_num):
     if not (channel_num-1) in xrange(70):
         raise FibreSwitchLogicError("Invalid Fibre Switch channel {0} requested ... must be 1 - 70, or input = 1 - 5 and output = 1 - 14")
 
-
 class FibreSwitch(object):
     """
     Controls the Fibre Switch via commands sent down a serial port.
