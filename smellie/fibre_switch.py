@@ -26,6 +26,19 @@ def find_global_channel_number(in_chan, out_chan):
     :type global channel: int
     """
     return ((in_chan - 1) * 14) + out_chan
+    
+def find_input_output_number(chan):
+    """
+    Convert a global Fibre Switch channel number into a specific combination of (input channel, output channel)
+
+    :returns: global channel
+    :type global channel: int
+    """
+    input_channel = int( (chan+7)/14.1 )//1
+    if (chan%14==0): output_channel = 14
+    else: output_channel = chan%14
+    
+    return "({},{})".format( str(input_channel), str(output_channel) )
 
 def check_global_channel_number(channel_num):
     """
@@ -35,7 +48,7 @@ def check_global_channel_number(channel_num):
 
     :raises: :class:`.FibreSwitchLogicError` if the channel is unphysical, i.e. not between 1 and 70
     """
-    if not channel_num in xrange(70):
+    if not (channel_num-1) in xrange(70):
         raise FibreSwitchLogicError("Invalid Fibre Switch channel {0} requested ... must be 1 - 70, or input = 1 - 5 and output = 1 - 14")
 
 
@@ -57,10 +70,19 @@ class FibreSwitch(object):
         :param msg:
         :type msg: string
         """
-        self.serial.open()
-        self.serial.write(msg)
-        self.serial.write("\r\n")
-        self.serial.close()
+        sleep(FIBRE_SWITCH_WAIT_TIME)
+        self.serial.write(msg+"\r\n")
+        
+    def read_back(self):
+        """
+        Wait for a configuration-determined time, and read back a line from the hardware
+
+        :returns: message
+        :type message: string
+        """
+        sleep(FIBRE_SWITCH_WAIT_TIME)
+        readback = self.serial.readline()
+        return readback
 
     def set_global_channel_number(self, channel_num):
         """
@@ -74,19 +96,11 @@ class FibreSwitch(object):
         """
         check_global_channel_number(channel_num)
         self.channel_num = channel_num
+        self.serial.open()
         self.execute_message("ch{0}".format(channel_num))
-        if(get_global_channel_number() != channel_num):
-            raise FiberSwitchHWError("Failed to set Fibre Switch to {0}".format(channel_num))
-
-    def read_back(self):
-        """
-        Wait for a configuration-determined time, and read back a line from the hardware
-
-        :returns: message
-        :type message: string
-        """
-        sleep(FIBRE_SWITCH_WAIT_TIME)
-        return self.serial.readline()
+        self.serial.close()
+        if(self.get_global_channel_number() != channel_num):
+            raise FibreSwitchHWError("Failed to set Fibre Switch to {0}".format(channel_num))
 
     def get_global_channel_number(self):
         """
@@ -95,8 +109,22 @@ class FibreSwitch(object):
         :returns: current channel
         :type current channel: int
         """
+        self.serial.open()
         self.execute_message("ch?")
-        return self.read_back()
+        readback = int(str(self.read_back()).replace(' ','').replace('\r\n',''))
+        self.serial.close()
+        return readback
+        
+    def get_input_output_channel_number(self):
+        """
+        Poll the Fibre Switch for the current input and output channels
+
+        :returns: {input channel, output channel}
+        :type current channel: string
+        """
+        readback = self.get_global_channel_number()
+        readback = find_input_output_number(readback)
+        return readback
 
     def set_io_channel_numbers(self, in_channel, out_channel):
         """
@@ -109,19 +137,34 @@ class FibreSwitch(object):
 
         :raises: :class:`.FibreSwitchHWError` if the command is unsuccessful
         """
-        set_global_channel_number(find_global_channel_number(in_channel, out_channel))
+        self.set_global_channel_number(find_global_channel_number(in_channel, out_channel))
         
     def get_fwr_version(self):
         """
         Get the current Fibre Switch firmware version as a string
         """
+        self.serial.open()
         self.execute_message("firmware?")
-        return self.read_back()    
+        readback = str(self.read_back()).replace(' ','').replace('\r\n','')
+        self.serial.close()
+        return readback
+        
+    def get_type(self):
+        """
+        Get the current Fibre Switch hardware model as a string
+        """
+        self.serial.open()
+        self.execute_message("type?")
+        readback = str(self.read_back()).replace(' ','').replace('\r\n','')
+        self.serial.close()
+        return readback
 
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
+
+        :returns: 'FibreSwitch:: Type:{}, Firmware version:{}, Channel:{}'
         """
-        return """Firmware version : {0}
-Fibre Switch channel : {1}
-""".format(get_global_channel_number(), get_fwr_version())
+        return "FibreSwitch:: Type:{0}, Firmware:{1}, Channel:{2}".format(self.get_type(),self.get_fwr_version(), str(self.get_global_channel_number()) )
+
+        
