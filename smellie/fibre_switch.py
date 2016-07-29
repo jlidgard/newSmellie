@@ -58,19 +58,20 @@ class FibreSwitch(object):
     """
     def __init__(self):
         self.channel_num = None
-        self.serial = Serial()
-        self.serial.port = FIBRE_SWITCH_SERIAL_PORT
-        self.serial.baudrate = FIBRE_SWITCH_BAUD_RATE
+        self.serial = Serial(FIBRE_SWITCH_SERIAL_PORT, FIBRE_SWITCH_BAUD_RATE, timeout=1)
+        
+    def __del__(self):
+        if (self.serial.isOpen() == True ): self.serial.close()
 
     def execute_message(self, msg):
-        r"""
+        """
         Send a command message over the serial port for the Fibre Switch to execute.  The message is automatically followed by \\r\\n , so you do not need to add this.
 
         :param msg:
         :type msg: string
         """
-        sleep(FIBRE_SWITCH_WAIT_TIME)
         self.serial.write(msg+"\r\n")
+        sleep(FIBRE_SWITCH_WAIT_TIME)
         
     def read_back(self):
         """
@@ -79,8 +80,8 @@ class FibreSwitch(object):
         :returns: message
         :type message: string
         """
-        sleep(FIBRE_SWITCH_WAIT_TIME)
         readback = self.serial.readline()
+        sleep(FIBRE_SWITCH_WAIT_TIME)
         return readback
 
     def set_global_channel_number(self, channel_num):
@@ -95,7 +96,7 @@ class FibreSwitch(object):
         """
         check_global_channel_number(channel_num)
         self.channel_num = channel_num
-        self.serial.open()
+        if (self.serial.isOpen() == False ): self.serial.open()
         self.execute_message("ch{0}".format(channel_num))
         self.serial.close()
         if(self.get_global_channel_number() != channel_num):
@@ -108,7 +109,7 @@ class FibreSwitch(object):
         :returns: current channel
         :type current channel: int
         """
-        self.serial.open()
+        if (self.serial.isOpen() == False ): self.serial.open()
         self.execute_message("ch?")
         readback = int(str(self.read_back()).replace(' ','').replace('\r\n',''))
         self.serial.close()
@@ -142,7 +143,7 @@ class FibreSwitch(object):
         """
         Get the current Fibre Switch firmware version as a string
         """
-        self.serial.open()
+        if (self.serial.isOpen() == False ): self.serial.open()
         self.execute_message("firmware?")
         readback = str(self.read_back()).replace(' ','').replace('\r\n','')
         self.serial.close()
@@ -152,18 +153,30 @@ class FibreSwitch(object):
         """
         Get the current Fibre Switch hardware model as a string
         """
-        self.serial.open()
+        if (self.serial.isOpen() == False ): self.serial.open()
         self.execute_message("type?")
         readback = str(self.read_back()).replace(' ','').replace('\r\n','')
         self.serial.close()
         return readback
-
+    
+    def get_port(self):
+        """
+        Get the port number
+        """
+        return self.serial.port
+        
+    def get_baudrate(self):
+        """
+        Get the baud rate
+        """
+        return self.serial.baudrate
+        
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
 
-        :returns: 'FibreSwitch:: Type:{}, Firmware version:{}, Channel:{}'
+        :returns: 'FibreSwitch:: Port:{}, Baudrate:{}, Type:{}, Firmware version:{}, Channel:{}'
         """
-        return "FibreSwitch:: Type:{0}, Firmware:{1}, Channel:{2}".format(self.get_type(),self.get_fwr_version(), str(self.get_global_channel_number()) )
+        return "FibreSwitch:: Port:{}, Baudrate:{}, Type:{}, Firmware:{}, Channel:{}".format( self.get_port(),self.get_baudrate(),self.get_type(),self.get_fwr_version(), str(self.get_global_channel_number()) )
 
         

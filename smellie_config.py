@@ -19,13 +19,14 @@ FIBRE_SWITCH_BAUD_RATE   = 57600
 FIBRE_SWITCH_WAIT_TIME   = 0.1  # in seconds
 
 # Interlock
-INTERLOCK_SERIAL_PORT      = 7  # = COM8
+INTERLOCK_SERIAL_PORT = 7  # = COM8
 INTERLOCK_BAUD_RATE = 9600
-INTERLOCK_SERVER_PORT = 80
+INTERLOCK_WAIT_TIME   = 0.1  # in seconds
 
 # Laser Switch
 RELAY_COM_CHANNEL = 1
 RELAY_SLEEP       = 30  # in seconds
+RESET_NAME = "*ROOT_HUB30*"
 
 # NI Unit - Gain Control and Trigger Generator
 NI_DEV_NAME               = "Dev1"

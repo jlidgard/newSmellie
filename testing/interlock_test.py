@@ -1,40 +1,73 @@
-# Commands to Control the SMELLIE Interlock
-import sys,serial,time
-import interlock as il
+# Test the SMELLIE laser keepalive
+# functions to test the functionality of the interlock control code
+# Test with superK GUI open, watch interlock status reported on gui
 
-def main():
+import logging, time, datetime
+from smellie import interlock
+il = interlock.Interlock()
 
-    #set up COM port connection. COM8, 9600 baud
-    connection = serial.Serial('COM8',9600,timeout=1)
+logging.basicConfig(filename='test_interlock.log', filemode="a", level=logging.DEBUG)
+console = logging.StreamHandler() #print logger to console
+console.setLevel(logging.DEBUG)
+logging.getLogger('').addHandler(console)
 
-    print "SMELLIE Laser Interlock"
-    print
-    print "serial port: ",connection 
-    print
+npass = 0
+nfail = 0
 
-    try:
-        while True:
-            print "Interlock relay status:"
-            il.getInterlockStatus(connection)
+try:
 
-            print "Set Interlock status (arm):"
-            il.setInterlockArm(connection)
+    logging.debug( "Begin Testing SMELLIE Interlock. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%M-%d %H:%M:%S') ) )   
+    #test current state. (in turn tests many of the getter functions).
+    logging.debug( "Current state: {}".format( il.current_state() ) )
 
-            print "Send Interlock Keep Alive:"
-            for x in range(10):
-                il.sendInterlockKeepAlive(connection)
-                time.sleep(.1)
-            
-            print "Set Interlock status (disarm):"
-            il.setInterlockDisarm(connection)
-
-    except KeyboardInterrupt:
-        il.setInterlockDisarm(connection)
-        print "interlockSMELLIE::Keyboard Interrupt has locked the Laser. Please Restart"
-        pass
-
-    connection.close()
-
-main()    
+    #test disarm (watch status quickly flash on & off)
+    logging.debug("Test Sending Arm then a Disarm")
+    il.set_arm()
+    il.set_disarm()
+    status = il.get_status_boolean()
+    logging.debug("Get status: {}, state: {}".format( il.get_status(), status ) )
+    if (status==0): 
+        logging.debug("Test PASSED")
+        npass+=1
+    else: 
+        logging.debug("Test FAILED")
+        nfail+=1
     
-
+    #test arm timeout
+    logging.debug("Test Sending Arm and waiting for time-out (no keepalive sent): {}".format( il.set_arm() ) )
+    status = il.get_status_boolean()
+    logging.debug("Get state: {}".format( status ) )
+    logging.debug("Wait 1.1 seconds")
+    time.sleep(1.1)
+    status2 = il.get_status_boolean()
+    logging.debug("Get state: {}".format( status2 ) )
+    if (status==1 and status2==0): 
+        logging.debug("Test PASSED")
+        npass+=1
+    else: 
+        logging.debug("Test FAILED")
+        nfail+=1
+    
+    #test sending keepalive
+    logging.debug("Test Sending Arm with keep alive @ 1Hz: {}".format( il.set_arm() ) )
+    status = il.get_status_boolean()
+    pulses = 0
+    while (pulses < 5):
+        pulses+=1
+        logging.debug("Test keep alive pulse {}".format( pulses ) )
+        il.send_keepalive()
+        time.sleep(1)
+    status2 = il.get_status_boolean()
+    logging.debug("Get state: {}".format( status2 ) )
+    if (status==1 and status2==1): 
+        logging.debug("Test PASSED")
+        npass+=1
+    else: 
+        logging.debug("Test FAILED")
+        nfail+=1
+    
+    logging.debug( "Finished Testing SMELLIE Fibre Switch, pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
+    
+except Exception, e:
+    logging.debug( "Exception:" )
+    logging.debug( e )
