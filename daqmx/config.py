@@ -1,6 +1,9 @@
 import sys
 import platform
-from config import FILE_LOC_WINXP, FILE_LOC_WIN7_64BIT, FILE_LOC_LINUX, LIB_NAME_WIN, LIB_NAME_LINUX
+from smellie_config import FILE_LOC_WINXP, FILE_LOC_WIN7_64BIT, FILE_LOC_LINUX, LIB_NAME_WIN, LIB_NAME_LINUX
+
+dot_h_file = FILE_LOC_WIN7_64BIT
+lib_name = LIB_NAME_WIN
 
 if sys.platform.startswith('win'):
     dot_h_file = FILE_LOC_WINXP

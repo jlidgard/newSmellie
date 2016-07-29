@@ -36,7 +36,8 @@ GAIN_CONTROL_PIN_OUT      = "/ao0"
 TRIG_GEN_HIGH_TIME        = 0.0000005  # in seconds
 TRIG_GEN_FREQUENCY        = 1000  # in Hz
 TRIG_GEN_MINIMUM_LOW_TIME = 0.0001  # in seconds
-TRIG_GEN_PIN_OUT          = "/Ctr0"
+TRIG_GEN_PIN_OUT_PQ          = "/Ctr0"
+TRIG_GEN_PIN_OUT_SUPERK      = "/Ctr1"
 
 # DAQMX Library
 FILE_LOC_WINXP      = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP
