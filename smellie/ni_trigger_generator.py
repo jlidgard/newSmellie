@@ -1,7 +1,7 @@
 import daqmx.functions
 import daqmx.constants
 from smellie_config import NI_DEV_NAME, TRIG_GEN_PIN_OUT_SUPERK, TRIG_GEN_PIN_OUT_PQ, TRIG_GEN_HIGH_TIME, TRIG_GEN_FREQUENCY, TRIG_GEN_MINIMUM_LOW_TIME
-from ctypes import *
+from ctypes import byref
 
 """
 Generation of the SEPIA and SuperK trigger signals using the National Instruments (NI) Unit
