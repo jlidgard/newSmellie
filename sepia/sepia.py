@@ -1,6 +1,6 @@
 from smellie_config import SEPIA_DLL_PATH, SEPIA_STR_BUFFER_SIZE
 from functools import wraps
-import ctypes
+from ctypes import *
 import os
 
 """
@@ -26,14 +26,15 @@ class SepiaLogicError(Exception):
     pass
 
 # Open the .dll on import
-#if not os.path.exists(SEPIA_DLL_PATH):
-#  raise SepiaLogicError("Cannot open dll on path {0}".format(SEPIA_DLL_PATH))
-#try:
-#  dll = ctypes.OleDLL(dll_path)
-#except:
-#  raise SepiaLogicError("Opening dll failed!")
-
-dll = None
+print SEPIA_DLL_PATH
+if not os.path.exists(SEPIA_DLL_PATH):
+    raise SepiaLogicError("Cannot open dll on path {0}".format(SEPIA_DLL_PATH))
+try:
+    dll = cdll.LoadLibrary(SEPIA_DLL_PATH)
+    #libc = cdll.msvcrt
+    #dll = ctypes.OleDLL(SEPIA_DLL_PATH)
+except:
+    raise SepiaLogicError("Opening dll failed!")
 
 """
 The ..dll itself

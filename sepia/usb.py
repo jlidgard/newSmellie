@@ -1,5 +1,5 @@
-from sepia import string_buffer, dll, raise_on_error_code
-import ctypes
+from sepia import check_channel, string_buffer, dll, raise_on_error_code
+from ctypes import *
 
 """
 Device Communication Functions (USB)
@@ -13,11 +13,13 @@ def get_dll_version():
 
     :returns: .dll version
     """
-    str_buff = string_buffer()
-    dll.SEPIA2_LIB_GetVersion(str_buff)
+    #str_buff = string_buffer()
+    str_buff = int(20)
+    get_version = (c_char_p*str_buff)()
+    dll.SEPIA2_LIB_GetVersion( byref(get_version) )
     return str_buff
 
-@raise_on_error_code    
+#@raise_on_error_code    
 def open_usb_device(dev_id):
     """
     Open exclusive access to the device connected to USB channel dev_id
@@ -28,10 +30,16 @@ def open_usb_device(dev_id):
     :returns: the product model and serial number
     """
     check_channel(dev_id, "open_device")
-    product_model = string_buffer()
-    serial_number = string_buffer()
-    dll.SEPIA2_USB_OpenDevice(dev_id, product_model, serial_number)
-    return product_model, serial_number
+    #product_model = string_buffer()
+    #serial_number = string_buffer()
+    
+    product_model_buff = int(20)
+    product_model = (c_char_p*product_model_buff)()
+    serial_number_buff = int(20)
+    serial_number = (c_char_p*serial_number_buff)()
+    
+    dll.SEPIA2_USB_OpenDevice( dev_id, byref(product_model), byref(serial_number) )
+    return str(cast(product_model,c_char_p).value), str(cast(serial_number,c_char_p).value)
 
 @raise_on_error_code    
 def close_usb_device(dev_id):
@@ -55,6 +63,8 @@ def get_state_descriptor(dev_id):
     :returns: concatenated string descriptors of the USB device
     """
     check_channel(dev_id, "get_state_descriptor")
-    desc = string_buffer()
-    dll.SEPIA2_USB_GetStrDescriptor(dev_id, desc)
-    return desc
+    #desc = string_buffer()
+    string_buff = int(20)
+    return_string = (ctypes.c_char_p*string_buff)()
+    dll.SEPIA2_USB_GetStrDescriptor(dev_id, ctypes.byref(return_string) )
+    return str(ctypes.cast(return_string,ctypes.c_char_p).value)

@@ -1,6 +1,8 @@
 import daqmx.functions
 import daqmx.constants
 from smellie_config import NI_DEV_NAME, GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ, GAIN_CONTROL_PIN_OUT
+from ctypes import byref
+import numpy
 
 """
 Generation of the MPU Gain Voltage using the National Instruments (NI) Unit
@@ -55,39 +57,39 @@ class GainVoltageGenerator(object):
         The channel string must be of the form `deviceName/analogueOutputPin`, i.e. `Dev1/ao0`.  /ao0 is used by default, but can be changed in config.py if required.
         This is a private function, indicated by the underscore before the name - do not change that!
         """
-        self.taskHandle = functions.TaskHandle(0)
-        functions.DAQmxCreateTask("",byref(self.taskHandle))
+        self.taskHandle = daqmx.functions.TaskHandle(0)
+        daqmx.functions.DAQmxCreateTask("",byref(self.taskHandle))
         self.vMin = 0.0
         self.vMax = 1.0
-        functions.DAQmxCreateAOVoltageChan(self.taskHandle, self.dev_name + self.out_pin, "", self.vMin, self.vMax, constants.DAQmx_Val_Volts, None)
-        functions.DAQmxCfgSampClkTiming(self.taskHandle, "", self.sampling_frequency, constants.DAQmx_Val_Rising, constants.DAQmx_Val_ContSamps, self.number_of_samples)
+        daqmx.functions.DAQmxCreateAOVoltageChan(self.taskHandle, self.dev_name + self.out_pin, "", self.vMin, self.vMax, daqmx.constants.DAQmx_Val_Volts, None)
+        daqmx.functions.DAQmxCfgSampClkTiming(self.taskHandle, "", self.sampling_frequency, daqmx.constants.DAQmx_Val_Rising, daqmx.constants.DAQmx_Val_ContSamps, self.number_of_samples)
 
     def _start_output(self, voltage):
         """
         Start the Gain Voltage task using the parameters previously set up in the _set_up function, and a given output voltage
         This is a private function, indicated by the underscore before the name - do not change that!
         """
-        data = np.zeros(3000, dtype = numpy.float64)
+        data = numpy.zeros(3000, dtype = numpy.float64)
         for i in range(len(data)):
             data[i] = voltage
-        functions.DAQmxWriteAnalogF64(self.taskHandle, 3000, 0, 10.0, constants, DAQmx_Val_GroupByChannel, data, None, None)
-        functions.DAQmxStartTask(self.taskHandle)
+        daqmx.functions.DAQmxWriteAnalogF64(self.taskHandle, 3000, 0, 10.0, daqmx.constants.DAQmx_Val_GroupByChannel, data, None, None)
+        daqmx.functions.DAQmxStartTask(self.taskHandle)
 
     def _stop_output(self):
         """
         Stop the Gain Voltage task and clear the NI Unit's task memory
         This is a private function, indicated by the underscore before the name - do not change that!
         """
-        functions.DAQmxStopTask(self.taskHandle)
+        daqmx.functions.DAQmxStopTask(self.taskHandle)
         #data = np.zeros(3000, dtype = numpy.float64)
         #functions.DAQmxWriteAnalogF64(self.taskHandle, 3000, 0, 10.0, DAQmx_Val_GroupByChannel, data, None, None)
-        functions.DAQmxClearTask(self.taskHandle)
+        daqmx.functions.DAQmxClearTask(self.taskHandle)
     
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
         """
-        return """Output Voltage : {0}""".format(self.voltage)
+        return "Output Voltage : {0}".format(self.voltage)
 
     def go_safe(self):
         """

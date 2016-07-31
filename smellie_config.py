@@ -2,12 +2,15 @@
 DUMMY_MODE = False
 
 # SEPIA Laser Driver
-SEPIA_DLL_PATH        = "C:\Users\LocalAdmin\Desktop\Pysepia\Sepia2_Lib.dll"
+#"C:\Program Files\PicoQuant\GenericLaserDriver\Sepia2_Lib.dll"
+#"C:\Program Files (x86)\PicoQuant\Sepia II\Demos\MSVCPP\Shared_MSVCPP\Sepia2_Lib.dll"
+SEPIA_DLL_PATH        = "C:\\Program Files\\PicoQuant\\GenericLaserDriver\\API\\x64\\Sepia2_Lib.dll"
 SEPIA_STR_BUFFER_SIZE = 128  # must be at minimum = 64 bytes
 LASER_DRIVER_DEV_ID   = 0
 LASER_DRIVER_SLOT_ID  = 200
 
 # Smellie Controller Server
+ADDRESS = "0.0.0.0"
 PORT = 5020
 
 # Logging Server

@@ -7,18 +7,18 @@ import system_state
 import smellie_config
 from time import sleep
 
-class SmellieController(object):    
+class SmellieController(object):
     def __enter__(self):
         """
         Open the SMELLIE Controller, with all hardware in deactivated mode
-        """        
-        self.fibre_switch = FibreSwitch()              
-        self.laser_switch = LaserSwitch()              
+        """
+        self.fibre_switch = FibreSwitch()
+        self.laser_switch = LaserSwitch()
         self.gain_voltage = GainVoltageGenerator()
-        self.trig_signals = TriggerGenerator()
+        self.trig_signals = TriggerGenerator("SUPERK")
         self.laser_driver = LaserDriver()
-        self.laser_driver.open_connection()            
-        self.deactivate()                              
+        self.laser_driver.open_connection()
+        self.deactivate()
 
     def __exit__(self, type, value, traceback):
         """
@@ -30,7 +30,7 @@ class SmellieController(object):
     def go_safe(self):
         """
         Send the entire SMELLIE system into `safe mode` - SEPIA soft-lock = on, SEPIA intensity = 0%
-        """		
+        """
         self.laser_driver.go_safe()
         return 0
 
@@ -123,24 +123,7 @@ class SmellieController(object):
         '''
         Return a formatted string with the current system settings
         '''
-        return ''' SMELLIE git SHA: {0}
-git repository dirty : {1}
-
-CONFIGURATION:
-{2}
-
-LASER DRIVER:
-{3}
-
-LASER SWITCH:
-{4}
-
-FIBRE SWITCH:
-{5}
-
-GAIN CONTROL:
-{6}
-'''.format(system_state.get_SHA(),
+        return "SMELLIE git SHA: {0} git repository dirty : {1} CONFIGURATION: {2} LASER DRIVER: {3} LASER SWITCH: {4} FIBRE SWITCH: {5} GAIN CONTROL: {6}".format(system_state.get_SHA(),
            True if system_state.git_is_dirty() else False,
            system_state.get_config_str(),
            self.laser_driver.current_state(),

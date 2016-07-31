@@ -1,12 +1,11 @@
-#!../venv/bin/python
 from smellie.smellie_controller import SmellieController
 from server.smellie_server import SmellieServer
-from smellie_config import PORT
+from smellie_config import ADDRESS, PORT
 
-server = SmellieServer(("0.0.0.0", PORT))
+server = SmellieServer( ADDRESS, PORT, SmellieController() )
 try:
     with SmellieController() as controller:
-        server.register_instance(controller)    
+        server.register(controller)    
         server.serve_forever()
 
 except KeyboardInterrupt:

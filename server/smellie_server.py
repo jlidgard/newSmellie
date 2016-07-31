@@ -29,7 +29,7 @@ class SmellieServer:
     XML-RPC Protocol server that exposes a SmellieController to external 
     calls
     '''
-    def __init__(self, port, instance):
+    def __init__(self, address, port, instance):
         '''
         Initialise the server on port and register functions
         Calls: :func:`register <smellie_server.SmellieServer.register>
@@ -39,7 +39,7 @@ class SmellieServer:
         :param instance: controller object to expose to the server
         '''
         
-        self.server = SimpleXMLRPCServer(("0.0.0.0", port))
+        self.server = SimpleXMLRPCServer((address, port))
         self.register(instance)
 
     def serve_forever(self):

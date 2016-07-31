@@ -1,4 +1,4 @@
-from sepia import dll, string_buffer, raise_on_error_code
+from sepia import check_channel, dll, string_buffer, raise_on_error_code
 import ctypes
 
 """
@@ -8,7 +8,7 @@ These functions are direct wraps into Python, with parameter outputs replaced
 by return values.
 """
 
-@raise_on_error_code
+#@raise_on_error_code
 def get_fwr_version(dev_id):
     """
     Return the current firmware version - the laser head must be online
@@ -19,11 +19,12 @@ def get_fwr_version(dev_id):
     :returns: current version
     :type current version: string
     """
-    vers = string_buffer()
-    dll.SEPIA2_FWR_GetVersion(dev_id, vers)
-    return vers
+    string_buff = int(20)
+    return_string = (ctypes.c_char_p*string_buff)()
+    dll.SEPIA2_FWR_GetVersion(dev_id, ctypes.byref(return_string) )
+    return str(ctypes.cast(return_string,ctypes.c_char_p).value)
 
-@raise_on_error_code
+#@raise_on_error_code
 def get_module_map(dev_id, do_soft_restart = True):
     """
     Fetch the firmware mapping for the .dll - this must be called before using the laser head
@@ -40,8 +41,8 @@ def get_module_map(dev_id, do_soft_restart = True):
     """
     check_channel(dev_id, "get_module_map")
     module_count = ctypes.c_int32()
-    dll.SEPIA2_FWR_GetVersion(dev_id, bool(do_soft_restart), module_count)
-    return module_count
+    dll.SEPIA2_FWR_GetModuleMap(dev_id, bool(do_soft_restart), ctypes.byref(module_count) )
+    return module_count.value
 
 @raise_on_error_code
 def free_module_map(dev_id):

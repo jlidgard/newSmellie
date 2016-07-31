@@ -1,11 +1,12 @@
 from sepia import dll, raise_on_error_code
+import ctypes
 
 """
 Device Operational Safety Controller Functions (SCM)
 From the original C-API: `This module implements the safety features of the PQ Laser Device, as there are the thermal and voltage monitoring, the interlock (hard locking) and soft locking capabilities`.
 """
 
-@raise_on_error_code
+#@raise_on_error_code
 def get_laser_soft_lock(dev_id, slot_id):
     """
     Return the contents of the soft-lock register.
@@ -21,8 +22,8 @@ def get_laser_soft_lock(dev_id, slot_id):
     :type is_locked: bool
     """
     contents = ctypes.c_ubyte()
-    dll.SEPIA2_SCM_GetLaserSoftLock(dev_id, slot_id, contents)
-    return bool(contents)
+    dll.SEPIA2_SCM_GetLaserSoftLock( dev_id, slot_id, ctypes.byref(contents) )
+    return bool(contents.value)
 
 @raise_on_error_code
 def set_laser_soft_lock(dev_id, slot_id, contents):
@@ -41,7 +42,7 @@ def set_laser_soft_lock(dev_id, slot_id, contents):
     """
     dll.SEPIA2_SCM_SetLaserSoftLock(dev_id, slot_id, ctypes.c_ubyte(contents))
 
-@raise_on_error_code
+#@raise_on_error_code
 def get_laser_locked(dev_id, slot_id):
     """
     Get the state of the laser power-line
@@ -57,5 +58,5 @@ def get_laser_locked(dev_id, slot_id):
     :type power_state: bool    
     """
     state = ctypes.c_ubyte()
-    dll.SEPIA2_SCM_GetLaserLocked(dev_id, slot_id, state)
-    return bool(state)
+    dll.SEPIA2_SCM_GetLaserLocked(dev_id, slot_id, ctypes.byref(state) )
+    return state.value
