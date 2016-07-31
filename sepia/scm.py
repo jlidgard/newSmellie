@@ -25,7 +25,7 @@ def get_laser_soft_lock(dev_id, slot_id):
     dll.SEPIA2_SCM_GetLaserSoftLock( dev_id, slot_id, ctypes.byref(contents) )
     return bool(contents.value)
 
-@raise_on_error_code
+#@raise_on_error_code
 def set_laser_soft_lock(dev_id, slot_id, contents):
     """
     Set the contents of the soft-lock register.

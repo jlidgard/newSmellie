@@ -6,7 +6,7 @@ Device Communication Functions (USB)
 The functions of the USB group handle the PicoQuant Laser Device as an USB device. Besides opening and closing, they provide information on the device and help to identify the desired instance if there is more than one PQ Laser Device connected to the PC.
 """
 
-@raise_on_error_code
+#@raise_on_error_code
 def get_dll_version():
     """
     String representation of the current .dll version. 
@@ -14,10 +14,10 @@ def get_dll_version():
     :returns: .dll version
     """
     #str_buff = string_buffer()
-    str_buff = int(20)
-    get_version = (c_char_p*str_buff)()
-    dll.SEPIA2_LIB_GetVersion( byref(get_version) )
-    return str_buff
+    string_buff = int(20)
+    return_string = (c_char_p*string_buff)()
+    dll.SEPIA2_LIB_GetVersion( byref(return_string) )
+    return return_string
 
 #@raise_on_error_code    
 def open_usb_device(dev_id):
@@ -41,7 +41,7 @@ def open_usb_device(dev_id):
     dll.SEPIA2_USB_OpenDevice( dev_id, byref(product_model), byref(serial_number) )
     return str(cast(product_model,c_char_p).value), str(cast(serial_number,c_char_p).value)
 
-@raise_on_error_code    
+#@raise_on_error_code    
 def close_usb_device(dev_id):
     """
     Terminate exclusive access to the device connected to USB channel dev_id
@@ -52,7 +52,7 @@ def close_usb_device(dev_id):
     check_channel(dev_id, "close_device")
     dll.SEPIA2_USB_CloseDevice(dev_id)
 
-@raise_on_error_code
+#@raise_on_error_code
 def get_state_descriptor(dev_id):
     """
     Get a description message of the device connected to USB channel dev_id

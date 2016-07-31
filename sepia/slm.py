@@ -90,7 +90,7 @@ def get_intensity_fine_step(dev_id, slot_id):
     dll.SEPIA2_SLM_GetIntensityFineStep(dev_id, slot_id, ctypes.byref(intensity) )
     return intensity.value
 
-@raise_on_error_code
+#@raise_on_error_code
 def set_intensity_fine_step(dev_id, slot_id, intensity):
     """
     Set the intensity value of a given SLM driver module - an integer between 0 and 1000, where 1000 corresponds to 100% of the laser head's maximum control voltage (i.e. each integer increment represents 0.1% of the voltage)
@@ -108,7 +108,7 @@ def set_intensity_fine_step(dev_id, slot_id, intensity):
         raise SepiaLogicError("Cannot set the intensity fine step - must be an integer between 0 and 1000")
     dll.SEPIA2_SLM_SetIntensityFineStep(dev_id, slot_id, intensity)
 
-@raise_on_error_code
+#@raise_on_error_code
 def decode_head_type(head_type_code):
     """
     Returns the head_type string at list position `head_type_code` for a given SLM module

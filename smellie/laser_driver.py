@@ -2,7 +2,7 @@ from sepia.usb import close_usb_device, open_usb_device
 from sepia.fwr import free_module_map, get_module_map, get_fwr_version
 from sepia.slm import set_intensity_fine_step, get_intensity_fine_step,get_pulse_parameters, set_pulse_parameters, decode_freq_trig_mode
 from sepia.com import get_module_type, decode_module_type
-from sepia.scm import get_laser_locked, get_laser_soft_lock
+from sepia.scm import get_laser_locked, get_laser_soft_lock, set_laser_soft_lock
 from smellie_config import LASER_DRIVER_DEV_ID, LASER_DRIVER_SLOT_ID
 import ctypes
 """
@@ -28,6 +28,9 @@ class LaserDriver(object):
     def __init__(self):
         self.dev_id  = LASER_DRIVER_DEV_ID
         self.slot_id = LASER_DRIVER_SLOT_ID
+        
+    def __del__(self):
+        self.close_connection()
 
     def open_connection(self):
         """
@@ -47,7 +50,7 @@ class LaserDriver(object):
         (Cleanly!) close the USB connection to SEPIA
         """
         free_module_map(self.dev_id)
-        close_device(self.dev_id)
+        close_usb_device(self.dev_id)
 
     def get_pulse_params(self):
         """
@@ -76,7 +79,7 @@ class LaserDriver(object):
         :returns: pulse_mode
         :rtype: int
         """
-        return self.get_pulse_params()[1]
+        return bool(self.get_pulse_params()[1])
 
     def get_head_type(self):
         """
@@ -150,7 +153,7 @@ class LaserDriver(object):
         """
         self.set_soft_lock(is_locked = True)
         self.set_intensity(0)
-        self.set_pulse_parameters()
+        set_pulse_parameters(self.dev_id, self.slot_id)
 
     def get_firmware_version(self):
         """
@@ -162,7 +165,7 @@ class LaserDriver(object):
         """
         Returns a formatted string with the current hardware settings
         """
-        return "Laser Locked : {0}, Soft Lock : {1}, Intensity : {2}/1000, Pulse Mode : {3}, Pulse Parameters : ({4}), Frequency Mode : {5}, Firmware Version : {6}".format("On " if (self.is_laser_locked()==1) else "Off", 
+        return "Laser Locked : {0}, Soft Lock : {1}, Intensity : {2}/1000, Pulse Mode : {3}, Pulse Parameters : ({4}), Frequency Mode : {5}, Firmware Version : {6}".format("Unlocked" if (self.is_laser_locked()==1) else "Locked", 
            "On " if self.is_soft_lock_on() else "Off", 
            self.get_intensity(), 
            self.get_pulse_mode(), 

@@ -44,7 +44,7 @@ def get_module_map(dev_id, do_soft_restart = True):
     dll.SEPIA2_FWR_GetModuleMap(dev_id, bool(do_soft_restart), ctypes.byref(module_count) )
     return module_count.value
 
-@raise_on_error_code
+#@raise_on_error_code
 def free_module_map(dev_id):
     """
     Reinstitute the memory allocated for the module map - this should be called at the end of any procedure calling :func:`get_module_map`
