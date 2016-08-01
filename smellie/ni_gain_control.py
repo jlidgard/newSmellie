@@ -83,9 +83,9 @@ class GainVoltageGenerator(object):
         Stop the Gain Voltage task and clear the NI Unit's task memory
         This is a private function, indicated by the underscore before the name - do not change that!
         """
-        self._start_output(0)
-        daqmx.functions.DAQmxClearTask(self.taskHandle)
-    
+        #self._start_output(0)
+        #daqmx.functions.DAQmxClearTask(self.taskHandle)
+        pass
     def current_state(self):
         """
         Return a formatted string with the current hardware settings

@@ -3,7 +3,7 @@ from sepia.fwr import free_module_map, get_module_map, get_fwr_version
 from sepia.slm import set_intensity_fine_step, get_intensity_fine_step,get_pulse_parameters, set_pulse_parameters, decode_freq_trig_mode
 from sepia.com import get_module_type, decode_module_type
 from sepia.scm import get_laser_locked, get_laser_soft_lock, set_laser_soft_lock
-from smellie_config import LASER_DRIVER_DEV_ID, LASER_DRIVER_SLOT_ID
+from smellie_config import LASER_DRIVER_SLOT_ID, LASER_DRIVER_DEV_ID, LASER_SLOT_ID
 import ctypes
 """
 Control of the SEPIA II Laser Driver hardware
@@ -27,7 +27,8 @@ class LaserDriver(object):
     """
     def __init__(self):
         self.dev_id  = LASER_DRIVER_DEV_ID
-        self.slot_id = LASER_DRIVER_SLOT_ID
+        self.driver_slot_id = LASER_DRIVER_SLOT_ID
+        self.laser_slot_id = LASER_SLOT_ID
 
     def open_connection(self):
         """
@@ -37,7 +38,7 @@ class LaserDriver(object):
         get_module_map(self.dev_id)
         # Sets the laser into pulse mode, with the frequency mode = rising edge of the external trigger pulse.
         # Do not change this for Detector Safety reasons!
-        set_pulse_parameters(self.dev_id, self.slot_id)
+        set_pulse_parameters(self.dev_id, self.laser_slot_id)
         
         self.check_pulse_mode()
         self.check_trig_mode()
@@ -58,7 +59,7 @@ class LaserDriver(object):
         :returns: head_type
         :rtype: (int, bool, int) tuple
         """
-        return get_pulse_parameters(self.dev_id, self.slot_id)
+        return get_pulse_parameters(self.dev_id, self.laser_slot_id)
 
     def get_frequency_mode(self):
         """
@@ -107,7 +108,7 @@ class LaserDriver(object):
         :returns: intensity
         :rtype: int
         """
-        return get_intensity_fine_step(self.dev_id, self.slot_id)
+        return get_intensity_fine_step(self.dev_id, self.laser_slot_id)
 
     def set_intensity(self, intensity):
         """
@@ -118,7 +119,7 @@ class LaserDriver(object):
 
         :raises: :class:`.LaserDriverHWError` if the command is unsuccessful
         """
-        set_intensity_fine_step(self.dev_id, self.slot_id, intensity)
+        set_intensity_fine_step(self.dev_id, self.laser_slot_id, intensity)
         if not self.get_intensity() == intensity:
             raise LaserDriverHWError("Cannot set Laser head intensity!")
 
@@ -126,9 +127,10 @@ class LaserDriver(object):
         """
         Poll SEPIA for the lock status.
         
-        :returns: False if the power is off, the soft-lock is on or the sepia key is locked
+        :returns: True if the power is off, the soft-lock is on or the sepia key is locked
         """
-        return get_laser_locked(self.dev_id, self.slot_id)
+        
+        return get_laser_locked(self.dev_id, self.driver_slot_id)
 
     def is_soft_lock_on(self):
         """
@@ -136,13 +138,14 @@ class LaserDriver(object):
         
         :returns: True if the soft lock is on
         """
-        return get_laser_soft_lock(self.dev_id, self.slot_id)
+        return get_laser_soft_lock(self.dev_id, self.driver_slot_id)
 
     def set_soft_lock(self, is_locked = True):
         """
         Set the SEPIA soft-lock to on
         """
-        set_laser_soft_lock(self.dev_id, self.slot_id, is_locked)
+        if is_locked != self.is_soft_lock_on(): 
+            set_laser_soft_lock(self.dev_id, self.driver_slot_id, is_locked)
 
     def go_safe(self):
         """
@@ -150,7 +153,7 @@ class LaserDriver(object):
         """
         self.set_soft_lock(is_locked = True)
         self.set_intensity(0)
-        set_pulse_parameters(self.dev_id, self.slot_id)
+        set_pulse_parameters(self.dev_id, self.laser_slot_id)
 
     def get_firmware_version(self):
         """

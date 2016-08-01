@@ -1,5 +1,5 @@
 from sepia import dll, raise_on_error_code
-from ctypes import c_ubyte, byref
+from ctypes import c_ubyte, byref,c_int32
 
 """
 Device Operational Safety Controller Functions (SCM)
@@ -39,15 +39,14 @@ def set_laser_soft_lock(dev_id, slot_id, contents):
 
     :param contents: the soft-lock register
     :type contents: bool
-    """
-    print "contents:",contents
+    """    
     dll.SEPIA2_SCM_SetLaserSoftLock(dev_id, slot_id, c_ubyte(contents))
 
 @raise_on_error_code
 def get_laser_locked(dev_id, slot_id):
     """
     Get the state of the laser power-line
-    This will return '0' if the power is off, if the soft-lock is on, or if the hard-lock (key on SEPIA) is on. 
+    This will return '1' if the power is off, if the soft-lock is on, or if the hard-lock (key on SEPIA) is on. 
 
     :param dev_id: the SEPIA device number, ordered from 0
     :type dev_id: int

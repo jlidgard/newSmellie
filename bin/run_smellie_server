@@ -5,7 +5,8 @@ from smellie_config import ADDRESS, PORT
 server = SmellieServer( ADDRESS, PORT )
 try:
     with SmellieController() as controller:
-        server.register(controller)    
+        server.register(controller) 
+        print "SMELLIE server running"
         server.serve_forever()
 
 except KeyboardInterrupt:

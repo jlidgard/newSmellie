@@ -81,8 +81,11 @@ class LaserSwitch(object):
         self.connection.eDigitalOut(0, 1, writeD = 1)
         sleep(0.1)
 
+        print "first execute sleep"
         sleep(RELAY_SLEEP)
+        print "force USB restart"
         self.force_USB_restart()
+        print "second execute sleep"
         sleep(RELAY_SLEEP)
         
     def get_selected_channel(self):
@@ -134,7 +137,7 @@ class LaserSwitch(object):
         :raises: :class:`.LaserSwitchLogicError` if the requested active channel number is unphysical
         """
         
-        if (self.get_active_channel()!=channel):
+        if (self.get_active_channel() != channel):
             if not channel in xrange(6):
                 raise LaserSwitchLogicError("Cannot set selected Laser Switch channel to {0} - must be between 0 and 5 inclusive.".format(channel))
             while(channel != self.get_selected_channel()):
@@ -150,12 +153,13 @@ class LaserSwitch(object):
         path = r"C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
         try:
             response = subprocess.check_output([path,"restart",RESET_NAME]) 
+            print "response1:",response
         except subprocess.CalledProcessError as e:
             response = e.output
-            pass
-        
+            print "responseExc",response
+            
         if (response[-24:-2]=="1 device(s) restarted."): return True
-        else: raise LaserSwitchHWError("Failed to reset the USB hub.")
+        else: raise LaserSwitchHWError("Failed to reset the USB hub : ".format(response))
         
     def current_state(self):
         """

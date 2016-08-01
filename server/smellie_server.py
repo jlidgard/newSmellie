@@ -9,7 +9,7 @@ from exception_handler import str_wrap_exceptions
 from dummy_mode import has_dummy_mode
 from inspect import getmembers, ismethod
 
-def wrap_all_methods(instance, *wrappers):
+def wrap_all_methods(instance, wrappers):
     '''
     Wrap every member function of instance with each wrapper in turn. 
     Used to apply str_wrap_exceptions and dummy mode
@@ -19,8 +19,11 @@ def wrap_all_methods(instance, *wrappers):
 
     :param wrappers: tuple of function wrappers
     '''
+    print getmembers(instance, ismethod)
+    print getmembers(instance, isroutine)
     for wrapper in wrappers:
         for name, method in getmembers(instance, ismethod):
+            print name
             setattr(instance, name, wrapper(method))
     return instance
 
@@ -56,6 +59,6 @@ class SmellieServer:
         :param instance: controller object to expose to the server
         '''
         self.controller = instance
-        self.server.register_instance(wrap_all_methods(self.controller, str_wrap_exceptions, has_dummy_mode))
+        self.server.register_instance(wrap_all_methods(self.controller, [str_wrap_exceptions, has_dummy_mode]))
         self.server.register_introspection_functions()
         

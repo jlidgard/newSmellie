@@ -1,5 +1,5 @@
 from sepia import check_channel, dll, string_buffer, raise_on_error_code
-from ctypes import c_int32, byref
+from ctypes import c_int32, byref, c_ubyte
 
 """
 From the original C-API: `The functions of this group directly access low level structures from the firmware of the PQ Laser Device to initialize the dynamic data layer of the library. Right after opening a PQ Laser Device, any program utilizing this API has to perform a call to the GetModuleMap function, before it can access any module of the laser device`.
@@ -40,7 +40,7 @@ def get_module_map(dev_id, do_soft_restart = True):
     """
     check_channel(dev_id, "get_module_map")
     module_count = c_int32()
-    dll.SEPIA2_FWR_GetModuleMap(dev_id, bool(do_soft_restart), byref(module_count) )
+    dll.SEPIA2_FWR_GetModuleMap(dev_id, c_int32(do_soft_restart), byref(module_count) )
     return module_count.value
 
 @raise_on_error_code
