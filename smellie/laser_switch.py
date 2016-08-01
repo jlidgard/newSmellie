@@ -82,9 +82,8 @@ class LaserSwitch(object):
         sleep(0.1)
 
         sleep(RELAY_SLEEP)
-        if (self.force_USB_restart() == False):
-            raise LaserSwitchHWError("Failed to reset the USB hub.")
-        sleep(20)
+        self.force_USB_restart()
+        sleep(RELAY_SLEEP)
         
     def get_selected_channel(self):
         """
@@ -156,7 +155,7 @@ class LaserSwitch(object):
             pass
         
         if (response[-24:-2]=="1 device(s) restarted."): return True
-        else: return False
+        else: raise LaserSwitchHWError("Failed to reset the USB hub.")
         
     def current_state(self):
         """

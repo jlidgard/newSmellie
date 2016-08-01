@@ -1,5 +1,5 @@
 from sepia import dll, raise_on_error_code
-import ctypes
+from ctypes import c_int32
 
 """
 Basic Oscillator Functions (SOM)
@@ -20,6 +20,6 @@ def get_freq_trig_mode(dev_id, slot_id):
     :returns: freq_trig_mode
     :type freq_trig_mode: int
     """
-    mode = ctypes.c_int32()
+    mode = c_int32()
     dll.SEPIA2_SOM_GetTrigMode(dev_id, slot_id, mode)
-    return mode
+    return mode.value

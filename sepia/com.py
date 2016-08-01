@@ -1,5 +1,5 @@
 from sepia import dll, string_buffer, raise_on_error_code
-import ctypes
+from ctypes import c_int32
 
 """
 Functions needed with any PicoQuant Laser Device, independent from its product/model type.
@@ -23,7 +23,7 @@ def get_module_type(dev_id, slot_id, get_primary):
     :type module type: int
     """
     check_channel(dev_id, "get_module_type")
-    module_type = ctypes.c_int32()
+    module_type = c_int32()
     dll.SEPIA2_COM_GetModuleType(dev_id, slot_id, iGetPrimary, module_type)
     return module_type
 
@@ -38,9 +38,9 @@ def decode_module_type(module_type):
     :returns: module
     :type module: string    
     """
-    buff = string_buffer()
-    dll.SEPIA2_COM_DecodeModuleType(module_type, buff)
-    return buff
+    return_string = string_buffer()
+    dll.SEPIA2_COM_DecodeModuleType(module_type, return_string)
+    return return_string.value
 
 @raise_on_error_code
 def get_serial_number(dev_id, slot_id, iGetPrimary):
@@ -59,9 +59,9 @@ def get_serial_number(dev_id, slot_id, iGetPrimary):
     :returns: serial number
     :type serial number: string
     """
-    buff = string_buffer()
-    dll.SEPIA2_COM_GetSerialNumber(dev_id, slot_id, iGetPrimary, buff)
-    return buff
+    return_string = string_buffer()
+    dll.SEPIA2_COM_GetSerialNumber(dev_id, slot_id, iGetPrimary, return_string)
+    return return_string.value
 
 @raise_on_error_code
 def has_secondary_module(dev_id, slot_id):
@@ -77,6 +77,6 @@ def has_secondary_module(dev_id, slot_id):
     :returns: has secondary
     :type has secondary: bool
     """
-    has_secondary = ctypes.c_int32()
+    has_secondary = c_int32()
     dll.SEPIA2_COM_HasSecondaryModule(dev_id, slot_id, has_secondary)
     return bool(has_secondary)

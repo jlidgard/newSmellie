@@ -2,7 +2,7 @@ from smellie.smellie_controller import SmellieController
 from server.smellie_server import SmellieServer
 from smellie_config import ADDRESS, PORT
 
-server = SmellieServer( ADDRESS, PORT, SmellieController() )
+server = SmellieServer( ADDRESS, PORT )
 try:
     with SmellieController() as controller:
         server.register(controller)    

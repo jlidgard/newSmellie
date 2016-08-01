@@ -7,7 +7,7 @@ running in dummy mode - where each function call just results in a signature pri
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 from exception_handler import str_wrap_exceptions
 from dummy_mode import has_dummy_mode
-from inspect import getmembers, isroutine
+from inspect import getmembers, ismethod
 
 def wrap_all_methods(instance, *wrappers):
     '''
@@ -20,7 +20,7 @@ def wrap_all_methods(instance, *wrappers):
     :param wrappers: tuple of function wrappers
     '''
     for wrapper in wrappers:
-        for name, method in getmembers(instance, isroutine):
+        for name, method in getmembers(instance, ismethod):
             setattr(instance, name, wrapper(method))
     return instance
 
@@ -29,7 +29,7 @@ class SmellieServer:
     XML-RPC Protocol server that exposes a SmellieController to external 
     calls
     '''
-    def __init__(self, address, port, instance):
+    def __init__(self, address, port):
         '''
         Initialise the server on port and register functions
         Calls: :func:`register <smellie_server.SmellieServer.register>
@@ -40,7 +40,6 @@ class SmellieServer:
         '''
         
         self.server = SimpleXMLRPCServer((address, port))
-        self.register(instance)
 
     def serve_forever(self):
         '''

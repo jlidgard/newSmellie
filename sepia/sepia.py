@@ -1,6 +1,6 @@
 from smellie_config import SEPIA_DLL_PATH, SEPIA_STR_BUFFER_SIZE
 from functools import wraps
-from ctypes import *
+from ctypes import create_string_buffer, OleDLL
 import os
 
 """
@@ -11,7 +11,7 @@ def string_buffer():
     """   
     :returns: ctype string buffer, the size of which is set in :mod:config
     """
-    return ctypes.create_string_buffer(SEPIA_STR_BUFFER_SIZE)
+    return create_string_buffer(SEPIA_STR_BUFFER_SIZE)
 
 class SepiaDLLError(Exception):
     """
@@ -26,15 +26,12 @@ class SepiaLogicError(Exception):
     pass
 
 # Open the .dll on import
-print SEPIA_DLL_PATH
 if not os.path.exists(SEPIA_DLL_PATH):
     raise SepiaLogicError("Cannot open dll on path {0}".format(SEPIA_DLL_PATH))
 try:
-    dll = cdll.LoadLibrary(SEPIA_DLL_PATH)
-    #libc = cdll.msvcrt
-    #dll = ctypes.OleDLL(SEPIA_DLL_PATH)
-except:
-    raise SepiaLogicError("Opening dll failed!")
+    dll = OleDLL(SEPIA_DLL_PATH)
+except Exception as e:
+    raise SepiaLogicError("Opening dll failed! : {0}".format(str(e)))
 
 """
 The ..dll itself
@@ -69,7 +66,7 @@ def decode_error(iErr):
     str_buff = string_buffer()
     try:
         dll.SEPIA2_LIB_DecodeError(iErr, str_buff)
-        return str_buff
+        return str_buff.value
     except WindowsError:
         return "SEPIA Library: unknown error code {0}".format(iErr)
 
@@ -85,7 +82,7 @@ def raise_on_error_code(in_function):
     @wraps(in_function)
     def modified(*args, **kwargs):
         try:
-            return in_function(args, kwargs)
+            return in_function(*args, **kwargs)
         except WindowsError as e:
-            raise SepiaDLLError(decode_error(e.winerr))
+            raise SepiaDLLError(decode_error(e.winerror))
     return modified

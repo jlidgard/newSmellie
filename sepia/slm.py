@@ -1,12 +1,12 @@
 from sepia import string_buffer, dll, raise_on_error_code, SepiaLogicError
-import ctypes
+from ctypes import c_int32, c_ubyte, byref, c_ushort
 
 """
 Laser Driver Functions (SLM)
 From the original C-API: `SLM 828 modules can interface the huge families of pulsed laser diode heads (LDH series) and pulsed LED heads (PLS series) from PicoQuant. These functions let the application control their working modes and intensity`.
 """
 
-#@raise_on_error_code
+@raise_on_error_code
 def get_pulse_parameters(dev_id, slot_id):
     """
     Get the pulse parameters for the SLM module
@@ -26,13 +26,13 @@ def get_pulse_parameters(dev_id, slot_id):
     :returns: head_type
     :type head_type: int
     """
-    freq = ctypes.c_int32()
-    pulse_mode = ctypes.c_ubyte()
-    head_type = ctypes.c_int32()
-    dll.SEPIA2_SLM_GetPulseParameters(dev_id, slot_id, ctypes.byref(freq), ctypes.byref(pulse_mode), ctypes.byref(head_type) )
+    freq = c_int32()
+    pulse_mode = c_ubyte()
+    head_type = c_int32()
+    dll.SEPIA2_SLM_GetPulseParameters(dev_id, slot_id, byref(freq), byref(pulse_mode), byref(head_type) )
     return freq.value, pulse_mode.value, head_type.value
 
-#@raise_on_error_code
+@raise_on_error_code
 def set_pulse_parameters(dev_id, slot_id):
     """
     Set the pulse parameters for the SLM module
@@ -49,9 +49,9 @@ def set_pulse_parameters(dev_id, slot_id):
     #slot_id = slot_id[""]
     
     # The last two parameters are the pulse and frequency modes - DO NOT CHANGE  (see above and __init__.py)!
-    dll.SEPIA2_SLM_SetPulseParameters(dev_id, slot_id, ctypes.c_int32(6), ctypes.c_ubyte(1))
+    dll.SEPIA2_SLM_SetPulseParameters(dev_id, slot_id, c_int32(6), c_ubyte(1))
 
-#@raise_on_error_code
+@raise_on_error_code
 def decode_freq_trig_mode(freq_mode):
     """
     Translate the frequency mode to a string for any SLM module
@@ -66,13 +66,11 @@ def decode_freq_trig_mode(freq_mode):
     """
     if not freq_mode in xrange(8):
         raise SepiaLogicError("Cannot decode the frequency mode - must be an integer between 0 and 7 inclusive")
-    #buff = string_buffer()
-    string_buff = int(20)
-    return_string = (ctypes.c_char_p*string_buff)()
-    dll.SEPIA2_SLM_DecodeFreqTrigMode(freq_mode, ctypes.byref(return_string) )
-    return str(ctypes.cast(return_string,ctypes.c_char_p).value) #convert from ctypes to python str for return
+    return_string = string_buffer()
+    dll.SEPIA2_SLM_DecodeFreqTrigMode(freq_mode, return_string )
+    return return_string.value
 
-#@raise_on_error_code
+@raise_on_error_code
 def get_intensity_fine_step(dev_id, slot_id):
     """
     Get the current intensity value of a given SLM driver module - an integer between 0 and 1000, where 1000 corresponds to 100% of the laser head's maximum control voltage (i.e. each integer increment represents 0.1% of the voltage)
@@ -86,11 +84,11 @@ def get_intensity_fine_step(dev_id, slot_id):
     :returns: intensity
     :type intensity: int
     """
-    intensity = ctypes.c_ushort()
-    dll.SEPIA2_SLM_GetIntensityFineStep(dev_id, slot_id, ctypes.byref(intensity) )
+    intensity = c_ushort()
+    dll.SEPIA2_SLM_GetIntensityFineStep(dev_id, slot_id, byref(intensity) )
     return intensity.value
 
-#@raise_on_error_code
+@raise_on_error_code
 def set_intensity_fine_step(dev_id, slot_id, intensity):
     """
     Set the intensity value of a given SLM driver module - an integer between 0 and 1000, where 1000 corresponds to 100% of the laser head's maximum control voltage (i.e. each integer increment represents 0.1% of the voltage)
@@ -108,7 +106,7 @@ def set_intensity_fine_step(dev_id, slot_id, intensity):
         raise SepiaLogicError("Cannot set the intensity fine step - must be an integer between 0 and 1000")
     dll.SEPIA2_SLM_SetIntensityFineStep(dev_id, slot_id, intensity)
 
-#@raise_on_error_code
+@raise_on_error_code
 def decode_head_type(head_type_code):
     """
     Returns the head_type string at list position `head_type_code` for a given SLM module
@@ -123,8 +121,6 @@ def decode_head_type(head_type_code):
     """
     if not head_type_code in xrange(4):
         raise SepiaLogicError("Cannot decode head type code - must be between 0 and 3")
-    #head_type = string_buffer()
-    string_buff = int(20)
-    return_string = (ctypes.c_char_p*string_buff)()
-    dll.SEPIA2_SLM_DecodeHeadType(head_type_code, ctypes.byref(return_string) )
-    return str(ctypes.cast(return_string,ctypes.c_char_p).value) #convert from ctypes to python str for return
+    return_string = string_buffer()
+    dll.SEPIA2_SLM_DecodeHeadType(head_type_code, return_string )
+    return return_string.value

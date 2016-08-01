@@ -70,12 +70,13 @@ class GainVoltageGenerator(object):
         """
         data = numpy.array([[float(voltage)]],numpy.float64)
         samples_written = ctypes.c_int(-1)
-        #daqmx.functions.DAQmxStartTask(self.taskHandle)
+        daqmx.functions.DAQmxStartTask(self.taskHandle)
         #DAQmx.h: int32 DAQmxWriteAnalogF64(TaskHandle taskHandle, int32 numSampsPerChan, bool32 autoStart, float64 timeout, bool32 dataLayout, float64 writeArray[], int32 *samsPerChanWritten, bool32 *reserved);
-        daqmx.functions.DAQmxWriteAnalogF64(self.taskHandle, ctypes.c_int(1), ctypes.c_uint(1), ctypes.c_double(0.001), daqmx.constants.DAQmx_Val_GroupByChannel, data, ctypes.byref(samples_written), None)
+        daqmx.functions.DAQmxWriteAnalogF64(self.taskHandle, ctypes.c_int(1), ctypes.c_uint(0), ctypes.c_double(0.001), daqmx.constants.DAQmx_Val_GroupByChannel, data, ctypes.byref(samples_written), None)
         daqmx.functions.DAQmxStopTask(self.taskHandle)
         
-        if (samples_written.value!=1): raise GainControlLogicError("Could not write gain voltage to NI AO channel.")
+        if (samples_written.value!=1):
+            raise GainControlLogicError("Could not write gain voltage to NI AO channel.")
 
     def __del__(self):
         """

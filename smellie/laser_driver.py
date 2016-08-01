@@ -28,9 +28,6 @@ class LaserDriver(object):
     def __init__(self):
         self.dev_id  = LASER_DRIVER_DEV_ID
         self.slot_id = LASER_DRIVER_SLOT_ID
-        
-    def __del__(self):
-        self.close_connection()
 
     def open_connection(self):
         """

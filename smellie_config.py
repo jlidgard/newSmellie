@@ -28,7 +28,7 @@ INTERLOCK_WAIT_TIME   = 0.1  # in seconds
 
 # Laser Switch
 RELAY_COM_CHANNEL = 1
-RELAY_SLEEP       = 30  # in seconds
+RELAY_SLEEP       = 45  # in seconds
 RESET_NAME = "*ROOT_HUB30*"
 
 # NI Unit - Gain Control and Trigger Generator
