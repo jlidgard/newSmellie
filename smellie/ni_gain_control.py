@@ -1,7 +1,7 @@
 import daqmx.functions
 import daqmx.constants
 from smellie_config import NI_DEV_NAME, GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ, GAIN_CONTROL_PIN_OUT
-from ctypes import byref
+import ctypes
 import numpy
 
 """
@@ -29,7 +29,7 @@ class GainVoltageGenerator(object):
         self.sampling_frequency = GAIN_CONTROL_SAMP_FREQ
         self.vResidual = 0.0044
         self._set_up()
-        self._start_output(0)
+        self._start_output(0) # why is the gain always changed? why don't we leave it where it is?
 
     def generate_voltage(self, vGain):
         """
@@ -45,11 +45,8 @@ class GainVoltageGenerator(object):
             raise GainControlLogicError("Cannot set Gain Voltage - must be between 0.5 and 1.0V to avoid damage to the MPU's PMT")
         self._set_up()
         vOutput = vGain - self.vResidual
-        try:
-            self._start_output(vOutput)
-            self.voltage = vOutput
-        finally:
-            self._stop_output()
+        self._start_output(vOutput)
+        self.voltage = vOutput
 
     def _set_up(self):
         """
@@ -58,38 +55,62 @@ class GainVoltageGenerator(object):
         This is a private function, indicated by the underscore before the name - do not change that!
         """
         self.taskHandle = daqmx.functions.TaskHandle(0)
-        daqmx.functions.DAQmxCreateTask("",byref(self.taskHandle))
-        self.vMin = 0.0
-        self.vMax = 1.0
+        daqmx.functions.DAQmxCreateTask("",ctypes.byref(self.taskHandle)) #write task
+        
+        self.vMin = ctypes.c_double(0.0)
+        self.vMax = ctypes.c_double(1.0)
+        
+        #int32 DAQmxCreateAOVoltageChan(TaskHandle taskHandle, const char physicalChannel[], const char nameToAssignToChannel[], float64 minVal, float64 maxVal, int32 units, const char customScaleName[]);
         daqmx.functions.DAQmxCreateAOVoltageChan(self.taskHandle, self.dev_name + self.out_pin, "", self.vMin, self.vMax, daqmx.constants.DAQmx_Val_Volts, None)
-        daqmx.functions.DAQmxCfgSampClkTiming(self.taskHandle, "", self.sampling_frequency, daqmx.constants.DAQmx_Val_Rising, daqmx.constants.DAQmx_Val_ContSamps, self.number_of_samples)
 
     def _start_output(self, voltage):
         """
         Start the Gain Voltage task using the parameters previously set up in the _set_up function, and a given output voltage
         This is a private function, indicated by the underscore before the name - do not change that!
         """
-        data = numpy.zeros(3000, dtype = numpy.float64)
-        for i in range(len(data)):
-            data[i] = voltage
-        daqmx.functions.DAQmxWriteAnalogF64(self.taskHandle, 3000, 0, 10.0, daqmx.constants.DAQmx_Val_GroupByChannel, data, None, None)
-        daqmx.functions.DAQmxStartTask(self.taskHandle)
+        data = numpy.array([[float(voltage)]],numpy.float64)
+        samples_written = ctypes.c_int(-1)
+        #daqmx.functions.DAQmxStartTask(self.taskHandle)
+        #DAQmx.h: int32 DAQmxWriteAnalogF64(TaskHandle taskHandle, int32 numSampsPerChan, bool32 autoStart, float64 timeout, bool32 dataLayout, float64 writeArray[], int32 *samsPerChanWritten, bool32 *reserved);
+        daqmx.functions.DAQmxWriteAnalogF64(self.taskHandle, ctypes.c_int(1), ctypes.c_uint(1), ctypes.c_double(0.001), daqmx.constants.DAQmx_Val_GroupByChannel, data, ctypes.byref(samples_written), None)
+        daqmx.functions.DAQmxStopTask(self.taskHandle)
+        
+        if (samples_written.value!=1): raise GainControlLogicError("Could not write gain voltage to NI AO channel.")
 
-    def _stop_output(self):
+    def __del__(self):
         """
         Stop the Gain Voltage task and clear the NI Unit's task memory
         This is a private function, indicated by the underscore before the name - do not change that!
         """
-        daqmx.functions.DAQmxStopTask(self.taskHandle)
-        #data = np.zeros(3000, dtype = numpy.float64)
-        #functions.DAQmxWriteAnalogF64(self.taskHandle, 3000, 0, 10.0, DAQmx_Val_GroupByChannel, data, None, None)
+        self._start_output(0)
         daqmx.functions.DAQmxClearTask(self.taskHandle)
     
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
         """
-        return "Output Voltage : {0}".format(self.voltage)
+        self.taskHandle2 = daqmx.functions.TaskHandle(0) #read handle
+        daqmx.functions.DAQmxCreateTask("",ctypes.byref(self.taskHandle2))  #read task
+        
+        data = numpy.ndarray(shape=(self.number_of_samples),dtype=numpy.float64)
+        samples_read = ctypes.c_int32(-1)
+        
+        #tried to move these functions to _setup but was getting many task related errors.
+        daqmx.functions.DAQmxCreateAIVoltageChan(self.taskHandle2, self.dev_name + "/_ao0_vs_aognd", "", daqmx.constants.DAQmx_Val_Diff, self.vMin, self.vMax, daqmx.constants.DAQmx_Val_Volts, None)
+        daqmx.functions.DAQmxCfgSampClkTiming(self.taskHandle2,"",ctypes.c_double(self.sampling_frequency),daqmx.constants.DAQmx_Val_Rising,daqmx.constants.DAQmx_Val_FiniteSamps,ctypes.c_uint64(self.number_of_samples) )
+
+        daqmx.functions.DAQmxStartTask(self.taskHandle2)
+        #int32 DAQmxReadAnalogF64(TaskHandle taskHandle, int32 numSampsPerChan, float64 timeout, bool32 fillMode, float64 readArray[], uInt32 arraySizeInSampl,s int32 *sampsPerChanRead *reserved);
+        daqmx.functions.DAQmxReadAnalogF64(self.taskHandle2, ctypes.c_int(self.number_of_samples), ctypes.c_double((self.number_of_samples*1.001)/self.sampling_frequency), daqmx.constants.DAQmx_Val_GroupByChannel, data, ctypes.c_uint32(self.number_of_samples),ctypes.byref(samples_read), None)
+        daqmx.functions.DAQmxWaitUntilTaskDone(self.taskHandle2, 1)
+        daqmx.functions.DAQmxStopTask(self.taskHandle2)
+        daqmx.functions.DAQmxClearTask(self.taskHandle2)
+
+        data_mean = data.mean()
+        if (samples_read.value!=self.number_of_samples): raise GainControlLogicError("Could not correctly check gain voltage, failed reading NI AO channel.")
+        if (samples_read.value>=data_mean*0.9999 and samples_read.value<=data_mean*1.0001): raise GainControlLogicError("Gain voltage not correctly set to specified value.")
+        
+        return "Output Voltage : {0}({1})".format(data_mean, self.voltage)
 
     def go_safe(self):
         """
