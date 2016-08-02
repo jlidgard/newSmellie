@@ -19,12 +19,10 @@ def wrap_all_methods(instance, wrappers):
 
     :param wrappers: tuple of function wrappers
     '''
-    print getmembers(instance, ismethod)
-    print getmembers(instance, isroutine)
-    for wrapper in wrappers:
-        for name, method in getmembers(instance, ismethod):
-            print name
-            setattr(instance, name, wrapper(method))
+    for name, method in getmembers(instance, ismethod):
+        for wrapper in wrappers:
+            method = wrapper(method)
+        setattr(instance, name, method)
     return instance
 
 class SmellieServer:

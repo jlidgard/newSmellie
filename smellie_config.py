@@ -48,6 +48,10 @@ PM_ADDRESS = "USB0::0x1313::0x8078::P0005368::INSTR"
 PM_DLL_PATH = r"C:\SMELLIE\software\newSmellie\powermeter\powerMeterUtil.dll"
 PM_STR_BUFFER_SIZE = 128
 
+# Spectrometer
+OO_DLL_PATH = "C:\Program Files\Ocean Optics\OmniDriver\OOI_HOME"
+OO_LV_VI = "C:\Program Files\Ocean Optics\OmniDriver\labview\win64\Version8.6"
+
 # DAQMX Library
 FILE_LOC_WINXP      = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP
 FILE_LOC_WIN7_64BIT = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows 7 64-bit

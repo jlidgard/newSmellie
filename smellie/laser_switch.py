@@ -81,12 +81,9 @@ class LaserSwitch(object):
         self.connection.eDigitalOut(0, 1, writeD = 1)
         sleep(0.1)
 
-        print "first execute sleep"
         sleep(RELAY_SLEEP)
-        print "force USB restart"
-        self.force_USB_restart()
-        print "second execute sleep"
-        sleep(RELAY_SLEEP)
+        #self.force_USB_restart() #can only do this if no other devices are connected (and open) on same hub
+        #sleep(RELAY_SLEEP)
         
     def get_selected_channel(self):
         """

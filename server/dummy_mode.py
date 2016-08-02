@@ -1,4 +1,5 @@
 from functools import wraps
+import smellie_config
 
 def signature(func, args, kwargs):
     """
@@ -23,4 +24,5 @@ def has_dummy_mode(orig_func):
             return orig_func(*args, **kwargs)
         else:
             print signature(orig_func, args, kwargs)
+            return 0
     return wrapped_function
