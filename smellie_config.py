@@ -49,8 +49,9 @@ PM_DLL_PATH = r"C:\SMELLIE\software\newSmellie\powermeter\powerMeterUtil.dll"
 PM_STR_BUFFER_SIZE = 128
 
 # Spectrometer
-OO_DLL_PATH = "C:\Program Files\Ocean Optics\OmniDriver\OOI_HOME"
-OO_LV_VI = "C:\Program Files\Ocean Optics\OmniDriver\labview\win64\Version8.6"
+SPEC_DLL1_PATH = r"C:\SMELLIE\software\newSmellie\spec\OOUtil.dll"
+SPEC_DLL2_PATH = r"C:\Program Files\Ocean Optics\OmniDriver\OOI_HOME\common64.dll"
+SPEC_STR_BUFFER_SIZE = 128
 
 # DAQMX Library
 FILE_LOC_WINXP      = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP
