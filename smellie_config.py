@@ -53,6 +53,11 @@ SPEC_DLL1_PATH = r"C:\SMELLIE\software\newSmellie\spec\OOUtil.dll"
 SPEC_DLL2_PATH = r"C:\Program Files\Ocean Optics\OmniDriver\OOI_HOME\common64.dll"
 SPEC_STR_BUFFER_SIZE = 128
 
+# SuperK Laser
+SK_COM_PORT = "COM4"
+SK_DLL_PATH = r"C:\SMELLIE\software\newSmellie\superk\suerKUtil.dll"
+SK_STR_BUFFER_SIZE = 128
+
 # DAQMX Library
 FILE_LOC_WINXP      = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP
 FILE_LOC_WIN7_64BIT = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows 7 64-bit
