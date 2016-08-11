@@ -15,7 +15,7 @@ class SmellieController(object):
         self.fibre_switch = FibreSwitch()
         self.laser_switch = LaserSwitch()
         self.gain_voltage = GainVoltageGenerator()
-        self.trig_signals = TriggerGenerator("SUPERK")
+        self.trig_signals = TriggerGenerator()
         self.laser_driver = LaserDriver()
         self.laser_driver.open_connection()
         self.superk.port_open()
@@ -109,110 +109,6 @@ class SmellieController(object):
         self.trig_signals.generate_triggers(n_pulses)
         self.superk.go_safe()
         return 0
-
-
-# superK Orca functions:
-@raise_on_error_code
-def set_superk_lock_off():
-    COMPort = c_char_p("COM4")
-    superKBitCluster = statusBitStructure()
-    variaBitCluster = statusBitStructure()
-    superKControlCluster = superKControlStructure()
-    
-    retValue = 0
-    try:
-        #logging.info( '--- Set SuperK Soft Lock Off (begin) ---')
-        portOpen(COMPort)
-        initialise(COMPort, superKControlCluster, superKBitCluster, variaBitCluster)
-
-        setSuperKControlInterlock(COMPort,1,superKBitCluster)
-        setSuperKControlEmission(COMPort,1,superKBitCluster,variaBitCluster)
-        #logging.info( '--- Set SuperK Soft Lock Off (end) ---')
-        portClose(COMPort)
-        
-    except Exception, Argument:
-        retValue = "Error: " + str(Exception) + "  " + str(Argument)
-    return retValue
-
-@raise_on_error_code
-def set_superk_lock_on():
-    COMPort = c_char_p("COM4")
-    superKBitCluster = statusBitStructure()
-    variaBitCluster = statusBitStructure()
-    superKControlCluster = superKControlStructure()
-    
-    retValue = 0
-    try:
-        #logging.info( '--- Set SuperK Soft Lock On (begin) ---')
-        portOpen(COMPort)
-        initialise(COMPort, superKControlCluster, superKBitCluster, variaBitCluster)
-        setSuperKControlEmission(COMPort,0,superKBitCluster,variaBitCluster)
-        setSuperKControlInterlock(COMPort,0,superKBitCluster)
-        #logging.info( '--- Set SuperK Soft Lock Off (end) ---')
-        portClose(COMPort)
-        
-    except Exception, Argument:
-        retValue = "Error: " + str(Exception) + "  " + str(Argument)
-    return retValue
-
-@raise_on_error_code
-def set_superk_wavelength(low_wavelength,high_wavelength):
-    COMPort = c_char_p("COM4")
-    superKBitCluster = statusBitStructure()
-    variaBitCluster = statusBitStructure()
-    superKControlCluster = superKControlStructure()
-
-    retValue = 0
-    try:
-        #logging.info( '--- Set SuperK Wavelength (begin) ---')
-        portOpen(COMPort)
-        initialise(COMPort, superKControlCluster, superKBitCluster, variaBitCluster)
-        NDFilterSetpointPercentx10 = 0
-        SWFilterSetpointAngstrom = high_wavelength
-        LPFilterSetpointAngstrom = low_wavelength
-        setVariaControls(COMPort, NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom, superKBitCluster, variaBitCluster)
-        #logging.info( '--- Set SuperK Wavelength (end) ---')
-        portClose(COMPort)
-
-    except Exception, Argument:
-        retValue = "Error: " + str(Exception) + "  " + str(Argument)
-    return retValue
-
-@raise_on_error_code
-def set_superk_safe_states():
-    COMPort = c_char_p("COM4")
-    superKBitCluster = statusBitStructure()
-    variaBitCluster = statusBitStructure()
-    superKControlCluster = superKControlStructure()
-
-    retValue = 0
-    try:
-        #logging.info( '--- Set SuperK Safe States (begin) ---')
-        portOpen(COMPort)
-        initialise(COMPort, superKControlCluster, superKBitCluster, variaBitCluster)
-        setSafeStates(COMPort, superKControlCluster, superKBitCluster, variaBitCluster)
-        #logging.info( '--- Set SuperK Safe States (end) ---')
-        portClose(COMPort)
-    
-    except Exception, Argument:
-        retValue = "Error: " + str(Exception) + "  " + str(Argument)
-    return retValue
-
-@raise_on_error_code
-def pulse_master_mode_sk(master_mode_trigger_frequency,master_mode_number_of_pulses):
-    if (master_mode_trigger_frequency > 5000):
-        print "Attempted to pulse with trigger frequency of {0} - the maximum is 1.5kHz, your request was ignored ".format(master_mode_trigger_frequency)
-        return "Attempted to pulse with trigger frequency of {0} - the maximum is 1.5kHz, your request was ignored ".format(master_mode_trigger_frequency)
-    retValue = 0
-    try:
-        print "Starting a Master mode sub run with trig frequency: " + str(master_mode_trigger_frequency) + "Hz and num_of_pulses:" + str(master_mode_number_of_pulses)
-        digi_trig = GenerateDigitalTriggerSK(int(master_mode_trigger_frequency), int(master_mode_number_of_pulses))
-        digi_trig.start()
-        digi_trig.stop()
-        digi_trig.clear()
-    except Exception, Argument:
-        retValue = "Error: " + str(Exception) + "  " + str(Argument)
-    return retValue
         
     def set_gain_control(self, voltage):
         """
