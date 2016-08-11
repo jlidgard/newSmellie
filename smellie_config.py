@@ -55,7 +55,7 @@ SPEC_STR_BUFFER_SIZE = 128
 
 # SuperK Laser
 SK_COM_PORT = "COM4"
-SK_DLL_PATH = r"C:\SMELLIE\software\newSmellie\superk\suerKUtil.dll"
+SK_DLL_PATH = r"C:\SMELLIE\software\newSmellie\superk\superKUtil.dll"
 SK_STR_BUFFER_SIZE = 128
 
 # DAQMX Library
