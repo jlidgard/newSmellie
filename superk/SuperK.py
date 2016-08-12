@@ -8,7 +8,6 @@ import os
 Core functions for use in the SuperK package - not intended for use outside.
 """
 
-
 class statusBitStructure(Structure):
         _fields_ = [("bit0", c_int16),("bit1", c_int16),("bit2", c_int16),("bit3", c_int16),("bit4", c_int16),("bit5", c_int16), ("bit6", c_int16),("bit7", c_int16),("bit8", c_int16),("bit9", c_int16),("bit10", c_int16),("bit11", c_int16),("bit12", c_int16),("bit13", c_int16),("bit14", c_int16),("bit15", c_int16)]
 
@@ -98,6 +97,7 @@ def portOpen(COMPort):
     #global logger
     #logging.debug( 'Port Opened: {}'.format(COMPort.value) )
     #logging.error( 'Could not open port. Tried: {}, ErrorCode: {}'.format( COMPort.value, errorCode ) )
+    
     return 0
 
 @raise_on_error_code
@@ -185,7 +185,7 @@ def getVariaStatusBits(COMPort):
     dll.GetVariaStatusBits(COMPort, byref(bitMaskDecimal), bitCluster)    
     #logging.debug( 'Get Varia Status Bits: {}(decimal)'.format(bitMaskDecimal.value) )
     #logging.error( 'Could not get Varia Status Bits. ErrorCode: {}'.format( errorCode ) )
-    return bitCluster #bitMaskDecimal.value, 
+    return bitCluster
 
 @raise_on_error_code
 def printVariaStatusBits(bitCluster,option="ALL"):
@@ -304,47 +304,47 @@ def printSuperKStatusBits(bitCluster,option="ALL"):
     if (option=="ALL"):
         if (bitCluster.bit0 == 0): print "\tbit 0: OFF (Emission)" 
         elif (bitCluster.bit0 == 1): print "\tbit 0: ON (Emission)" 
-        else: print "\tbit 0: OutOfRange (Emission Off)" 
+        else: print "\tbit 0: OutOfRange (Emission unknown)" 
         
         if (bitCluster.bit1 == 0): print "\tbit 1: OFF (Interlock off)" 
-        elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock off)"
-        else: print "\tbit 1: OutOfRange (Interlock off)"
+        elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock ON)"
+        else: print "\tbit 1: OutOfRange (Interlock unknown)"
         
         if (bitCluster.bit2 == 0): print "\tbit 2: OFF (Interlock power failure)" 
         elif (bitCluster.bit2 == 1): print "\tbit 2: ON (Interlock power failure)" 
-        else: print "\tbit 2: OutOfRange (Interlock power failure)"
+        else: print "\tbit 2: OutOfRange (Interlock power unknown)"
         
         if (bitCluster.bit3 == 0): print "\tbit 3: OFF (Interlock loop off)" 
         elif (bitCluster.bit3 == 1): print "\tbit 3: ON (Interlock loop off)" 
-        else: print "\tbit 3: OutOfRange (Interlock loop off)"
+        else: print "\tbit 3: OutOfRange (Interlock loop unknown)"
         
         if (bitCluster.bit5 == 0): print "\tbit 5: OFF (Supply voltage low)" 
         elif (bitCluster.bit5 == 1): print "\tbit 5: ON (Supply voltage low)" 
-        else: print "\tbit 5: OutOfRange (Supply voltage low)"
+        else: print "\tbit 5: OutOfRange (Supply voltage unknown)"
         
         if (bitCluster.bit6 == 0): print "\tbit 6: OFF (Module temp range)" 
         elif(bitCluster.bit6 == 1): print "\tbit 6: ON (Module temp range)" 
-        else: print "\tbit 6: OutOfRange (Module temp range)"
+        else: print "\tbit 6: OutOfRange (Module temp range unknown)"
         
         if (bitCluster.bit7 == 0): print "\tbit 7: OFF (Pump temp high)" 
         elif (bitCluster.bit7 == 1): print "\tbit 7: ON (Pump temp high)" 
-        else: print "\tbit 7: OutOfRange (Pump temp high)"
+        else: print "\tbit 7: OutOfRange (Pump temp unknown)"
         
         if (bitCluster.bit8 == 0): print "\tbit 8: OFF (Pulse overrun)" 
         elif (bitCluster.bit8 == 1): print "\tbit 8: ON (Pulse overrun)" 
-        else: print "\tbit 8: OutOfRange (Pulse overrun)"
+        else: print "\tbit 8: OutOfRange (Pulse overrun unknown)"
         
         if (bitCluster.bit9 == 0): print "\tbit 9: OFF (Trig signal level)" 
         elif (bitCluster.bit9 == 1): print "\tbit 9: ON (Trig signal level)" 
-        else: print "\tbit 9: OutOfRange (Trig signal level)"
+        else: print "\tbit 9: OutOfRange (Trig signal level unknown)"
         
         if (bitCluster.bit10 == 0): print "\tbit 10: OFF (Trig edge)" 
         elif (bitCluster.bit10 == 1): print "\tbit 10: ON (Trig edge)" 
-        else: print "\tbit 10: OutOfRange (Trig edge)"
+        else: print "\tbit 10: OutOfRange (Trig edge unknown)"
         
         if (bitCluster.bit15 == 0): print "\tbit 15: OFF (Error code present)" 
         elif (bitCluster.bit15 == 1): print "\tbit 15: ON (Error code present)" 
-        else: print "\tbit 15: OutOfRange (Error code present)"
+        else: print "\tbit 15: OutOfRange (Error code present unknown)"
     if (option=="ON"):
         if (bitCluster.bit0 == 0): pass
         elif (bitCluster.bit0 == 1): print "\tbit 0: ON (Emission)" 
@@ -352,43 +352,43 @@ def printSuperKStatusBits(bitCluster,option="ALL"):
         
         if (bitCluster.bit1 == 0): pass
         elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock off)"
-        else: print "\tbit 1: OutOfRange (Interlock off)"
+        else: print "\tbit 1: OutOfRange (Interlock unknown)"
         
         if (bitCluster.bit2 == 0): pass
         elif (bitCluster.bit2 == 1): print "\tbit 2: ON (Interlock power failure)" 
-        else: print "\tbit 2: OutOfRange (Interlock power failure)"
+        else: print "\tbit 2: OutOfRange (Interlock power unknown)"
         
         if (bitCluster.bit3 == 0): pass
         elif (bitCluster.bit3 == 1): print "\tbit 3: ON (Interlock loop off)" 
-        else: print "\tbit 3: OutOfRange (Interlock loop off)"
+        else: print "\tbit 3: OutOfRange (Interlock loop unknown)"
         
         if (bitCluster.bit5 == 0): pass
         elif (bitCluster.bit5 == 1): print "\tbit 5: ON (Supply voltage low)" 
-        else: print "\tbit 5: OutOfRange (Supply voltage low)"
+        else: print "\tbit 5: OutOfRange (Supply voltage unknown)"
         
         if (bitCluster.bit6 == 0): pass
         elif(bitCluster.bit6 == 1): print "\tbit 6: ON (Module temp range)" 
-        else: print "\tbit 6: OutOfRange (Module temp range)"
+        else: print "\tbit 6: OutOfRange (Module temp range unknown)"
         
         if (bitCluster.bit7 == 0): pass
         elif (bitCluster.bit7 == 1): print "\tbit 7: ON (Pump temp high)" 
-        else: print "\tbit 7: OutOfRange (Pump temp high)"
+        else: print "\tbit 7: OutOfRange (Pump temp unknown)"
         
         if (bitCluster.bit8 == 0): pass
         elif (bitCluster.bit8 == 1): print "\tbit 8: ON (Pulse overrun)" 
-        else: print "\tbit 8: OutOfRange (Pulse overrun)"
+        else: print "\tbit 8: OutOfRange (Pulse overrun unknown)"
         
         if (bitCluster.bit9 == 0): pass
         elif (bitCluster.bit9 == 1): print "\tbit 9: ON (Trig signal level)" 
-        else: print "\tbit 9: OutOfRange (Trig signal level)"
+        else: print "\tbit 9: OutOfRange (Trig signal level unknown)"
         
         if (bitCluster.bit10 == 0): pass
         elif (bitCluster.bit10 == 1): print "\tbit 10: ON (Trig edge)" 
-        else: print "\tbit 10: OutOfRange (Trig edge)"
+        else: print "\tbit 10: OutOfRange (Trig edge unknown)"
         
         if (bitCluster.bit15 == 0): pass
         elif (bitCluster.bit15 == 1): print "\tbit 15: ON (Error code present)" 
-        else: print "\tbit 15: OutOfRange (Error code present)"
+        else: print "\tbit 15: OutOfRange (Error code present unknown)"
 
 @raise_on_error_code
 def getSuperKControls(COMPort):
@@ -440,7 +440,7 @@ def setSuperKControlEmission(COMPort,state):
     
     if (state == 0):
         dll.SetSuperKControlEmission(COMPort, c_uint8(0) )
-        time.sleep(waitTime) #wait for emission to switch
+        sleep(waitTime) #wait for emission to switch
         #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(0).value) )
         superKbitCluster = getSuperKStatusBits(COMPort)
         #if (superKbitCluster.bit0 == 1):
@@ -454,7 +454,7 @@ def setSuperKControlEmission(COMPort,state):
         if (superKbitCluster.bit15 == 1) or (variabitCluster.bit15 == 1):
             dll.SetSuperKControlEmission(COMPort, 0 )
             #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(0).value) )
-            time.sleep(waitTime)
+            sleep(waitTime)
             superKbitCluster = getSuperKStatusBits(COMPort)
             #if (superKbitCluster.bit0 == 1):
                 #logging.error( 'Setting SuperK emission: ERROR present. Emission set to zero. Check system. WARNING EMISSION IS ON.')
@@ -467,7 +467,7 @@ def setSuperKControlEmission(COMPort,state):
             if (variabitCluster.bit12 == 0) and (variabitCluster.bit13 == 0) and (variabitCluster.bit14 == 0):
                 dll.SetSuperKControlEmission(COMPort, c_uint8(state) )
                 #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(state).value) )
-                time.sleep(waitTime)
+                sleep(waitTime)
                 superKbitCluster = getSuperKStatusBits(COMPort)
                 #if (superKbitCluster.bit0 == 1):
                     #logging.info( 'Setting SuperK emission: {}, Emission is ON.'.format(state) )
@@ -478,7 +478,7 @@ def setSuperKControlEmission(COMPort,state):
             else:
                 dll.SetSuperKControlEmission(COMPort, 0 )
                 #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(0).value) )
-                time.sleep(waitTime)
+                sleep(waitTime)
                 superKbitCluster = getSuperKStatusBits(COMPort)
                 #if (superKbitCluster.bit0 == 1):
                     #logging.error( 'Setting SuperK emission: Unable to set while Varia filters moving. WARNING Emission is ON.' )
@@ -496,7 +496,7 @@ def setSuperKControlInterlock(COMPort,state):
     #int32_t __cdecl SetSuperKControlInterlock(char COMport[], uint8_t interlock);
     dll.SetSuperKControlInterlock(COMPort, c_uint8(state) )
     #logging.info( 'Setting SuperK Control Interlock to {}'.format(state) )
-    time.sleep(1)
+    sleep(1)
     bitCluster = getSuperKStatusBits(COMPort)
 
     # if (state == 1):
@@ -551,7 +551,7 @@ def setVariaControls(COMPort, NDFilterSetpointPercentx10, SWFilterSetpointAngstr
                     
                     for x in range(60): #test to see if filters are moving, 30sec is about the time for the largest possible move
                         if (variaBitCluster.bit12 == 1 or variaBitCluster.bit13 == 1 or variaBitCluster.bit14 == 1):
-                            time.sleep(0.5)
+                            sleep(0.5)
                             getVariaStatusBits(COMPort,variaBitCluster)
                             #logging.warning( 'Warning (setVariaControls): Filters moving. Waiting.' )
                             if (variaBitCluster.bit12 == 0 and variaBitCluster.bit13 == 0 and variaBitCluster.bit14 == 0):
