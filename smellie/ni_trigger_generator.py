@@ -24,6 +24,7 @@ class TriggerGenerator(object):
         
         : takes either "SUPERK" or "PQ" (string) and initiates appropriate channel as set in smellie_config.py
         """
+        self.n_pulses = 1
         if (trigger_channel=="SUPERK" or trigger_channel=="PQ"): 
             if trigger_channel=="SUPERK": self.out_pin = TRIG_GEN_PIN_OUT_SUPERK
             elif trigger_channel=="PQ": self.out_pin = TRIG_GEN_PIN_OUT_PQ
@@ -49,7 +50,10 @@ class TriggerGenerator(object):
     def _cleanup(self):
         """
         Stop the Trigger Generation task and clear the NI Unit's task memory.
+        Wait until all n trigger pulses have been sent. Timeout on wait time set given frequency and number of pulses: (number of pulses + 0.1%) / frequency .
         """
+        timeout = (self.n_pulses*1.001)/self.frequency
+        daqmx.functions.DAQmxWaitUntilTaskDone(self.taskHandle, timeout)
         daqmx.functions.DAQmxStopTask(self.taskHandle)
         daqmx.functions.DAQmxClearTask(self.taskHandle)
 
@@ -62,7 +66,7 @@ class TriggerGenerator(object):
 
     def generate_triggers(self, n_pulses):
         """
-        Start the Trigger Generation task using the single-pulse parameters previously set up in the __enter__ function, and the requested number of pulsess. Wait until all n trigger pulses have been sent. Timeout on wait time set given frequency and number of pulses: (number of pulses + 0.1%) / frequency .
+        Start the Trigger Generation task using the single-pulse parameters previously set up in the __enter__ function, and the requested number of pulsess.
 
         :param n_pulses:
         """
@@ -70,8 +74,6 @@ class TriggerGenerator(object):
             self.n_pulses = n_pulses
             daqmx.functions.DAQmxCfgImplicitTiming(self.taskHandle, daqmx.constants.DAQmx_Val_FiniteSamps, self.n_pulses)
             daqmx.functions.DAQmxStartTask(self.taskHandle)
-            timeout = (self.n_pulses*1.001)/self.frequency
-            daqmx.functions.DAQmxWaitUntilTaskDone(self.taskHandle, timeout)
 
         finally:
             self._cleanup()

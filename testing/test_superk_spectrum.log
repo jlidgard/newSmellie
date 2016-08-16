@@ -1,0 +1,68 @@
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-02-12 01:02:51
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-14-12 01:14:55
+DEBUG:root:Exception: name 'plot' is not defined
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-15-12 01:15:43
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-17-12 01:17:03
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-18-12 01:18:22
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-13-15 09:13:35
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-16-15 09:16:08
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-21-15 09:21:31
+DEBUG:root:Exception: 
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-31-15 09:31:06
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-33-15 09:33:35
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-35-15 09:35:56
+DEBUG:root:Exception: PM Library: unknown error code -1074001886
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-38-15 09:38:07
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-40-15 09:40:22
+DEBUG:root:Exception: unsupported operand type(s) for /: 'list' and 'int'
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-43-15 09:43:19
+DEBUG:root:Exception: PM Library: unknown error code -1074001886
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-44-15 09:44:05
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-43-15 12:43:39
+DEBUG:root:Exception: name 'numpy' is not defined
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-44-15 12:44:02
+DEBUG:root:Exception: name 'powerDataSD' is not defined
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-53-15 12:53:03
+DEBUG:root:Exception: name 'powerDataSD' is not defined
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-53-15 12:53:37
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-57-15 12:57:35
+DEBUG:root:Exception: too many values to unpack
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-00-15 13:00:06
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-02-15 13:02:24
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-03-15 13:03:50
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-05-15 13:05:13
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-13-15 13:13:44
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-15-15 13:15:21
+DEBUG:root:Exception: In safezip, len(args[0])=7 but len(args[1])=1
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-16-15 13:16:09
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-18-15 13:18:04
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-44-15 13:44:48
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-06-15 14:06:10
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-16-15 14:16:12
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-26-15 14:26:03
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-36-15 14:36:13
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum
+DEBUG:root:Begin Testing SMELLIE SuperK spectrum. 2016-45-15 14:45:56
+DEBUG:root:Finished Testing SMELLIE SuperK spectrum

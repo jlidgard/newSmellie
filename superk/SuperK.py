@@ -58,7 +58,7 @@ def decode_error(iErr):
     """
     str_buff = create_string_buffer(SK_STR_BUFFER_SIZE)
     try:
-        #dll.DecodeError(COMPort, c_int32(iErr), str_buff, c_int32(SK_STR_BUFFER_SIZE) )
+        #dll.DecodeError(c_int32(iErr), str_buff, c_int32(SK_STR_BUFFER_SIZE) )
         return str_buff.value
     except WindowsError:
         return "SuperK Library: unknown error code {0}".format(iErr)
@@ -492,6 +492,8 @@ def setSuperKControlEmission(COMPort,state):
 def setSuperKControlInterlock(COMPort,state):
     """
     undocumented
+    setting interlock to 1 unlocks laser (status bit shows 0 for interlock off)
+    setting interlock to 0 unlocks laser (status bit shows 1 for interlock on)
     """
     #int32_t __cdecl SetSuperKControlInterlock(char COMport[], uint8_t interlock);
     dll.SetSuperKControlInterlock(COMPort, c_uint8(state) )
@@ -547,27 +549,27 @@ def setVariaControls(COMPort, NDFilterSetpointPercentx10, SWFilterSetpointAngstr
             if (SWFilterSetpointAngstrom.value > LPFilterSetpointAngstrom.value): #if high > low wavelength
                 if ((SWFilterSetpointAngstrom.value - LPFilterSetpointAngstrom.value) >= 100 and (SWFilterSetpointAngstrom.value - LPFilterSetpointAngstrom.value) <= 1000): # check wavelength difference is >0.1nm and <100nm
                     dll.SetVariaControls(COMPort, NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom)
-                    getVariaStatusBits(COMPort,variaBitCluster)
+                    variaBitCluster = getVariaStatusBits(COMPort)
                     
                     for x in range(60): #test to see if filters are moving, 30sec is about the time for the largest possible move
                         if (variaBitCluster.bit12 == 1 or variaBitCluster.bit13 == 1 or variaBitCluster.bit14 == 1):
                             sleep(0.5)
-                            getVariaStatusBits(COMPort,variaBitCluster)
-                            #logging.warning( 'Warning (setVariaControls): Filters moving. Waiting.' )
+                            variaBitCluster = getVariaStatusBits(COMPort)
+                            #print( 'Warning (setVariaControls): Filters moving. Waiting.' )
                             if (variaBitCluster.bit12 == 0 and variaBitCluster.bit13 == 0 and variaBitCluster.bit14 == 0):
-                                #logging.info( 'Warning (setVariaControls): Ok filters stopped moving.' )
+                                #print ( 'Warning (setVariaControls): Ok filters stopped moving.' )
                                 break
                         #if (x == 60):
-                            #logging.error( 'ERROR (setVariaControls): Filters have not stopped moving. Check system.')
+                            #print( 'ERROR (setVariaControls): Filters have not stopped moving. Check system.')
                     
                     #if (variaBitCluster.bit12 == 0) and (variaBitCluster.bit13 == 0) and (variaBitCluster.bit14 == 0):
-                         #logging.info( 'Setting Varia Filters to: {} and {} : Success.'.format(LPFilterSetpointAngstrom.value,SWFilterSetpointAngstrom.value) )
-                #else:
-                     #logging.error( 'ERROR (setVariaControls): Minimum bandwidth is 10nm. Maximum bandwidth is 100nm. SP & LP filters must differ by at least 10nm and no more than 100nm.')
-            #else:
-                 #logging.error( 'ERROR (setVariaControls): SWP filter value must be larger than LPP filter value')
-        #elif (variaBitCluster.bit15 == 0):
-             #logging.error( 'Setting Varia Filters: ERROR present. Filters not set. Check system.')
-    #elif (superKBitCluster.bit0 == 1):
-         #logging.error( 'Setting Varia Filters: ERROR: Emission is ON. Cannot adjust wavelength without turning off emission.')
+                        #print( 'Setting Varia Filters to: {} and {} : Success.'.format(LPFilterSetpointAngstrom.value,SWFilterSetpointAngstrom.value) )
+                else:
+                    print( 'ERROR (setVariaControls): Minimum bandwidth is 10nm. Maximum bandwidth is 100nm. SP & LP filters must differ by at least 10nm and no more than 100nm.')
+            else:
+                print( 'ERROR (setVariaControls): SWP filter value must be larger than LPP filter value')
+        elif (variaBitCluster.bit15 == 0):
+            print( 'Setting Varia Filters: ERROR present. Filters not set. Check system.')
+    elif (superKBitCluster.bit0 == 1):
+        print( 'Setting Varia Filters: ERROR: Emission is ON. Cannot adjust wavelength without turning off emission.')
     return 0

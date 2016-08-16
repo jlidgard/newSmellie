@@ -1,5 +1,5 @@
 from smellie_config import PM_ADDRESS
-from powermeter.powerMeterUtil import getBeamDiameter, getPower, getWavelength, setPowerRange, getDarkOffset, setDarkOffsetCancel, setDarkOffset, setWavelength, portOpen, portClose
+from powermeter.powerMeterUtil import selfTest, identificationQuery, getPowerUnit, getPowerReference, getPowerReferenceState, getPowerAutorangeMode, getSensorInformation, getCalibrationMessage, getAttenuation, getDarkAdjustmentState, getPhotodiodeResponsivity, getThermopileResponsivity, getPyrosensorResponsivity, getBeamDiameter, measurePower, getWavelength, getPowerRange, getDarkOffset, startDarkOffsetAdjustment, cancelDarkOffsetAdjustment, setWavelength, portOpen, portClose
 
 class PowerMeterHWError(Exception):
     """
@@ -11,74 +11,115 @@ class PowerMeter(object):
 
     def __init__(self):
         self.COMPort = PM_ADDRESS
+        self.taskHandle = None
+        self.attributeValue = 0
 
     def get_beam_diameter(self):
         """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
+        undocumented
         """
-        return getBeamDiameter(self.COMPort)
+        return getBeamDiameter(self.taskHandle, self.attributeValue)
         
     def get_power(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        return getPower(self.COMPort)
+        return measurePower(self.taskHandle)
         
     def get_wavelength(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        return getWavelength(self.COMPort)
+        return getWavelength(self.taskHandle, self.attributeValue)
         
-    def set_power_range(self,setValue):
+    def get_power_range(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        setPowerRange(self.COMPort, setValue)
+        return getPowerRange(self.taskHandle, self.attributeValue)
         
     def get_dark_offset(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        return getDarkOffset(self.COMPort)
+        return getDarkOffset(self.taskHandle)
         
     def set_dark_offset_cancel(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        setDarkOffsetCancel(self.COMPort)
+        cancelDarkOffsetAdjustment(self.taskHandle)
         
     def set_dark_offset(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        setDarkOffset(self.COMPort)
+        startDarkOffsetAdjustment(self.taskHandle)
 
     def set_wavelength(self, setValue):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        setWavelength(self.COMPort, setValue)
+        setWavelength(self.taskHandle, setValue)
+        return 0
         
-    def port_open(self):
+    def set_average_count(self, setValue):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        selfTestResult, message = portOpen(self.COMPort)
+        setAverageCount(self.taskHandle, setValue)
+        return 0
+        
+    def get_average_count(self):
+        """   
+        :returns: ctype string buffer, the size of which is set in :mod:config
+        """
+        return getAverageCount(self.taskHandle)
+        
+    def port_open(self, iDQueryDoQuery=1, resetDevice=1):
+        """   
+        :returns: ctype string buffer, the size of which is set in :mod:config
+        """
+        self.taskHandle = portOpen(self.COMPort, iDQueryDoQuery, resetDevice)
+        selfTestResult, selfTestMessage = selfTest(self.taskHandle)
         if selfTestResult != 0:
             raise PowerMeterHWError("Self test of device failed. {}".format(message))
+        return 0
 
     def port_close(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        message = portClose(self.COMPort)
-        
+        portClose(self.taskHandle)
+
+    def default_settings(self):
+        """   
+        :returns: ctype string buffer, the size of which is set in :mod:config
+        """
+        self.set_average_count(100)
+        self.set_wavelength(400)
+        #add more here
+
     def current_state(self):
         """
         Returns a formatted string with the current hardware settings
         """
-        return "Get Power: {1}, Get Beam Diameter: {0}, Get Wavelength: {2}, Get Dark Offset: {3}".format(self.get_beam_diameter(), 
-           self.get_power(), 
-           self.get_wavelength(),
-           self.get_dark_offset())
+        return "ID: {}, SelfTest: {}, PowerUnit: {}(0=W,1=dB), PowerReference: {}, ReferenceState:{}, AutorangeMode: {}, SensorInformation: {}\
+        , CalibrationMessage:{}, Attenuation: {}, DarkAdjustmentState: {}, DarkOffset: {}, PhotodiodeResponsivity: {}, ThermopileResponsivity: {}, PyrosensorResponsivity: {}, \
+        BeamDiameter: {}, Wavelength: {}".format(
+           identificationQuery(self.taskHandle),
+           selfTest(self.taskHandle),
+           getPowerUnit(self.taskHandle),
+           getPowerReference(self.taskHandle, self.attributeValue),
+           getPowerReferenceState(self.taskHandle),
+           getPowerAutorangeMode(self.taskHandle),
+           getSensorInformation(self.taskHandle),
+           getCalibrationMessage(self.taskHandle),
+           getAttenuation(self.taskHandle, self.attributeValue),
+           getDarkAdjustmentState(self.taskHandle),
+           self.get_dark_offset(),
+           getPhotodiodeResponsivity(self.taskHandle, self.attributeValue),
+           getThermopileResponsivity(self.taskHandle, self.attributeValue),
+           getPyrosensorResponsivity(self.taskHandle, self.attributeValue),
+           self.get_beam_diameter(), 
+           self.get_wavelength())

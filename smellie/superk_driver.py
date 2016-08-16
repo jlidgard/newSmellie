@@ -1,6 +1,6 @@
 from smellie_config import SK_COM_PORT
-from superk.SuperK import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
-from ctypes import  c_uint32, c_uint16, c_uint8
+from superk.SuperK import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
+from ctypes import c_uint32, c_uint16, c_uint8
 
 class SuperKHWError(Exception):
     """
@@ -35,14 +35,14 @@ class SuperK(object):
         """
         portClose(self.COMPort)
 
-    def go_ready(intensity, low_wavelength, high_wavelength):
+    def go_ready(self,intensity, low_wavelength, high_wavelength):
         """
         undocumented
         """
         # set the intensity, low and high wavelengths of the Varia (checking if the settings aren't already set)
         NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom = getVariaControls(self.COMPort)
-        if (intensity*10!=NDFilterSetpointPercentx10 and low_wavelength!=LPFilterSetpointAngstrom and high_wavelength!=SWFilterSetpointAngstrom):
-            setVariaControls(self.COMPort,intensity,SWFilterSetpointAngstrom,LPFilterSetpointAngstrom)
+        if (intensity*10!=NDFilterSetpointPercentx10 or low_wavelength!=LPFilterSetpointAngstrom or high_wavelength!=SWFilterSetpointAngstrom):
+            setVariaControls(self.COMPort,intensity,high_wavelength,low_wavelength)
         
         # turn the lock off then turn the emission on (checking if the settings aren't already set)
         superKStatus = getSuperKStatusBits(self.COMPort)
@@ -51,18 +51,30 @@ class SuperK(object):
         if superKStatus.bit0!=1:
             setSuperKControlEmission(self.COMPort,1)
         
-    def go_safe():
+    def go_safe(self):
         """
         undocumented
         """
+        
+        superKControls = superKControlStructure()
+        superKControls.trigLevelSetpointmV = c_uint16(1000) #c_uint16
+        superKControls.displayBacklightPercent = c_uint8(0) #c_uint8
+        superKControls.trigMode = c_uint8(1) #c_uint8
+        superKControls.internalPulseFreqHz = c_uint16(0) #c_uint16
+        superKControls.burstPulses = c_uint16(1) #c_uint16
+        superKControls.watchdogIntervalSec = c_uint8(0) #c_uint8
+        superKControls.internalPulseFreqLimitHz = c_uint32(0) #c_uint32
+        setSuperKControls(self.COMPort,superKControls)
+        
         # turn off emission then set lock on (checking if the settings aren't already set)
         superKStatus = getSuperKStatusBits(self.COMPort)
+        if superKStatus.bit0!=0:
+            setSuperKControlEmission(self.COMPort,0) #emission before interlock when shutting down (or interlock warning)
         if superKStatus.bit1!=1:
             setSuperKControlInterlock(self.COMPort,0) #setting interlock to 0 locks laser (status bit shows 1 for interlock on)
-        if superKStatus.bit0!=0:
-            setSuperKControlEmission(self.COMPort,0)
 
-    def varia_go_safe():
+
+    def varia_go_safe(self):
         """
         undocumented
         """
