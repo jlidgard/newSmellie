@@ -1,5 +1,5 @@
 from smellie_config import PM_ADDRESS
-from powermeter.powerMeterUtil import selfTest, identificationQuery, getPowerUnit, getPowerReference, getPowerReferenceState, getPowerAutorangeMode, getSensorInformation, getCalibrationMessage, getAttenuation, getDarkAdjustmentState, getPhotodiodeResponsivity, getThermopileResponsivity, getPyrosensorResponsivity, getBeamDiameter, measurePower, getWavelength, getPowerRange, getDarkOffset, startDarkOffsetAdjustment, cancelDarkOffsetAdjustment, setWavelength, portOpen, portClose
+from powermeter.powerMeterUtil import selfTest, identificationQuery, setPowerUnit, getPowerUnit, getPowerReference, getPowerReferenceState, getPowerAutorangeMode, getSensorInformation, getCalibrationMessage, getAttenuation, getDarkAdjustmentState, getPhotodiodeResponsivity, getThermopileResponsivity, getPyrosensorResponsivity, setDisplayContrast, setDisplayBrightness, getBeamDiameter, measurePower, getAverageCount, setAverageCount, getWavelength, getPowerRange, getDarkOffset, startDarkOffsetAdjustment, cancelDarkOffsetAdjustment, setWavelength, portOpen, portClose
 
 class PowerMeterHWError(Exception):
     """
@@ -98,6 +98,21 @@ class PowerMeter(object):
         """
         self.set_average_count(100)
         self.set_wavelength(400)
+        ##PM100DSetAttenuation
+        #PM100DSetBeamDiameter
+        #PM100DSetDateAndTime
+        setDisplayBrightness(self.taskHandle,0)
+        setDisplayContrast(self.taskHandle,0.5)
+        #PM100DSetLineFrequency
+        ##PM100DSetPhotodiodeInputFilterState
+        ##PM100DSetPhotodiodeResponsivity
+        #PM100DSetPowerAutorangeMode
+        ##PM100DSetPowerReferenceState
+        ##PM100DSetPowerReference
+        setPowerUnit(self.taskHandle,0)
+        ##PM100DSetPyrosensorResponsivity
+        ##PM100DSetThermopileResponsivity
+        
         #add more here
 
     def current_state(self):
@@ -105,7 +120,7 @@ class PowerMeter(object):
         Returns a formatted string with the current hardware settings
         """
         return "ID: {}, SelfTest: {}, PowerUnit: {}(0=W,1=dB), PowerReference: {}, ReferenceState:{}, AutorangeMode: {}, SensorInformation: {}\
-        , CalibrationMessage:{}, Attenuation: {}, DarkAdjustmentState: {}, DarkOffset: {}, PhotodiodeResponsivity: {}, ThermopileResponsivity: {}, PyrosensorResponsivity: {}, \
+        , PhotodiodeFilterState:{}, CalibrationMessage:{}, Attenuation: {}, DarkAdjustmentState: {}, DarkOffset: {}, PhotodiodeResponsivity: {}, ThermopileResponsivity: {}, PyrosensorResponsivity: {}, \
         BeamDiameter: {}, Wavelength: {}".format(
            identificationQuery(self.taskHandle),
            selfTest(self.taskHandle),
@@ -114,6 +129,7 @@ class PowerMeter(object):
            getPowerReferenceState(self.taskHandle),
            getPowerAutorangeMode(self.taskHandle),
            getSensorInformation(self.taskHandle),
+           getPhotodiodeInputFilterState(self.taskHandle),
            getCalibrationMessage(self.taskHandle),
            getAttenuation(self.taskHandle, self.attributeValue),
            getDarkAdjustmentState(self.taskHandle),

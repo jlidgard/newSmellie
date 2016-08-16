@@ -260,6 +260,15 @@ def getPowerReferenceState(taskHandle):
     return retValue.value
 
 @raise_on_error_code
+def getPhotodiodeInputFilterState(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_int()
+    dll.PM100DGetPhotodiodeInputFilterState(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+    
+@raise_on_error_code
 def getPowerReference(taskHandle, attributeSetValue):
     """
     :undocumented
@@ -278,6 +287,51 @@ def getPowerUnit(taskHandle):
     dll.PM100DGetPowerUnit(byref(taskHandle), None, byref(retValue))
     return retValue.value
 
+@raise_on_error_code
+def setPowerUnit(taskHandle, setValue):
+    """
+    :undocumented
+    """
+    setValue = c_int16(setValue)
+    dll.PM100DSetPowerUnit(byref(taskHandle), setValue, None)
+    return 0
+    
+@raise_on_error_code
+def getDisplayContrast(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    dll.PM100DGetDisplayContrast(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def setDisplayContrast(taskHandle, setValue):
+    """
+    :undocumented
+    """
+    setValue = c_double(setValue)
+    dll.PM100DSetDisplayContrast(byref(taskHandle), setValue, None)
+    return 0
+    
+@raise_on_error_code
+def getDisplayBrightness(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    dll.PM100DGetDisplayBrightness(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+    
+@raise_on_error_code
+def setDisplayBrightness(taskHandle, setValue):
+    """
+    :undocumented
+    """
+    setValue = c_double(setValue)
+    dll.PM100DSetDisplayBrightness(byref(taskHandle), setValue, None)
+    return 0
+    
 @raise_on_error_code
 def identificationQuery(taskHandle):
     """
