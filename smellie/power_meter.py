@@ -84,6 +84,7 @@ class PowerMeter(object):
         selfTestResult, selfTestMessage = selfTest(self.taskHandle)
         if selfTestResult != 0:
             raise PowerMeterHWError("Self test of device failed. {}".format(message))
+        self.default_settings()
         return 0
 
     def port_close(self):
