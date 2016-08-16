@@ -48,7 +48,7 @@ class SmellieController(object):
         self.fibre_switch.set_io_channel_numbers(5, 14)
         return 0
 
-    def laserheads_master_mode(self, ls_chan, intensity, fs_input_chan, fs_output_chan, n_pulses):
+    def laserheads_master_mode(self, ls_chan, intensity, rep_rate, fs_input_chan, fs_output_chan, n_pulses):
         """
         Run the SMELLIE system in Master Mode (NI Unit provides the trigger signal for both the lasers and the detector) using the PicoQuant Laser Heads
         
@@ -92,7 +92,7 @@ class SmellieController(object):
         self.go_safe()
         return 0
 
-    def superK_master_mode(self, intensity, low_wavelength, high_wavelength, fs_input_chan, fs_output_chan, n_pulses):
+    def superK_master_mode(self, intensity, rep_rate, low_wavelength, high_wavelength, fs_input_chan, fs_output_chan, n_pulses):
         """
         Run the SMELLIE system in Master Mode (NI Unit provides the trigger signal for both the lasers and the detector) using the SuperK laser
         
