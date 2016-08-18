@@ -23,9 +23,14 @@ FIBRE_SWITCH_BAUD_RATE   = 57600
 FIBRE_SWITCH_WAIT_TIME   = 0.1  # in seconds
 
 # Interlock
-INTERLOCK_SERIAL_PORT = 4  # = COM5(COM number-1)
+INTERLOCK_SERIAL_PORT = 4  # = actually COM5(i.e. COM number-1)
 INTERLOCK_BAUD_RATE = 9600
 INTERLOCK_WAIT_TIME   = 0.1  # in seconds
+
+# Varia Motor Controller
+VARIAMOTOR_SERIAL_PORT = 7  # = actually COM8(i.e. COM number-1)
+VARIAMOTOR_BAUD_RATE = 9600
+VARIAMOTOR_WAIT_TIME   = 0.1  # in seconds
 
 # Laser Switch
 RELAY_COM_CHANNEL = 1
