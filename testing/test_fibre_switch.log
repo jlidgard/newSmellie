@@ -4,3 +4,6 @@ DEBUG:root:Test setting channel: 69, (5,13)
 DEBUG:root:Restore original channel: 70, (5,14)
 DEBUG:root:Test PASSED
 DEBUG:root:Finished Testing SMELLIE Fibre Switch, pass: 1/1, fail:0/1
+DEBUG:root:Begin Testing SMELLIE Fibre Switch. 2016-16-02 23:16:44
+DEBUG:root:Exception:
+DEBUG:root:invalid literal for int() with base 10: ''

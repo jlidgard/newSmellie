@@ -12,7 +12,7 @@
 #include <AFMotor.h>
 
 //misc variables:
-AF_Stepper motor1(200, 1);
+AF_Stepper motor1(200, 2);
 int delayInterval = 100;  //delay value in milliseconds
 const int homePin = A0;   //home signal connected to analog pin 0
 boolean homeState = false;

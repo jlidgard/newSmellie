@@ -123,7 +123,7 @@ class VariaMotor(object):
         #self.serial.close()
         return response
         
-    def get_homePosition(self):
+    def get_home_position(self):
         """
         Send a command to query the arm/disarm status of the internal relay
         :param msg:
