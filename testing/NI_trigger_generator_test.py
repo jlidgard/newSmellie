@@ -1,6 +1,7 @@
 # Test the SMELLIE NI trigger generator
 # functions to test the functionality of the NI trigger generator control code
 # Test while watching superK gui (shows trigger rate on gui)
+# not finished!
 
 import logging, time, datetime
 from smellie import laser_switch

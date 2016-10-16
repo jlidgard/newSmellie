@@ -69,6 +69,6 @@ class TriggerGenerator(object):
             daqmx.functions.DAQmxCfgImplicitTiming(self.taskHandle, daqmx.constants.DAQmx_Val_FiniteSamps, n_pulses)
             daqmx.functions.DAQmxStartTask(self.taskHandle)
             daqmx.functions.DAQmxWaitUntilTaskDone(self.taskHandle, -1) # second argument needs checking
-
+            #time out should be rate of triggers * no of triggers, not -1.
         finally:
             self._cleanup()

@@ -1,5 +1,7 @@
 from smellie_config import SK_COM_PORT
 from superk.SuperK import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
+from superk.variaMotor import VariaMotor
+
 from ctypes import c_uint32, c_uint16, c_uint8
 
 class SuperKHWError(Exception):
@@ -12,11 +14,13 @@ class SuperK(object):
 
     def __init__(self):
         self.COMPort = SK_COM_PORT
+        self.NDfilter = VariaMotor()
         
     def port_open(self):
         """
         undocumented
         """
+        #open superK
         portOpen(self.COMPort)
         
         superKControls = superKControlStructure()
@@ -29,11 +33,18 @@ class SuperK(object):
         superKControls.internalPulseFreqLimitHz = c_uint32(0) #c_uint32
         setSuperKControls(self.COMPort,superKControls)
         
+        #open varia ND filter arduino motor controller
+        self.NDfilter.open_controller()
+
     def port_close(self):
         """
         undocumented
         """
+        #open superK
         portClose(self.COMPort)
+           
+        #close varia ND filter arduino motor controller
+        self.NDfilter.close_controller()
 
     def go_ready(self,intensity, low_wavelength, high_wavelength):
         """
@@ -94,6 +105,18 @@ class SuperK(object):
         firmware, version_info, module_type, serial_number = getVariaInfo(self.COMPort)
         varia_info = "Firmware: {} Version Info: {} Module Type: {} Serial Number: {}".format( firmware, version_info, module_type, serial_number )
         return superK_info, varia_info
+        
+    def NDfilter_position(self):
+        return self.NDfilter.get_position()
+        
+    def NDfilter_set_position(self, positionValue):
+        self.NDfilter.set_position(positionValue)
+        
+    def NDfilter_get_home_status(self):
+        return self.NDfilter.get_home_status()
+        
+    def NDfilter_set_reference(self):
+        self.NDfilter.set_reference_position()
         
     def current_state(self):
         """

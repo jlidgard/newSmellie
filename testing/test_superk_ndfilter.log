@@ -1,0 +1,24 @@
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-37-16 16:37:25
+DEBUG:root:Finished Testing SMELLIE SuperK ND filter
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-47-16 17:47:56
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-52-16 17:52:50
+DEBUG:root:Exception: [Errno 22] invalid mode ('a') or filename: 'C:\\SMELLIE\\software\newSmellie\testing\test_superk_ndfilter_550nm.dat'
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-58-16 17:58:28
+DEBUG:root:Finished Testing SMELLIE SuperK ND filter
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-05-16 18:05:09
+DEBUG:root:Finished Testing SMELLIE SuperK ND filter
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-25-16 18:25:11
+DEBUG:root:Exception: could not open port 'COM8': WindowsError(5, 'Access is denied.')
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-26-16 18:26:31
+DEBUG:root:Exception: 'SuperK' object has no attribute 'NDfilter_get_position'
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-27-16 18:27:37
+DEBUG:root:Finished Testing SMELLIE SuperK ND filter
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-35-16 18:35:28
+DEBUG:root:Finished Testing SMELLIE SuperK ND filter
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-05-16 19:05:30
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-10-16 19:10:43
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-14-16 19:14:43
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-18-16 19:18:56
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-23-16 19:23:21
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-24-16 19:24:28
+DEBUG:root:Begin Testing SMELLIE ND filter. 2016-25-16 19:25:40

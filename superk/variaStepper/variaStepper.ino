@@ -1,19 +1,19 @@
 //////////////////////////////////////////////////////////
 //// SuperK Varia ND filter motor control
-//// v0.5, 17th August 2016
+//// v0.9, 13th October 2016 (created: 17th August 2016)
 //// Jeffrey Lidgard, jeffrey.lidgard@physics.ox.ac.uk
 //// University of Oxford, Department of Physics
 //////////////////////////////////////////////////////////
 
 // Requires the AFMotor library (https://github.com/adafruit/Adafruit-Motor-Shield-library)
-// And AccelStepper with AFMotor support (https://github.com/adafruit/AccelStepper)
+// And AccelStepper with AFMotor support, v1.53: http://www.airspayce.com/mikem/arduino/AccelStepper/ old v1.2:(https://github.com/adafruit/AccelStepper)
 // Public domain!
 #include <AccelStepper.h>
 #include <AFMotor.h>
 
 //misc variables:
 AF_Stepper motor1(200, 2);
-int delayInterval = 100;  //delay value in milliseconds
+int delayInterval = 5;  //delay value in milliseconds
 const int homePin = A0;   //home signal connected to analog pin 0
 boolean homeState = false;
 String readCommand, readType, readValue;
@@ -32,10 +32,10 @@ AccelStepper stepper1(forwardstep1, backwardstep1);
 void setup() {
 
   //setup channels:
-  Serial.begin(9600); //initialize serial communication at 9600 bits per second:
+  Serial.begin(57600); //initialize serial communication at 57600 bits per second:
 
-  stepper1.setMaxSpeed(100.0);
-  stepper1.setAcceleration(100.0);
+  stepper1.setMaxSpeed(10.0);
+  stepper1.setAcceleration(1.0);
 
   pinMode(homePin, INPUT);
   homeState = digitalRead(homePin); //get the initial state of the home pin (should be ON)
@@ -47,14 +47,43 @@ void setup() {
 
 void readHome(){
     homeState = digitalRead(homePin); //reads the analog input pin
-    //if (homeState == FALSE) Serial.print("Read Home state:");Serial.println(homeState);  
+}
+
+void goHome(){
+
+      if (stepper1.isRunning()==false) {
+        
+        stepper1.setMaxSpeed( 10 );
+        stepper1.setSpeed( 10 );
+        stepper1.move( 500 );
+      
+        while ( (homeState==false) && (stepper1.distanceToGo()>0) ) {
+  
+          if (stepper1.runSpeed()) {
+            readHome();
+          }
+          Serial.print("Seeking home, position: ");Serial.println(stepper1.currentPosition());
+          delay(10);
+        }
+        stepper1.stop();
+        stepper1.setCurrentPosition( 0 );
+        if (homeState = true) {
+          Serial.println("At home");
+        }
+        else if (stepper1.distanceToGo()==0) {
+          Serial.println("Failed to find home");
+        }
+      }
+      else {
+        Serial.println("Motor already moving");
+      }
 }
 
 String readSerial(){
 
   String readCommand;
   while (Serial.available()) {
-    delay(3);  //delay to allow buffer to fill
+    delay(10);  //delay to allow buffer to fill
     if (Serial.available() >0 ) {
       char c = Serial.read();  //gets one byte from serial buffer
       readCommand += c; //makes the string readString
@@ -66,11 +95,10 @@ String readSerial(){
 void loop() {
 
   //main program delay
-  delay(delayInterval); //delay by 1/x Hz (note the ultimate run rate is also effected by various function timeouts, eg serial.read and pulseIn.)
+  delay(delayInterval); //delay by 1/x Hz (note the ultimate run rate is also effected by various functions)
   
   readCommand = readSerial();
 
-  
   if (readCommand.length() >0) {
     //Serial.print("ReadCommand: ");Serial.println(readCommand); //see what was received
  
@@ -94,28 +122,38 @@ void loop() {
     if (readType == "b") { // Report motor speed.
       Serial.print("Speed: "); Serial.println( stepper1.speed() );
     }
-    if (readType == "c") { // Set motor speed.
-      stepper1.setSpeed( readValue.toInt() );
-      Serial.print("Set speed: "); Serial.println( stepper1.speed() );
+    if (readType == "c") { // Set max motor speed.
+      stepper1.setMaxSpeed( readValue.toInt() );
     }
     if (readType == "d") { // Set position.
       stepper1.moveTo( readValueInt );
       stepper1.runToPosition();
-      Serial.print("Moved to position: "); Serial.println( stepper1.currentPosition() );
     }
     if (readType == "e") { // Set home position.
       stepper1.setCurrentPosition( readValueInt );
-      Serial.print("Set reference position. Position: "); Serial.println( stepper1.currentPosition() );
     }
     if (readType == "f") { // Get home position.
       readHome();
       Serial.print("Home sensor: "); Serial.println( homeState );
     }
+    if (readType == "g") { // Stop running.
+      stepper1.stop();
+    }
+    if (readType == "h") { // Check to see if the motor is currently running.
+      Serial.print("isRunning: "); Serial.println( stepper1.isRunning() );
+    }
+    if (readType == "i") { // Set motor acceleration.
+      stepper1.setAcceleration( readValue.toInt() );
+    }
+    if (readType == "j") { // Report max motor speed.
+      Serial.print("Max Speed: "); Serial.println( stepper1.maxSpeed() );
+    }
+    if (readType == "k") { // Report connected
+      goHome();
+    }
     if (readType == "z") { // Report connected
-      readHome();
-      Serial.print("Connected. "); Serial.println( 1 );
+      Serial.println("Connected.");
     }
   }
 
-  //readHome();
 }

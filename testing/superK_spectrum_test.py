@@ -79,14 +79,9 @@ try:
 
         print "(Wavelength, Power, SD, Range): {}, {}, {}, {}".format(setWavelength, powermean, powersd, powerrange)
         
-        
     sk.go_safe()
     sk.port_close()
     pm.port_close()
-    
-    plt.errorbar(wavelengths,powerDataMean, yerr=powerDataSD,fmt='o')
-    plt.axis([400,750,1E-10,3E-9])
-    plt.show()
     
     fileOut = open(r'C:\SMELLIE\software\newSmellie\testing\test_superk_spectrum.dat', 'a')
     fileOut.write('Wavelength(nm),MeanIntensity(W),SDIntensity(W),MeterRange(W)\n')
@@ -95,6 +90,10 @@ try:
     fileOut.closed
     
     logging.debug( "Finished Testing SMELLIE SuperK spectrum" )
+    
+    plt.errorbar(wavelengths,powerDataMean, yerr=powerDataSD,fmt='o')
+    plt.axis([400,750,1E-10,3E-9])
+    plt.show()
     
 except Exception, e:
     logging.debug( "Exception: {}".format(e) )
