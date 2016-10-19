@@ -23,7 +23,7 @@ npass = 0
 nfail = 0
 
 try:
-    logging.debug( "Begin Testing SMELLIE SuperK spectrum. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%M-%d %H:%M:%S') ) )   
+    logging.debug( "Begin Testing SMELLIE SuperK spectrum. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
     
     fs.set_global_channel_number(70)
     

@@ -50,17 +50,17 @@ TRIG_GEN_PIN_OUT_SUPERK      = "/Ctr1"
 
 # Power Meter
 PM_ADDRESS = "USB0::0x1313::0x8078::P0005368::INSTR"
-PM_DLL_PATH = r"C:\SMELLIE\software\newSmellie\powermeter\powerMeterUtil.dll"
+PM_DLL_PATH = r"C:\SMELLIE\software\LVsource\compiled libraries\powerMeterUtil.dll"
 PM_STR_BUFFER_SIZE = 128
 
 # Spectrometer
-SPEC_DLL1_PATH = r"C:\SMELLIE\software\newSmellie\spec\OOUtil.dll"
+SPEC_DLL1_PATH = r"C:\SMELLIE\software\LVsource\compiled libraries\OOUtil.dll"
 SPEC_DLL2_PATH = r"C:\Program Files\Ocean Optics\OmniDriver\OOI_HOME\common64.dll"
 SPEC_STR_BUFFER_SIZE = 128
 
 # SuperK Laser
 SK_COM_PORT = "COM4"
-SK_DLL_PATH = r"C:\SMELLIE\software\newSmellie\superk\superKUtil.dll"
+SK_DLL_PATH = r"C:\SMELLIE\software\LVsource\compiled libraries\superKUtil.dll"
 SK_STR_BUFFER_SIZE = 128
 
 # DAQMX Library

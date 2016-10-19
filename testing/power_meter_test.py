@@ -16,7 +16,7 @@ nfail = 0
 
 try:
 
-    logging.debug( "Begin Testing SMELLIE Power Meter. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%M-%d %H:%M:%S') ) )   
+    logging.debug( "Begin Testing SMELLIE Power Meter. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
     
     #test current state. (in turn tests many of the getter functions).
     pm.port_open() #raises exception if not opened correctly

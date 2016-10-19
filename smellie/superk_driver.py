@@ -46,7 +46,7 @@ class SuperK(object):
         #close varia ND filter arduino motor controller
         self.NDfilter.close_controller()
 
-    def go_ready(self,intensity, low_wavelength, high_wavelength):
+    def go_ready(self, intensity, low_wavelength, high_wavelength):
         """
         undocumented
         """

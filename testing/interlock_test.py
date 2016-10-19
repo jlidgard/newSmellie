@@ -16,7 +16,7 @@ nfail = 0
 
 try:
 
-    logging.debug( "Begin Testing SMELLIE Interlock. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%M-%d %H:%M:%S') ) )   
+    logging.debug( "Begin Testing SMELLIE Interlock. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
     #test current state. (in turn tests many of the getter functions).
     logging.debug( "Current state: {}".format( il.current_state() ) )
 

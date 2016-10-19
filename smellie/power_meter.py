@@ -1,11 +1,279 @@
 from smellie_config import PM_ADDRESS
-from powermeter.powerMeterUtil import selfTest, identificationQuery, setPowerUnit, getPowerUnit, getPowerReference, getPowerReferenceState, getPowerAutorangeMode, getSensorInformation, getCalibrationMessage, getAttenuation, getDarkAdjustmentState, getPhotodiodeResponsivity, getThermopileResponsivity, getPyrosensorResponsivity, setDisplayContrast, setDisplayBrightness, getBeamDiameter, measurePower, getAverageCount, setAverageCount, getWavelength, getPowerRange, getDarkOffset, startDarkOffsetAdjustment, cancelDarkOffsetAdjustment, setWavelength, portOpen, portClose
+from time import sleep
+from ctypes import OleDLL, create_string_buffer, c_int, c_double, c_uint, c_int16, c_int32, byref
+from smellie_config import PM_ADDRESS, PM_DLL_PATH, PM_STR_BUFFER_SIZE
+from functools import wraps
+import os
+
+class PMDLLError(Exception):
+    """
+    Raised if an exception is flagged up *during* a call to the .dll
+    """
+    pass
+
+class PMLogicError(Exception):
+    """
+    Raised *before* any call to the .dll if function arguments are incorrect
+    """
+    pass
 
 class PowerMeterHWError(Exception):
     """
     Thrown if an inconsistency is noticed *after* any hardware instruction is executed (i.e. a problem with the hardware itself)
     """
     pass
+
+# Open the .dll on import
+if not os.path.exists(PM_DLL_PATH):
+    raise PMLogicError("Cannot open dll on path {0}".format(PM_DLL_PATH))
+try:
+    dll = OleDLL(PM_DLL_PATH)
+except Exception as e:
+    raise PMLogicError("Opening dll failed! : {0}".format(str(e)))
+
+# Error Handling and Decoding
+def decode_error(iErr):
+    """
+    Decodes an error code thrown by the hardware. 
+    If the translation fails, this returns Power meter DLL: unknown error code.
+
+    :param iErr: .dll generated error code
+
+    :returns: error message
+    :type error message: string
+    """
+    taskHandle = GetTaskHandle()
+    str_buff = create_string_buffer(PM_STR_BUFFER_SIZE)
+    try:
+        dll.PM100DErrorMessage(byref(taskHandle), c_int32(iErr), None, str_buff, c_int32(PM_STR_BUFFER_SIZE) )
+        return str_buff.value
+    except WindowsError:
+        return "PM Library: unknown error code {0}".format(iErr)
+
+def raise_on_error_code(in_function):
+    """
+    OleDll automatically detects a non-zero exit code and throws a WindowsException.
+    This decorator produces a modified function that catches this, extracts and translates the error code, and throws a SepiaDLLError.
+
+    :param in_function: the function to wrap
+
+    :returns: a logically equivalent function that catches WindowsError exceptions thrown by ctypes, extracts and decodes the error code then re-throws as SepiaDLLError
+    """
+    @wraps(in_function)
+    def modified(*args, **kwargs):
+        try:
+            return in_function(*args, **kwargs)
+        except WindowsError as e:
+            raise PMDLLError(decode_error(e.winerror))
+    return modified
+
+@raise_on_error_code
+def getTaskHandle():
+    """   
+    :undocumented
+    """
+    taskHandle = c_uint(0)
+    dll.GetTaskHandle( PM_ADDRESS, byref(taskHandle) )
+    if (taskHandle.value == 0):
+        raise PMDLLError("Task handle not found.")
+    return taskHandle
+
+@raise_on_error_code
+def getAttenuation(taskHandle, attributeSetValue):
+    """   
+    :undocumented
+    """
+    retValue = c_double()
+    attributeSetValue = c_int16(attributeSetValue)
+    dll.PM100DGetAttenuation(byref(taskHandle), attributeSetValue, None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getDarkAdjustmentState(taskHandle):
+    """   
+    :undocumented
+    """
+    retValue = c_int16()
+    dll.PM100DGetDarkAdjustmentState(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getDarkOffset(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    dll.PM100DGetDarkOffset(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getPhotodiodeResponsivity(taskHandle, attributeSetValue):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    attributeSetValue = c_int16(attributeSetValue)
+    dll.PM100DGetPhotodiodeResponsivity(byref(taskHandle), attributeSetValue, None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getThermopileResponsivity(taskHandle, attributeSetValue):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    attributeSetValue = c_int16(attributeSetValue)
+    dll.PM100DGetThermopileResponsivity(byref(taskHandle), attributeSetValue, None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code   
+def getPyrosensorResponsivity(taskHandle, attributeSetValue):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    attributeSetValue = c_int16(attributeSetValue)
+    dll.PM100DGetPyrosensorResponsivity(byref(taskHandle), attributeSetValue, None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getCalibrationMessage(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    message = create_string_buffer(PM_STR_BUFFER_SIZE)
+    dll.PM100DGetCalibrationMessage(byref(taskHandle), None, message, PM_STR_BUFFER_SIZE)
+    return message.value
+
+@raise_on_error_code
+def getSensorInformation(taskHandle):
+    """
+    :undocumented
+    """
+    
+    sensorFlags = c_int16()
+    sensorSubtype = c_int16()
+    sensorType = c_int16()
+    sensorCalibrationMessage = create_string_buffer(PM_STR_BUFFER_SIZE)
+    sensorName = create_string_buffer(PM_STR_BUFFER_SIZE)
+    sensorSerialNumber = create_string_buffer(PM_STR_BUFFER_SIZE)
+    
+    dll.PM100DGetSensorInformation(byref(taskHandle), byref(sensorFlags), byref(sensorSubtype), byref(sensorType), sensorCalibrationMessage, None, sensorName, sensorSerialNumber, PM_STR_BUFFER_SIZE, PM_STR_BUFFER_SIZE, PM_STR_BUFFER_SIZE)
+    return sensorFlags.value, sensorSubtype.value, sensorType.value, sensorCalibrationMessage.value, sensorName.value, sensorSerialNumber.value
+
+@raise_on_error_code
+def getPowerAutorangeMode(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_int()
+    dll.PM100DGetPowerAutorangeMode(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getPowerReferenceState(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_int()
+    dll.PM100DGetPowerReferenceState(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getPhotodiodeInputFilterState(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_int()
+    dll.PM100DGetPhotodiodeInputFilterState(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+    
+@raise_on_error_code
+def getPowerReference(taskHandle, attributeSetValue):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    attributeSetValue = c_int16(attributeSetValue)
+    dll.PM100DGetPowerReference(byref(taskHandle), attributeSetValue, None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def getPowerUnit(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_int16()
+    dll.PM100DGetPowerUnit(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def setPowerUnit(taskHandle, setValue):
+    """
+    :undocumented
+    """
+    setValue = c_int16(setValue)
+    dll.PM100DSetPowerUnit(byref(taskHandle), setValue, None)
+    return 0
+    
+@raise_on_error_code
+def getDisplayContrast(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    dll.PM100DGetDisplayContrast(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+
+@raise_on_error_code
+def setDisplayContrast(taskHandle, setValue):
+    """
+    :undocumented
+    """
+    setValue = c_double(setValue)
+    dll.PM100DSetDisplayContrast(byref(taskHandle), setValue, None)
+    return 0
+    
+@raise_on_error_code
+def getDisplayBrightness(taskHandle):
+    """
+    :undocumented
+    """
+    retValue = c_double()
+    dll.PM100DGetDisplayBrightness(byref(taskHandle), None, byref(retValue))
+    return retValue.value
+    
+@raise_on_error_code
+def setDisplayBrightness(taskHandle, setValue):
+    """
+    :undocumented
+    """
+    setValue = c_double(setValue)
+    dll.PM100DSetDisplayBrightness(byref(taskHandle), setValue, None)
+    return 0
+    
+@raise_on_error_code
+def identificationQuery(taskHandle):
+    """
+    :undocumented
+    """
+    firmwareRevision = create_string_buffer(PM_STR_BUFFER_SIZE)
+    serialNumber = create_string_buffer(PM_STR_BUFFER_SIZE)
+    manufacturerName = create_string_buffer(PM_STR_BUFFER_SIZE)
+    deviceName = create_string_buffer(PM_STR_BUFFER_SIZE)
+    dll.PM100DIdentificationQuery(byref(taskHandle), firmwareRevision, serialNumber, None, manufacturerName, deviceName, c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE) )
+    return firmwareRevision.value, serialNumber.value, manufacturerName.value, deviceName.value
+
+@raise_on_error_code
+def selfTest(taskHandle):
+    """
+    :undocumented
+    """
+    selfTestMessage = create_string_buffer(PM_STR_BUFFER_SIZE)
+    selfTestResult = c_int16()
+    dll.PM100DSelfTest(byref(taskHandle), None, selfTestResult, selfTestMessage, c_int32(PM_STR_BUFFER_SIZE) )
+    return selfTestResult.value, selfTestMessage.value
 
 class PowerMeter(object):
 
@@ -14,85 +282,123 @@ class PowerMeter(object):
         self.taskHandle = None
         self.attributeValue = 0
 
+    @raise_on_error_code
     def get_beam_diameter(self):
-        """   
-        undocumented
         """
-        return getBeamDiameter(self.taskHandle, self.attributeValue)
-        
-    def get_power(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
+        :undocumented
         """
-        return measurePower(self.taskHandle)
-        
-    def get_wavelength(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
-        """
-        return getWavelength(self.taskHandle, self.attributeValue)
-        
-    def get_power_range(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
-        """
-        return getPowerRange(self.taskHandle, self.attributeValue)
-        
-    def get_dark_offset(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
-        """
-        return getDarkOffset(self.taskHandle)
-        
-    def set_dark_offset_cancel(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
-        """
-        cancelDarkOffsetAdjustment(self.taskHandle)
-        
-    def set_dark_offset(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
-        """
-        startDarkOffsetAdjustment(self.taskHandle)
+        retValue = c_double()
+        dll.PM100DGetBeamDiameter(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
+        return retValue.value
 
+    @raise_on_error_code
+    def get_power(self):
+        """
+        :undocumented
+        """
+        retValue = c_double()
+        dll.PM100DMeasurePower(byref(self.taskHandle), None, byref(retValue))
+        return retValue.value
+        
+    @raise_on_error_code
+    def get_wavelength(self):
+        """
+        :undocumented
+        """
+        retValue = c_double()
+        dll.PM100DGetWavelength(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
+        return retValue.value
+        
+    @raise_on_error_code
+    def get_power_range(self):
+        """
+        :undocumented
+        """
+        retValue = c_double()
+        dll.PM100DGetPowerRange(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
+        return retValue.value
+        
+    @raise_on_error_code
+    def get_dark_offset(self):
+        """
+        :undocumented
+        """
+        retValue = c_double()
+        dll.PM100DGetDarkOffset(byref(self.taskHandle), None, byref(retValue))
+        return retValue.value
+        
+    @raise_on_error_code
+    def set_dark_offset_cancel(self):
+        """
+        :undocumented
+        """
+        dll.PM100DCancelDarkAdjustment(byref(self.taskHandle), None)
+        return 0
+        
+    @raise_on_error_code
+    def set_dark_offset(self):
+        """
+        :undocumented
+        """
+        dll.PM100DStartDarkOffsetAdjustment(byref(self.taskHandle), None)
+        return 0
+
+    @raise_on_error_code
     def set_wavelength(self, setValue):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        setWavelength(self.taskHandle, setValue)
+        :undocumented
+        """
+        setValue = c_double(setValue)
+        dll.PM100DSetWavelength(byref(self.taskHandle), setValue, None)
         return 0
         
+    @raise_on_error_code
     def set_average_count(self, setValue):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        setAverageCount(self.taskHandle, setValue)
+        :undocumented
+        """
+        setValue = c_int16(setValue)
+        dll.PM100DSetAverageCount(byref(self.taskHandle), setValue, None)
         return 0
         
+    @raise_on_error_code
     def get_average_count(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        return getAverageCount(self.taskHandle)
+        :undocumented
+        """
+        retValue = c_int16()
+        dll.PM100DGetAverageCount(byref(self.taskHandle), None, byref(retValue))
+        return retValue.value
         
+    @raise_on_error_code
     def port_open(self, iDQueryDoQuery=1, resetDevice=1):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        self.taskHandle = portOpen(self.COMPort, iDQueryDoQuery, resetDevice)
+        iDQueryDoQuery = c_int16(iDQueryDoQuery)
+        resetDevice = c_int16(resetDevice)
+        taskHandle = c_uint()
+        dll.Initialise(self.COMPort, iDQueryDoQuery, resetDevice, byref(taskHandle) )
+        self.taskHandle = taskHandle
+        
+        #run a quick self test
         selfTestResult, selfTestMessage = selfTest(self.taskHandle)
+
         if selfTestResult != 0:
             raise PowerMeterHWError("Self test of device failed. {}".format(message))
+        
+        #set default settings
         self.default_settings()
+        
         return 0
 
+    @raise_on_error_code
     def port_close(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        portClose(self.taskHandle)
-
+        dll.PM100DClose( byref(self.taskHandle) ) 
+    
     def default_settings(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
@@ -113,8 +419,6 @@ class PowerMeter(object):
         setPowerUnit(self.taskHandle,0)
         ##PM100DSetPyrosensorResponsivity
         ##PM100DSetThermopileResponsivity
-        
-        #add more here
 
     def current_state(self):
         """

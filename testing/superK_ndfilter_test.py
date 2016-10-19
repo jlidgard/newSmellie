@@ -23,7 +23,7 @@ npass = 0
 nfail = 0
 
 try:
-    logging.debug( "Begin Testing SMELLIE ND filter. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%M-%d %H:%M:%S') ) )   
+    logging.debug( "Begin Testing SMELLIE ND filter. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
     
     fs.set_global_channel_number(70)
     
@@ -33,7 +33,7 @@ try:
     COMPort = "COM4"
     controlBits = SuperK.getSuperKControls(COMPort)
     controlBits.trigMode = 0
-    controlBits.internalPulseFreqHz = 10000
+    controlBits.internalPulseFreqHz = 20000
     SuperK.setSuperKControls(COMPort,controlBits)
 
     wavelengths = range(405,721,10)

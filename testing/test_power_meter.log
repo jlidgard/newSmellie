@@ -40,3 +40,10 @@ DEBUG:root:Test setting wavelength: 510.0
 DEBUG:root:Restore original channel: 500.0
 DEBUG:root:Test PASSED
 DEBUG:root:Finished Testing SMELLIE Power Meter, pass: 2/2, fail:0/2
+DEBUG:root:Begin Testing SMELLIE Power Meter. 2016-10-18 20:51:00
+DEBUG:root:Current state: ID: ('2.3.0', 'P0005368', 'Thorlabs', 'PM100D'), SelfTest: (0, 'Operation completed successfully.'), PowerUnit: 0(0=W,1=dB), PowerReference: 2.46242398e-05, ReferenceState:0, AutorangeMode: 1, SensorInformation: (289, 18, 1, '02-Nov-2012', 'S120VC', '12103156')        , PhotodiodeFilterState:1, CalibrationMessage:Calibrated: 14-Nov-2012, Attenuation: 0.0, DarkAdjustmentState: 0, DarkOffset: -2.63168758e-11, PhotodiodeResponsivity: 0.0277988613, ThermopileResponsivity: 0.0277988613, PyrosensorResponsivity: 0.0277988613,         BeamDiameter: 9.5, Wavelength: 400.0
+DEBUG:root:Test PASSED
+DEBUG:root:Test setting wavelength: 410.0
+DEBUG:root:Restore original channel: 400.0
+DEBUG:root:Test PASSED
+DEBUG:root:Finished Testing SMELLIE Power Meter, pass: 2/2, fail:0/2
