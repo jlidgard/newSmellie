@@ -16,7 +16,11 @@ nfail = 0
 
 try:
 
-    logging.debug( "Begin Testing SMELLIE Fibre Switch. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
+    logging.debug( "Begin Testing SMELLIE Fibre Switch. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
+    
+    #open serial connection
+    fs.port_open()
+    
     #test current state. (in turn tests many of the getter functions).
     logging.debug( "Current state: {}".format( fs.current_state() ) )
 
@@ -42,6 +46,9 @@ try:
     else: 
         logging.debug("Test FAILED")
         nfail+=1
+        
+    #close serial connection
+    fs.port_close()
     
     logging.debug( "Finished Testing SMELLIE Fibre Switch, pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
     

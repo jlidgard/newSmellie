@@ -82,7 +82,7 @@ class LaserSwitch(object):
         sleep(0.1)
 
         sleep(RELAY_SLEEP)
-        #self.force_USB_restart() #can only do this if no other devices are connected (and open) on same hub
+        #self.force_USB_restart() #should not have to do this now!. Beware of other devices same hub
         #sleep(RELAY_SLEEP)
         
     def get_selected_channel(self):
@@ -143,7 +143,7 @@ class LaserSwitch(object):
         
     def force_USB_restart(self):
         """
-        Resets the USB internal hub (to resolve USB errors)
+        Resets the USB internal hub (to resolve USB errors). Should no longer need this! This was only to reset the sepia controller when it had problems being disconnected by the laser switch (when reconnecting to USB).
         
         :returns: successful reset (True) or otherwise (False) (boolean)
         """

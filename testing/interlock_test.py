@@ -16,7 +16,11 @@ nfail = 0
 
 try:
 
-    logging.debug( "Begin Testing SMELLIE Interlock. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
+    logging.debug( "Begin Testing SMELLIE Interlock. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) ) 
+
+    #open serial connection
+    il.port_open()
+    
     #test current state. (in turn tests many of the getter functions).
     logging.debug( "Current state: {}".format( il.current_state() ) )
 
@@ -24,7 +28,7 @@ try:
     logging.debug("Test Sending Arm then a Disarm")
     il.set_arm()
     il.set_disarm()
-    status = il.get_status_boolean()
+    status = il.is_interlocked()
     logging.debug("Get status: {}, state: {}".format( il.get_status(), status ) )
     if (status==0): 
         logging.debug("Test PASSED")
@@ -35,11 +39,11 @@ try:
     
     #test arm timeout
     logging.debug("Test Sending Arm and waiting for time-out (no keepalive sent): {}".format( il.set_arm() ) )
-    status = il.get_status_boolean()
+    status = il.is_interlocked()
     logging.debug("Get state: {}".format( status ) )
     logging.debug("Wait 1.1 seconds")
     time.sleep(1.1)
-    status2 = il.get_status_boolean()
+    status2 = il.is_interlocked()
     logging.debug("Get state: {}".format( status2 ) )
     if (status==1 and status2==0): 
         logging.debug("Test PASSED")
@@ -50,14 +54,14 @@ try:
     
     #test sending keepalive
     logging.debug("Test Sending Arm with keep alive @ 1Hz: {}".format( il.set_arm() ) )
-    status = il.get_status_boolean()
+    status = il.is_interlocked()
     pulses = 0
     while (pulses < 5):
         pulses+=1
         logging.debug("Test keep alive pulse {}".format( pulses ) )
         il.send_keepalive()
         time.sleep(1)
-    status2 = il.get_status_boolean()
+    status2 = il.is_interlocked()
     logging.debug("Get state: {}".format( status2 ) )
     if (status==1 and status2==1): 
         logging.debug("Test PASSED")
@@ -65,6 +69,9 @@ try:
     else: 
         logging.debug("Test FAILED")
         nfail+=1
+        
+    #close serial connection
+    il.port_close()
     
     logging.debug( "Finished Testing SMELLIE Fibre Switch, pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
     

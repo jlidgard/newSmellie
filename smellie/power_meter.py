@@ -252,18 +252,6 @@ def setDisplayBrightness(taskHandle, setValue):
     setValue = c_double(setValue)
     dll.PM100DSetDisplayBrightness(byref(taskHandle), setValue, None)
     return 0
-    
-@raise_on_error_code
-def identificationQuery(taskHandle):
-    """
-    :undocumented
-    """
-    firmwareRevision = create_string_buffer(PM_STR_BUFFER_SIZE)
-    serialNumber = create_string_buffer(PM_STR_BUFFER_SIZE)
-    manufacturerName = create_string_buffer(PM_STR_BUFFER_SIZE)
-    deviceName = create_string_buffer(PM_STR_BUFFER_SIZE)
-    dll.PM100DIdentificationQuery(byref(taskHandle), firmwareRevision, serialNumber, None, manufacturerName, deviceName, c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE) )
-    return firmwareRevision.value, serialNumber.value, manufacturerName.value, deviceName.value
 
 @raise_on_error_code
 def selfTest(taskHandle):
@@ -281,7 +269,40 @@ class PowerMeter(object):
         self.COMPort = PM_ADDRESS
         self.taskHandle = None
         self.attributeValue = 0
+        self.isConnected = None
 
+    @raise_on_error_code
+    def port_open(self, iDQueryDoQuery=1, resetDevice=1):
+        """   
+        :returns: ctype string buffer, the size of which is set in :mod:config
+        """
+        iDQueryDoQuery = c_int16(iDQueryDoQuery)
+        resetDevice = c_int16(resetDevice)
+        taskHandle = c_uint()
+        dll.Initialise(self.COMPort, iDQueryDoQuery, resetDevice, byref(taskHandle) )
+        self.taskHandle = taskHandle
+        
+        #run a quick self test
+        selfTestResult, selfTestMessage = selfTest(self.taskHandle)
+
+        if selfTestResult != 0:
+            raise PowerMeterHWError("Self test of device failed. {}".format(message))
+        
+        #set default settings
+        self.default_settings()
+        
+        self.isConnected = True
+        return 0
+
+    @raise_on_error_code
+    def port_close(self):
+        """   
+        :returns: ctype string buffer, the size of which is set in :mod:config
+        """
+        dll.PM100DClose( byref(self.taskHandle) ) 
+        self.isConnected = False
+        return 0
+        
     @raise_on_error_code
     def get_beam_diameter(self):
         """
@@ -369,36 +390,8 @@ class PowerMeter(object):
         retValue = c_int16()
         dll.PM100DGetAverageCount(byref(self.taskHandle), None, byref(retValue))
         return retValue.value
-        
-    @raise_on_error_code
-    def port_open(self, iDQueryDoQuery=1, resetDevice=1):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
-        """
-        iDQueryDoQuery = c_int16(iDQueryDoQuery)
-        resetDevice = c_int16(resetDevice)
-        taskHandle = c_uint()
-        dll.Initialise(self.COMPort, iDQueryDoQuery, resetDevice, byref(taskHandle) )
-        self.taskHandle = taskHandle
-        
-        #run a quick self test
-        selfTestResult, selfTestMessage = selfTest(self.taskHandle)
-
-        if selfTestResult != 0:
-            raise PowerMeterHWError("Self test of device failed. {}".format(message))
-        
-        #set default settings
-        self.default_settings()
-        
-        return 0
-
-    @raise_on_error_code
-    def port_close(self):
-        """   
-        :returns: ctype string buffer, the size of which is set in :mod:config
-        """
-        dll.PM100DClose( byref(self.taskHandle) ) 
     
+    @raise_on_error_code
     def default_settings(self):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
@@ -419,7 +412,41 @@ class PowerMeter(object):
         setPowerUnit(self.taskHandle,0)
         ##PM100DSetPyrosensorResponsivity
         ##PM100DSetThermopileResponsivity
+        return 0
 
+    @raise_on_error_code
+    def identificationQuery(self):
+        """
+        :undocumented
+        """
+        firmwareRevision = create_string_buffer(PM_STR_BUFFER_SIZE)
+        serialNumber = create_string_buffer(PM_STR_BUFFER_SIZE)
+        manufacturerName = create_string_buffer(PM_STR_BUFFER_SIZE)
+        deviceName = create_string_buffer(PM_STR_BUFFER_SIZE)
+        dll.PM100DIdentificationQuery(byref(self.taskHandle), firmwareRevision, serialNumber, None, manufacturerName, deviceName, c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE), c_int32(PM_STR_BUFFER_SIZE) )
+        return firmwareRevision.value, serialNumber.value, manufacturerName.value, deviceName.value
+        
+    def is_connected(self):
+        """   
+        Check if the connection to the device is open
+        """
+        return self.isConnected
+        
+    def is_alive(self):
+        """
+        Quick check alive or not.
+        """
+        isAlive = None
+        if self.isConnected:
+            firmwareRevision, serialNumber, manufacturerName, deviceName = self.identificationQuery() #choose to check the HW model:
+        else: 
+            self.port_open(iDQueryDoQuery=0, resetDevice=0)
+            firmwareRevision, serialNumber, manufacturerName, deviceName = self.identificationQuery()
+            self.port_close()   
+        if (manufacturerName+deviceName == 'ThorlabsPM100D'): isAlive = True
+        else: isAlive = False
+        return isAlive
+        
     def current_state(self):
         """
         Returns a formatted string with the current hardware settings
@@ -427,7 +454,7 @@ class PowerMeter(object):
         return "ID: {}, SelfTest: {}, PowerUnit: {}(0=W,1=dB), PowerReference: {}, ReferenceState:{}, AutorangeMode: {}, SensorInformation: {}\
         , PhotodiodeFilterState:{}, CalibrationMessage:{}, Attenuation: {}, DarkAdjustmentState: {}, DarkOffset: {}, PhotodiodeResponsivity: {}, ThermopileResponsivity: {}, PyrosensorResponsivity: {}, \
         BeamDiameter: {}, Wavelength: {}".format(
-           identificationQuery(self.taskHandle),
+           self.identificationQuery(),
            selfTest(self.taskHandle),
            getPowerUnit(self.taskHandle),
            getPowerReference(self.taskHandle, self.attributeValue),

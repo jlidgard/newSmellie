@@ -16,7 +16,10 @@ nfail = 0
 
 try:
 
-    logging.debug( "Begin Testing SMELLIE Power Meter. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
+    logging.debug( "Begin Testing SMELLIE Power Meter. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) ) 
+
+    #open USB connection
+    pm.port_open()  
     
     #test current state. (in turn tests many of the getter functions).
     pm.port_open() #raises exception if not opened correctly
@@ -50,6 +53,7 @@ try:
         logging.debug("Test FAILED")
         nfail+=1
     
+    #close USB connection
     pm.port_close()
     
     logging.debug( "Finished Testing SMELLIE Power Meter, pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )

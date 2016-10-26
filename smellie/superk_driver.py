@@ -1,6 +1,6 @@
 from smellie_config import SK_COM_PORT
-from superk.SuperK import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
-from superk.variaMotor import VariaMotor
+from smellie.superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
+from smellie.varia_motor import VariaMotor
 
 from ctypes import c_uint32, c_uint16, c_uint8
 
@@ -10,11 +10,12 @@ class SuperKHWError(Exception):
     """
     pass
 
-class SuperK(object):
+class SuperKDriver(object):
 
     def __init__(self):
         self.COMPort = SK_COM_PORT
         self.NDfilter = VariaMotor()
+        self.isConnected = None
         
     def port_open(self):
         """
@@ -22,7 +23,24 @@ class SuperK(object):
         """
         #open superK
         portOpen(self.COMPort)
+        self.default_settings()
+        #open varia ND filter arduino motor controller
+        self.NDfilter.port_open()
+        self.isConnected = True
+        return 0
+
+    def port_close(self):
+        """
+        undocumented
+        """
+        #open superK
+        portClose(self.COMPort)
+        #close varia ND filter arduino motor controller
+        self.NDfilter.port_close()
+        self.isConnected = False
+        return 0
         
+    def default_settings(self):
         superKControls = superKControlStructure()
         superKControls.trigLevelSetpointmV = c_uint16(1000) #c_uint16
         superKControls.displayBacklightPercent = c_uint8(0) #c_uint8
@@ -32,20 +50,8 @@ class SuperK(object):
         superKControls.watchdogIntervalSec = c_uint8(0) #c_uint8
         superKControls.internalPulseFreqLimitHz = c_uint32(0) #c_uint32
         setSuperKControls(self.COMPort,superKControls)
-        
-        #open varia ND filter arduino motor controller
-        self.NDfilter.open_controller()
-
-    def port_close(self):
-        """
-        undocumented
-        """
-        #open superK
-        portClose(self.COMPort)
-           
-        #close varia ND filter arduino motor controller
-        self.NDfilter.close_controller()
-
+        return 0
+    
     def go_ready(self, intensity, low_wavelength, high_wavelength):
         """
         undocumented
@@ -61,6 +67,7 @@ class SuperK(object):
             setSuperKControlInterlock(self.COMPort,1) #setting interlock to 1 unlocks laser (status bit shows 0 for interlock off)
         if superKStatus.bit0!=1:
             setSuperKControlEmission(self.COMPort,1)
+        return 0
         
     def go_safe(self):
         """
@@ -83,7 +90,7 @@ class SuperK(object):
             setSuperKControlEmission(self.COMPort,0) #emission before interlock when shutting down (or interlock warning)
         if superKStatus.bit1!=1:
             setSuperKControlInterlock(self.COMPort,0) #setting interlock to 0 locks laser (status bit shows 1 for interlock on)
-
+        return 0
 
     def varia_go_safe(self):
         """
@@ -93,9 +100,9 @@ class SuperK(object):
         NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom = getVariaControls(self.COMPort)
         if (intensity*10!=0 and low_wavelength!=7900 and high_wavelength!=8000):
             setVariaControls(self.COMPort,0,8000,7900)
-        
         #logging.error( 'Error Setting SuperK Safe States. ErrorCode: {}'.format( errorCode ) )
-
+        return 0
+        
     def get_identity(self):
         """
         undocumented
@@ -117,7 +124,34 @@ class SuperK(object):
         
     def NDfilter_set_reference(self):
         self.NDfilter.set_reference_position()
+        return 0
         
+    def is_connected(self):
+        """   
+        Check if the connection to the device is open
+        """
+        return self.isConnected
+        
+    def is_alive(self):
+        """
+        Quick check alive or not.
+        """
+        isAlive = None
+        if self.isConnected:
+            checkValue = getSuperKInfo(self.COMPort) #check superK Compact HW model ('74')
+            checkValue2 = getVariaInfo(self.COMPort) #check superK Varia HW model ('68')
+            checkValue3 = self.NDfilter.is_alive() #check variamotor controller
+            
+        else: 
+            self.port_open()
+            checkValue = getSuperKInfo(self.COMPort)
+            checkValue2 = getVariaInfo(self.COMPort)
+            checkValue3 = self.NDfilter.is_alive()
+            self.port_close()   
+        if (checkValue[2] == '74' and checkValue2[2] == '68' and checkValue3 == True): isAlive = True
+        else: isAlive = False
+        return isAlive
+
     def current_state(self):
         """
         Returns a formatted string with the current hardware settings

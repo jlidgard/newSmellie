@@ -29,8 +29,9 @@ class LaserDriver(object):
         self.dev_id  = LASER_DRIVER_DEV_ID
         self.driver_slot_id = LASER_DRIVER_SLOT_ID
         self.laser_slot_id = LASER_SLOT_ID
+        self.isConnected = None
 
-    def open_connection(self):
+    def port_open(self):
         """
         Open the USB connection to SEPIA
         """
@@ -42,13 +43,15 @@ class LaserDriver(object):
         
         self.check_pulse_mode()
         self.check_trig_mode()
+        self.isConnected = True
 
-    def close_connection(self):
+    def port_close(self):
         """
         (Cleanly!) close the USB connection to SEPIA
         """
         free_module_map(self.dev_id)
         close_usb_device(self.dev_id)
+        self.isConnected = False
 
     def get_pulse_params(self):
         """
@@ -160,6 +163,27 @@ class LaserDriver(object):
         Get the current SEPIA firmware version as a string
         """
         return get_fwr_version(self.dev_id)
+        
+    def is_connected(self):
+        """   
+        Check if the connection to the device is open
+        """
+        return self.isConnected
+        
+    def is_alive(self):
+        """
+        Quick check alive or not.
+        """
+        isAlive = None
+        if self.isConnected:
+            checkValue = self.get_firmware_version() #choose to check the firmware version:
+        else: 
+            self.port_open()
+            checkValue = self.get_firmware_version()
+            self.port_close()
+        if (checkValue == '1.05.419'): isAlive = True #current firmware version 1.05.419
+        else: isAlive = False
+        return isAlive
 
     def current_state(self):
         """

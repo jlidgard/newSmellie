@@ -19,8 +19,9 @@ class VariaMotor(object):
         Controls the arduino stepper motor controller attached to the Varia ND filter.
         """
         self.serial = None
+        self.isConnected = None
          
-    def open_controller(self):
+    def port_open(self):
         """
         Send a command message over the serial port for the motor controller to execute.  The message is automatically followed by \\r\\n , so you do not need to add this.
 
@@ -33,8 +34,9 @@ class VariaMotor(object):
         self.serial.flushInput()
         self.serial.flushOutput()
         sleep(VARIAMOTOR_WAIT_TIME)
+        self.isConnected = True
             
-    def close_controller(self):
+    def port_close(self):
         """
         Send a command message over the serial port for the motoro controller to execute.  The message is automatically followed by \\r\\n , so you do not need to add this.
 
@@ -42,6 +44,7 @@ class VariaMotor(object):
         :type msg: string
         """    
         if (self.serial.isOpen() ): self.serial.close()
+        self.isConnected = False
                     
     def execute_message(self, msg):
         """
@@ -151,12 +154,33 @@ class VariaMotor(object):
         else: homeStatus = None
         return homeStatus
 
+    def is_connected(self):
+        """   
+        Check if the connection to the device is open
+        """
+        return self.isConnected
+        
+    def is_alive(self):
+        """
+        Quick check alive or not.
+        """
+        isAlive = None
+        if self.isConnected:
+            checkValue = self.get_home_status() #choose to check the home status
+        else: 
+            self.port_open()
+            checkValue = self.get_home_status()
+            self.port_close()   
+        if (checkValue == True or checkValue == False): isAlive = True
+        else: isAlive = False
+        return isAlive
+        
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
 
         :returns: 'variaMotor:: Port:{}, Baudrate:{}, Current Position:{}, Set Max Speed: {}'
         """
-        return "variaMotor:: Port:{}, Baudrate:{}, Position:{}, Speed: {}".format( self.serial.port, self.serial.baudrate, self.get_position() , self.get_speed() )
+        return "variaMotor:: Position:{}, Speed: {}".format( self.get_position() , self.get_speed() )
 
 

@@ -1,5 +1,5 @@
 from time import sleep
-from ctypes import OleDLL, create_string_buffer, c_double, c_int16, c_int32, byref
+from ctypes import cdll,OleDLL, create_string_buffer, c_double, c_int16, c_int32, byref
 from smellie_config import SPEC_DLL1_PATH, SPEC_DLL2_PATH, SPEC_STR_BUFFER_SIZE
 from functools import wraps
 import os
@@ -30,7 +30,9 @@ class SpecLogicError(Exception):
 if not os.path.exists(SPEC_DLL1_PATH):
     raise SpecLogicError("Cannot open dll on path {0}".format(SPEC_DLL1_PATH))
 try:
-    dll = OleDLL(SPEC_DLL1_PATH)
+    #dll = OleDLL(SPEC_DLL1_PATH)
+    dll = cdll.LoadLibrary(SPEC_DLL1_PATH)
+    #libc = cdll.msvcrt
 except Exception as e:
     raise SpecLogicError("Opening dll failed! : {0}".format(str(e))) 
 
@@ -76,6 +78,37 @@ def raise_on_error_code(in_function):
 #    console.setLevel(logging.INFO)
 #    logging.getLogger('').addHandler(console)
     
+def initialise():
+    """   
+    :undocumented
+    """
+    wrapper = createWrapper()
+    openAllSpectrometers(wrapper)
+    getName(wrapper)
+    getFirmwareVersion(wrapper)
+    getSerialNumber(wrapper)
+    
+    #set acquisition parameters
+    setExternalTriggerMode(wrapper,0)
+    setBoxcarWidth(wrapper, 0)
+    setCorrectForDetectorNonlinearity(wrapper,1)
+    setCorrectForElectricalDark(wrapper,1)
+    setIntegrationTime(wrapper,10000)
+    setScansToAverage(wrapper,1)
+    
+    #set external trigger delay
+    extTrigDelay = getFeatureControllerExternalTriggerDelay(wrapper)
+    setExternalTriggerDelay(extTrigDelay,1000)
+
+def shutdown(wrapper):
+    """   
+    :undocumented
+    """
+    destroyExternalTriggerDelay()
+    closeAllSpectrometers(wrapper)    
+    destroyWrapper(wrapper)
+    
+    
 @raise_on_error_code
 def createWrapper():
     """   
@@ -104,6 +137,7 @@ def openAllSpectrometers(wrapper):
     numberOfSpectrometers = c_int32(-1)
     dll.Wrapper_openAllSpectrometers(wrapper, byref(numberOfSpectrometers) )
     #logging.info( 'Open All Spectrometers: {}, number of spectrometers: {}'.format(wrapper.value, numberOfSpectrometers.value) )
+    return numberOfSpectrometers
 
 def closeAllSpectrometers(wrapper):
     """   
@@ -473,33 +507,3 @@ def setExternalTriggerDelay(externalTriggerDelay,value):
         #logging.info( 'Set External Trigger Delay: {}'.format(delayTime.value) )
     else:
         raise SpecLogicError( 'Unable to Set External Trigger Delay. Tried: {}. Must be greater than {} and less than {}.'.format(delayTime.value,minTime,maxTime) )
-
-def initialise(runNumber):
-    """   
-    :undocumented
-    """
-    wrapper = createWrapper(runNumber)
-    openAllSpectrometers(wrapper)
-    getName(wrapper)
-    getFirmwareVersion(wrapper)
-    getSerialNumber(wrapper)
-    
-    #set acquisition parameters
-    setExternalTriggerMode(wrapper,0)
-    setBoxcarWidth(wrapper, 0)
-    setCorrectForDetectorNonlinearity(wrapper,1)
-    setCorrectForElectricalDark(wrapper,1)
-    setIntegrationTime(wrapper,10000)
-    setScansToAverage(wrapper,1)
-    
-    #set external trigger delay
-    extTrigDelay = getFeatureControllerExternalTriggerDelay(wrapper)
-    setExternalTriggerDelay(extTrigDelay,1000)
-
-def shutdown(wrapper):
-    """   
-    :undocumented
-    """
-    destroyExternalTriggerDelay()
-    closeAllSpectrometers(wrapper)    
-    destroyWrapper(wrapper)
