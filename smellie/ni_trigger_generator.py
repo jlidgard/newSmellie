@@ -1,7 +1,7 @@
 import daqmx.functions
 import daqmx.constants
 from smellie_config import NI_DEV_NAME, TRIG_GEN_HIGH_TIME, TRIG_GEN_MINIMUM_LOW_TIME, TRIG_GEN_MAX_FREQUENCY, TRIG_GEN_MINIMUM_LOW_TIME, TRIG_GEN_PIN_OUT_PQ, TRIG_GEN_PIN_OUT_SUPERK
-from ctypes import byref
+from ctypes import byref, c_ulong, create_string_buffer
 
 """
 Generation of the SEPIA and SuperK trigger signals using the National Instruments (NI) Unit
@@ -18,6 +18,7 @@ class TriggerGenerator(object):
     """
     def __init__(self):
         self.taskHandle = None
+        self.dev_name = NI_DEV_NAME
     
     def _setup(self):
         """
@@ -28,7 +29,6 @@ class TriggerGenerator(object):
         self.low_time = (1.0 / self.frequency) - self.high_time
         if self.low_time < TRIG_GEN_MINIMUM_LOW_TIME:
             self.low_time = TRIG_GEN_MINIMUM_LOW_TIME
-        self.dev_name = NI_DEV_NAME
 
         self.taskHandle = daqmx.functions.TaskHandle(0)
         daqmx.functions.DAQmxCreateTask("", byref(self.taskHandle))
@@ -72,3 +72,23 @@ class TriggerGenerator(object):
             #time out should be rate of triggers * no of triggers, not -1.
         finally:
             self._cleanup()
+
+    def is_connected(self):
+        """   
+        Check if the connection to the device is open
+        For the NI device, this just calls is_alive()
+        """
+        return self.is_alive()
+        
+    def is_alive(self):
+        """
+        Quick check alive or not.
+        """
+        isAlive = None
+        checkValue = c_ulong()
+        str_buf = create_string_buffer(20)
+        daqmx.functions.DAQmxGetDevProductType(self.dev_name, str_buf, 20) #choose to check the HW model and serial ('USB-6211', '0x180a5e6' in hex)
+        daqmx.functions.DAQmxGetDevSerialNum(self.dev_name, byref(checkValue)) 
+        if (str_buf.value=='USB-6211' and hex(checkValue.value)=='0x180a5e6L'): isAlive = True
+        else: isAlive = False
+        return isAlive

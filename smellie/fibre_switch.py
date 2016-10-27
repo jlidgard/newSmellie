@@ -59,7 +59,7 @@ class FibreSwitch(object):
     def __init__(self):
         self.channel_num = None
         self.serial = None
-        self.isConnected = None
+        self.isConnected = False
         
     def port_open(self):
         """

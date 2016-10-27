@@ -21,8 +21,7 @@ try:
     #open USB connection
     pm.port_open()  
     
-    #test current state. (in turn tests many of the getter functions).
-    pm.port_open() #raises exception if not opened correctly
+    #test current state.
     logging.debug( "Current state: {}".format( pm.current_state() ) )
 
     if type(pm.get_power()) == float: 

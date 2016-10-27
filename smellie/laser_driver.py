@@ -29,7 +29,7 @@ class LaserDriver(object):
         self.dev_id  = LASER_DRIVER_DEV_ID
         self.driver_slot_id = LASER_DRIVER_SLOT_ID
         self.laser_slot_id = LASER_SLOT_ID
-        self.isConnected = None
+        self.isConnected = False
 
     def port_open(self):
         """

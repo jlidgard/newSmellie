@@ -2,8 +2,6 @@
 DUMMY_MODE = False
 
 # SEPIA Laser Driver
-#"C:\Program Files\PicoQuant\GenericLaserDriver\Sepia2_Lib.dll"
-#"C:\Program Files (x86)\PicoQuant\Sepia II\Demos\MSVCPP\Shared_MSVCPP\Sepia2_Lib.dll"
 SEPIA_DLL_PATH        = "C:\\Program Files\\PicoQuant\\GenericLaserDriver\\API\\x64\\Sepia2_Lib.dll"
 SEPIA_STR_BUFFER_SIZE = 128  # must be at minimum = 64 bytes
 LASER_DRIVER_DEV_ID   = 0
@@ -18,7 +16,7 @@ PORT = 5020
 LOGGER_PORT = 0
 
 # Fibre Switch 
-FIBRE_SWITCH_SERIAL_PORT = 5 # = COM6
+FIBRE_SWITCH_SERIAL_PORT = 5 # = actually COM6(i.e. COM number-1)
 FIBRE_SWITCH_BAUD_RATE   = 57600
 FIBRE_SWITCH_WAIT_TIME   = 0.1  # in seconds
 
@@ -54,8 +52,7 @@ PM_DLL_PATH = r"C:\SMELLIE\software\LabView\compiled libraries\powerMeterUtil.dl
 PM_STR_BUFFER_SIZE = 128
 
 # Spectrometer
-SPEC_DLL1_PATH = r"C:\SMELLIE\software\LabView\compiled libraries\OOUtil.dll"
-SPEC_DLL2_PATH = r"C:\Program Files\Ocean Optics\OmniDriver\OOI_HOME\common64.dll"
+SPEC_DLL_PATH = r"C:\SMELLIE\software\LabView\compiled libraries\OOUtil.dll"
 SPEC_STR_BUFFER_SIZE = 128
 
 # SuperK Laser

@@ -2,13 +2,9 @@
 # functions to test the functionality of the SuperK control code
 # Test with the spectrometer (or, alternatively the power meter)
 
-import logging, time, datetime
-from smellie import superk_driver
-from smellie import fibre_switch
-from smellie import power_meter
-from superk import SuperK
+import logging, time, datetime, numpy
+from smellie import superk_driver, fibre_switch, power_meter, SuperK
 #import matplotlib.pyplot as plt
-import numpy
 
 pm = power_meter.PowerMeter()
 fs = fibre_switch.FibreSwitch()

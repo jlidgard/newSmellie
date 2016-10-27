@@ -1,7 +1,6 @@
 # Test the SMELLIE NI trigger generator
 # functions to test the functionality of the NI trigger generator control code
 # Test while watching superK gui (shows trigger rate on gui)
-# not finished!
 
 import logging, time, datetime
 from smellie import laser_switch
@@ -22,8 +21,6 @@ try:
     logging.debug( "Current state: {}".format( ls.current_state() ) )
 
     #test set channel
-    time.sleep(1)
-    chan_original = ls.get_active_channel()
     
     if (chan_original>=0 and chan_original<=4): ls.set_active_channel(chan_original+1)
     elif (chan_original==5): ls.set_active_channel(chan_original-1)

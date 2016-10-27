@@ -10,7 +10,7 @@ class Spectrometer(object):
 
     def __init__(self):
         self.wrapper = createWrapper()
-        self.isConnected = None
+        self.isConnected = False
 
     def port_open(self):
         """   
@@ -45,15 +45,14 @@ class Spectrometer(object):
         """
         isAlive = None
         if self.isConnected:
-            checkValue = self.get_identity() #choose to check the firmware version ('1.05.419')
+            checkValue = self.get_identity() #choose to check the HW model ('USB2000+')
         else: 
             self.port_open()
             checkValue = self.get_identity()
-            print checkValue
             self.port_close()
-        if (checkValue[0] == '1.05.419'): isAlive = True
+        if (checkValue[0] == 'USB2000+'): isAlive = True
         else: isAlive = False
-        return checkValue
+        return isAlive
         
     def current_state(self):
         """

@@ -1,0 +1,20 @@
+DEBUG:root:Begin Testing SMELLIE equipment connection status: 2016-10-27 10:35:29
+DEBUG:root:Testing disconnected states (connection = False):
+DEBUG:root:Fibre Switch: False
+DEBUG:root:PQ Lasers: False
+DEBUG:root:Interlock: False
+DEBUG:root:Power Meter: False
+DEBUG:root:SuperK Laser: False
+DEBUG:root:Spectrometer: False
+DEBUG:root:Test PASSED
+DEBUG:root:Testing connected states (connection = True):
+DEBUG:root:Laser Switch: True
+DEBUG:root:NI DAQ: True
+DEBUG:root:Fibre Switch: True
+DEBUG:root:PQ Lasers: True
+DEBUG:root:Interlock: True
+DEBUG:root:Power Meter: True
+DEBUG:root:SuperK Laser: True
+DEBUG:root:Spectrometer: True
+DEBUG:root:Test PASSED
+DEBUG:root:Finished Testing SMELLIE equipment connection status. pass: 2/2, fail:0/2

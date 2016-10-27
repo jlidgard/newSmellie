@@ -19,7 +19,7 @@ class VariaMotor(object):
         Controls the arduino stepper motor controller attached to the Varia ND filter.
         """
         self.serial = None
-        self.isConnected = None
+        self.isConnected = False
          
     def port_open(self):
         """

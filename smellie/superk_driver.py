@@ -1,6 +1,7 @@
 from smellie_config import SK_COM_PORT
-from smellie.superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
-from smellie.varia_motor import VariaMotor
+from varia_motor import VariaMotor
+from superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
+
 
 from ctypes import c_uint32, c_uint16, c_uint8
 
@@ -10,12 +11,12 @@ class SuperKHWError(Exception):
     """
     pass
 
-class SuperKDriver(object):
+class SuperkDriver(object):
 
     def __init__(self):
         self.COMPort = SK_COM_PORT
         self.NDfilter = VariaMotor()
-        self.isConnected = None
+        self.isConnected = False
         
     def port_open(self):
         """

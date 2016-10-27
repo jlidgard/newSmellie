@@ -158,6 +158,23 @@ class LaserSwitch(object):
         if (response[-24:-2]=="1 device(s) restarted."): return True
         else: raise LaserSwitchHWError("Failed to reset the USB hub : ".format(response))
         
+    def is_connected(self):
+        """   
+        Check if the connection to the device is open
+        For the laser switch, this just calls is_alive()
+        """
+        return self.is_alive()
+        
+    def is_alive(self):
+        """
+        Quick check alive or not.
+        """
+        isAlive = None
+        checkValue = self.get_active_channel() #choose to check current active laser 
+        if (checkValue==1 or checkValue==2 or checkValue==3 or checkValue==4 or checkValue==5 ): isAlive = True
+        else: isAlive = False
+        return isAlive
+
     def current_state(self):
         """
         Return a formatted string with the current hardware settings

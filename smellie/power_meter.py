@@ -269,7 +269,7 @@ class PowerMeter(object):
         self.COMPort = PM_ADDRESS
         self.taskHandle = None
         self.attributeValue = 0
-        self.isConnected = None
+        self.isConnected = False
 
     @raise_on_error_code
     def port_open(self, iDQueryDoQuery=1, resetDevice=1):

@@ -20,18 +20,21 @@ class Interlock(object):
     def __init__(self):
         self.channel_num = None
         self.serial = None
+        self.isConnected = False
         
     def port_open(self):
         """
         Open the serial port connection
         """
         self.serial = Serial(INTERLOCK_SERIAL_PORT,INTERLOCK_BAUD_RATE,timeout=1)
+        self.isConnected = True
     
     def port_close(self):
         """
         Close the serial port connection
         """
         if (self.serial.isOpen() ): self.serial.close()
+        self.isConnected = False
         
     def execute_message(self, msg):
         """
