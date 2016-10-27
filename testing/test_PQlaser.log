@@ -1,0 +1,33 @@
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:37:25
+DEBUG:root:Current settings: Laser switch chan: 5, Fibre switch: 70, Power meter wavelength: 400.0
+DEBUG:root:Current state: Laser Locked : Unlocked, Soft Lock : Off, Intensity : 0/1000, Pulse Mode : True, Pulse Parameters : (6, 1, 3), Frequency Mode : rising  edge (ext.), Firmware Version : 1.05.419
+DEBUG:root:Begin intensity scan of laser: 4 (495nm)
+DEBUG:root:Exception:
+DEBUG:root:name 'laser' is not defined
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:39:19
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:39:21
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:39:23
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:40:18
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:40:26
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:41:05
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:41:31
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:41:35
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-27 11:42:31
+DEBUG:root:Exception:
+DEBUG:root:LIB: USB device open error
