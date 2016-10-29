@@ -5,17 +5,11 @@ import logging, time, datetime, numpy
 from multiprocessing.pool import ThreadPool
 from smellie import laser_driver, power_meter, fibre_switch, laser_switch, ni_trigger_generator
 
-def measure_power(power_n,time_delay):
-    power_entries = numpy.array([])
-    power_ranges = numpy.array([])
-    
-    for x in range(power_n+1):
-        power = pm.get_power()
-        power_entries = numpy.append(power_entries, power )
-        power_ranges = numpy.append(power_ranges, pm.get_power_range() )
-        time.sleep(time_delay)
-        
-    return numpy.mean(power_entries), numpy.std(power_entries), numpy.amax(power_ranges)
+def measure_power(nsamples,sample_rate):
+    print "Power measurement begin."
+    power_mean, power_sd, power_range = pm.get_mean_power(nsamples,sample_rate)
+    print "Power measurement finished."
+    return power_mean, power_sd, power_range
     
 def generate_triggers(n_pulses, repetition_rate):
     ni.generate_triggers(n_pulses, repetition_rate, 'SUPERK') 
@@ -64,11 +58,10 @@ if __name__ == "__main__":
         laser_numbers = range(1,5,1) #test lasers 1 thru 4
         intensities = range(0,2,1) #from 0 to 100% intensity
         wavelengths = (375, 407, 446, 495)
-        power_n = 10
-        time_delay = 0.01
-        generate_triggers_args = (10000, 10000)    
-        
-        measure_power(power_n, time_delay)
+        measure_power_args = (10,10) #(nsamples,rate)
+        trig_pulses = 30000
+        trig_rate = 10000 #Hz
+
 
         
         #for laser_number, wavelength in zip(laser_numbers,wavelengths):
@@ -88,11 +81,11 @@ if __name__ == "__main__":
 
         for intensity in intensities:
             
-            time.sleep(0.5)
-            async_generate_triggers = pool.apply_async(generate_triggers, generate_triggers_args)
-            async_generate_triggers.get()
-
-            power_mean, power_sd, power_range = measure_power()
+            async_measure_power = pool.apply_async(measure_power, measure_power_args)
+            print "Triggers begin."
+            ni.generate_triggers(trig_pulses, trig_rate, 'SUPERK')
+            print "Triggers finished."
+            power_mean, power_sd, power_range = async_measure_power.get()
             powerMean.append( power_mean )
             powerSD.append( power_sd )
             powerRange.append( power_range )

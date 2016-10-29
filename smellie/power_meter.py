@@ -1,6 +1,6 @@
 from smellie_config import PM_ADDRESS
 from time import sleep
-from ctypes import OleDLL, create_string_buffer, c_int, c_double, c_uint, c_int16, c_int32, byref
+from ctypes import OleDLL, create_string_buffer, c_int, c_double, c_uint, c_int16, c_int32, c_int64, byref
 from smellie_config import PM_ADDRESS, PM_DLL_PATH, PM_STR_BUFFER_SIZE
 from functools import wraps
 import os
@@ -320,6 +320,24 @@ class PowerMeter(object):
         retValue = c_double()
         dll.PM100DMeasurePower(byref(self.taskHandle), None, byref(retValue))
         return retValue.value
+        
+    @raise_on_error_code
+    def get_mean_power(self, nsamples, samplingRate):
+        """
+        :undocumented
+        """
+        #int32_t __cdecl MeanPower(uintptr_t *instrumentHandle, int32_t Samples, int64_t SamplingRateHz, double *mean, double *standardDeviation, double *maxRange);
+
+        retMean = c_double()
+        retSD = c_double()
+        retRange = c_double()
+        if nsamples>0 and samplingRate>0 and samplingRate<12:
+            retValue = dll.MeanPower(byref(self.taskHandle), c_int32(nsamples), c_int64(samplingRate), byref(retMean), byref(retSD), byref(retRange))
+            if retValue!=0: 
+                raise PMDLLError('Power meter cannot sample this fast. Select a slower rate. {}'.format(retValue))
+        else:
+            raise PMLogicError('Selected sampling rate too fast. Must be <10Hz.')
+        return retMean.value, retSD.value, retRange.value
         
     @raise_on_error_code
     def get_wavelength(self):

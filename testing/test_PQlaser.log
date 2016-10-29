@@ -1,0 +1,6 @@
+DEBUG:root:Begin Testing SMELLIE PQ lasers. 2016-10-29 17:16:47
+DEBUG:root:Begin intensity scan of laser: 4 (495nm)
+DEBUG:root:Exception:
+DEBUG:root:name 'trig_rate' is not defined
+DEBUG:root:Test PASSED
+DEBUG:root:Finished Testing SMELLIE SuperK, pass: 1/1, fail:0/1
