@@ -102,7 +102,7 @@ def set_intensity_fine_step(dev_id, slot_id, intensity):
     :param intensity: the requested laser head intensity
     :type intensity: int
     """
-    if not intensity in xrange(int(1e3)):
+    if not intensity in xrange(int(1e3+1)):
         raise SepiaLogicError("Cannot set the intensity fine step - must be an integer between 0 and 1000")
     dll.SEPIA2_SLM_SetIntensityFineStep(dev_id, slot_id, intensity)
 

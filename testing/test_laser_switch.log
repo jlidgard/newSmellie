@@ -10,3 +10,9 @@ DEBUG:root:Test setting channel: 1, ('selected' state: 1)
 DEBUG:root:Restore original channel: 0, ('selected' state: 0)
 DEBUG:root:Test PASSED
 DEBUG:root:Finished Testing SMELLIE Laser Switch, pass: 1/1, fail:0/1
+DEBUG:root:Begin Testing SMELLIE Laser Switch. 2016-10-29 18:52:04
+DEBUG:root:Current state: Active channel : 1 Selected channel : 2
+DEBUG:root:Test setting channel: 2, ('selected' state: 2)
+DEBUG:root:Restore original channel: 1, ('selected' state: 1)
+DEBUG:root:Test PASSED
+DEBUG:root:Finished Testing SMELLIE Laser Switch, pass: 1/1, fail:0/1

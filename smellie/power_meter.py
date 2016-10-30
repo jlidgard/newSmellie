@@ -30,7 +30,8 @@ try:
     dll = OleDLL(PM_DLL_PATH)
 except Exception as e:
     raise PMLogicError("Opening dll failed! : {0}".format(str(e)))
-
+    
+    
 # Error Handling and Decoding
 def decode_error(iErr):
     """
@@ -276,6 +277,7 @@ class PowerMeter(object):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
+        
         iDQueryDoQuery = c_int16(iDQueryDoQuery)
         resetDevice = c_int16(resetDevice)
         taskHandle = c_uint()
@@ -301,6 +303,9 @@ class PowerMeter(object):
         """
         dll.PM100DClose( byref(self.taskHandle) ) 
         self.isConnected = False
+        
+        #handle = dll._handle #to unload dll if it misbehaves.
+        #windll.kernel32.FreeLibrary(handle)
         return 0
         
     @raise_on_error_code

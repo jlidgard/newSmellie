@@ -4,7 +4,7 @@ from sepia.slm import set_intensity_fine_step, get_intensity_fine_step,get_pulse
 from sepia.com import get_module_type, decode_module_type
 from sepia.scm import get_laser_locked, get_laser_soft_lock, set_laser_soft_lock
 from smellie_config import LASER_DRIVER_SLOT_ID, LASER_DRIVER_DEV_ID, LASER_SLOT_ID
-import ctypes
+import time
 """
 Control of the SEPIA II Laser Driver hardware
 """
@@ -36,7 +36,9 @@ class LaserDriver(object):
         Open the USB connection to SEPIA
         """
         open_usb_device(self.dev_id)
+        time.sleep(0.5)
         get_module_map(self.dev_id)
+        time.sleep(0.5)
         # Sets the laser into pulse mode, with the frequency mode = rising edge of the external trigger pulse.
         # Do not change this for Detector Safety reasons!
         set_pulse_parameters(self.dev_id, self.laser_slot_id)
@@ -50,8 +52,10 @@ class LaserDriver(object):
         (Cleanly!) close the USB connection to SEPIA
         """
         free_module_map(self.dev_id)
+        time.sleep(1)
         close_usb_device(self.dev_id)
         self.isConnected = False
+        time.sleep(5) #give this some time, otherwise run into USB device errors on next open.
 
     def get_pulse_params(self):
         """
