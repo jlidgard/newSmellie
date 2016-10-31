@@ -1,0 +1,841 @@
+DEBUG:root:Begin SMELLIE PQ laser intensity scan. 2016-10-30 20:56:08
+DEBUG:root:Current settings: Laser switch chan: 1, Fibre switch: 14
+DEBUG:root:Begin intensity scan of laser: 1 (375nm)
+DEBUG:root:Setting Laser switch chan: 1, Fibre switch: 14
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Exception:
+DEBUG:root:Power meter cannot sample this fast. Select a slower rate. 5000
+DEBUG:root:Begin SMELLIE PQ laser intensity scan. 2016-10-30 20:58:35
+DEBUG:root:Current settings: Laser switch chan: 1, Fibre switch: 14
+DEBUG:root:Begin intensity scan of laser: 1 (375nm)
+DEBUG:root:Setting Laser switch chan: 1, Fibre switch: 14
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Begin intensity scan of laser: 2 (407nm)
+DEBUG:root:Setting Laser switch chan: 1, Fibre switch: 14
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Begin intensity scan of laser: 3 (446nm)
+DEBUG:root:Setting Laser switch chan: 2, Fibre switch: 28
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Begin intensity scan of laser: 4 (495nm)
+DEBUG:root:Setting Laser switch chan: 3, Fibre switch: 42
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Triggers Begin. pulses=300000, rate= 100000
+DEBUG:root:Triggers Finished.
+DEBUG:root:Current settings (restored/original): Laser switch chan: 1/1, Fibre switch: 14/14, Power meter wavelength: 400.0/400.0
+DEBUG:root:Test PASSED
+DEBUG:root:Finished SMELLIE PQ laser intensity scan. pass: 1/1, fail:0/1

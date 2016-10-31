@@ -24,7 +24,7 @@ class SuperkDriver(object):
         """
         #open superK
         portOpen(self.COMPort)
-        self.default_settings()
+        self.set_parameters()
         #open varia ND filter arduino motor controller
         self.NDfilter.port_open()
         self.isConnected = True
@@ -41,7 +41,10 @@ class SuperkDriver(object):
         self.isConnected = False
         return 0
         
-    def default_settings(self):
+    def set_parameters(self):
+        """
+        undocumented
+        """
         superKControls = superKControlStructure()
         superKControls.trigLevelSetpointmV = c_uint16(1000) #c_uint16
         superKControls.displayBacklightPercent = c_uint8(0) #c_uint8
@@ -53,14 +56,21 @@ class SuperkDriver(object):
         setSuperKControls(self.COMPort,superKControls)
         return 0
     
+    def get_wavelengths(self):
+        """
+        undocumented
+        """
+        high_wavelength, low_wavelength = getVariaControls(self.COMPort)
+        return low_wavelength, high_wavelength
+    
     def go_ready(self, intensity, low_wavelength, high_wavelength):
         """
         undocumented
         """
         # set the intensity, low and high wavelengths of the Varia (checking if the settings aren't already set)
-        NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom = getVariaControls(self.COMPort)
+        SWFilterSetpointAngstrom, LPFilterSetpointAngstrom = self.get_wavelengths()
         if (intensity*10!=NDFilterSetpointPercentx10 or low_wavelength!=LPFilterSetpointAngstrom or high_wavelength!=SWFilterSetpointAngstrom):
-            setVariaControls(self.COMPort,intensity,high_wavelength,low_wavelength)
+            setVariaControls(self.COMPort,high_wavelength,low_wavelength)
         
         # turn the lock off then turn the emission on (checking if the settings aren't already set)
         superKStatus = getSuperKStatusBits(self.COMPort)
@@ -75,15 +85,7 @@ class SuperkDriver(object):
         undocumented
         """
         
-        superKControls = superKControlStructure()
-        superKControls.trigLevelSetpointmV = c_uint16(1000) #c_uint16
-        superKControls.displayBacklightPercent = c_uint8(0) #c_uint8
-        superKControls.trigMode = c_uint8(1) #c_uint8
-        superKControls.internalPulseFreqHz = c_uint16(0) #c_uint16
-        superKControls.burstPulses = c_uint16(1) #c_uint16
-        superKControls.watchdogIntervalSec = c_uint8(0) #c_uint8
-        superKControls.internalPulseFreqLimitHz = c_uint32(0) #c_uint32
-        setSuperKControls(self.COMPort,superKControls)
+        self.set_parameters()
         
         # turn off emission then set lock on (checking if the settings aren't already set)
         superKStatus = getSuperKStatusBits(self.COMPort)
@@ -98,9 +100,9 @@ class SuperkDriver(object):
         undocumented
         """
         # set varia wavelengths to be beyond the 700nm filter (so light is filtered out)
-        NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom = getVariaControls(self.COMPort)
+        low_wavelength, high_wavelength = getVariaControls(self.COMPort)
         if (intensity*10!=0 and low_wavelength!=7900 and high_wavelength!=8000):
-            setVariaControls(self.COMPort,0,8000,7900)
+            setVariaControls(self.COMPort,8000,7900)
         #logging.error( 'Error Setting SuperK Safe States. ErrorCode: {}'.format( errorCode ) )
         return 0
         
@@ -158,5 +160,6 @@ class SuperkDriver(object):
         Returns a formatted string with the current hardware settings
         """
         superK_info, varia_info = self.get_identity()
-        return "SuperK Info: {}, Varia Info: {}".format(superK_info, varia_info)
+        low_wavelength, high_wavelength = sk.get_wavelengths()
+        return "SuperK Info: {}, Varia Info: {}, Varia Filter Low Wavelength: {}nm, Varia Filter High Wavelength: {}nm".format(superK_info, varia_info, low_wavelength, high_wavelength)
         

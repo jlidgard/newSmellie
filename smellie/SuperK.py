@@ -408,13 +408,13 @@ def getVariaControls(COMPort):
     undocumented
     """
     #int32_t __cdecl GetVariaControls(char COMport[], uint16_t *NDFilterSetpointPercentx10, uint16_t *SWFilterSetpointAngstrom, uint16_t *LPFilterSetpointAngstrom);
-    NDFilterSetpointPercentx10 = c_uint16(0)
+    NDFilterSetpointPercentx10 = c_uint16(0) #not used
     SWFilterSetpointAngstrom = c_uint16(0)
     LPFilterSetpointAngstrom = c_uint16(0)
     dll.GetVariaControls(COMPort, byref(NDFilterSetpointPercentx10), byref(SWFilterSetpointAngstrom), byref(LPFilterSetpointAngstrom))
     #logging.debug( 'Get Varia Control Readings.\n\tND Filter Setpoint (% x 10): {}\n\tSW Filter Setpoint (nm x 10):{}\n\tLP Filter Setpoint (nm x 10): {}'.format(NDFilterSetpointPercentx10.value,SWFilterSetpointAngstrom.value,LPFilterSetpointAngstrom.value) )
     #logging.error( 'Could not open port. Tried: {}, ErrorCode: {}'.format( COMPort.value, str(errorCode) ) )
-    return NDFilterSetpointPercentx10.value, SWFilterSetpointAngstrom.value, LPFilterSetpointAngstrom.value
+    return SWFilterSetpointAngstrom.value, LPFilterSetpointAngstrom.value
 
 @raise_on_error_code
 def setSuperKControls(COMPort,controlCluster):
@@ -534,10 +534,10 @@ def setSuperKControlInterlock(COMPort,state):
     return 0
 
 @raise_on_error_code
-def setVariaControls(COMPort, NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom):
+def setVariaControls(COMPort, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom):
     #int32_t __cdecl SetVariaControls(char COMport[], uint16_t NDFilterSetpointPercentx10, uint16_t SWFilterSetpointAngstrom, uint16_t LPFilterSetpointAngstrom);
     
-    NDFilterSetpointPercentx10 = c_uint16(NDFilterSetpointPercentx10)
+    NDFilterSetpointPercentx10 = c_uint16(0)
     SWFilterSetpointAngstrom = c_uint16(SWFilterSetpointAngstrom)
     LPFilterSetpointAngstrom = c_uint16(LPFilterSetpointAngstrom)
     
