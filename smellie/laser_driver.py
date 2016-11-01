@@ -36,13 +36,13 @@ class LaserDriver(object):
         Open the USB connection to SEPIA
         """
         open_usb_device(self.dev_id)
-        time.sleep(0.5)
+        time.sleep(2)
         get_module_map(self.dev_id)
-        time.sleep(0.5)
+        time.sleep(2)
         # Sets the laser into pulse mode, with the frequency mode = rising edge of the external trigger pulse.
         # Do not change this for Detector Safety reasons!
         set_pulse_parameters(self.dev_id, self.laser_slot_id)
-        
+        time.sleep(1)
         self.check_pulse_mode()
         self.check_trig_mode()
         self.isConnected = True
@@ -162,6 +162,13 @@ class LaserDriver(object):
         self.set_intensity(0)
         set_pulse_parameters(self.dev_id, self.laser_slot_id)
 
+    def go_ready(self, intensity):
+        """
+        Set SEPIA into its ready state, given intensity, sets soft-lock = off
+        """
+        self.set_intensity(intensity)
+        self.set_soft_lock(False)
+        
     def get_firmware_version(self):
         """
         Get the current SEPIA firmware version as a string

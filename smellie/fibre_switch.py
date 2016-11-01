@@ -108,7 +108,7 @@ class FibreSwitch(object):
         """ 
         check_global_channel_number(channel_num)
         self.channel_num = channel_num
-        if (self.serial.isOpen() == True ):
+        if (self.isConnected == True ):
             self.execute_message("ch{0}".format(channel_num))
             #check set value was set
             if(self.get_global_channel_number() != channel_num):
@@ -125,7 +125,7 @@ class FibreSwitch(object):
         :type current channel: int
         """
         response = None
-        if (self.serial.isOpen() == True ):
+        if (self.isConnected == True ):
             self.execute_message("ch?")
             response = int(str(self.read_back()).replace(' ','').replace('\r\n',''))
         else:
@@ -140,7 +140,7 @@ class FibreSwitch(object):
         :type current channel: string
         """
         response = None
-        if (self.serial.isOpen() == True ):
+        if (self.isConnected == True ):
             response = self.get_global_channel_number()
             response = find_input_output_number(response)
         else:
@@ -158,7 +158,7 @@ class FibreSwitch(object):
 
         :raises: :class:`.FibreSwitchHWError` if the command is unsuccessful
         """
-        if (self.serial.isOpen() == True ): 
+        if (self.isConnected == True ): 
             self.set_global_channel_number(find_global_channel_number(in_channel, out_channel))
         else:
             raise FibreSwitchHWError("Fibre Switch port not open.")
@@ -169,7 +169,7 @@ class FibreSwitch(object):
         Get the current Fibre Switch firmware version as a string
         """
         response = None
-        if (self.serial.isOpen() == True ): 
+        if (self.isConnected == True ): 
             self.execute_message("firmware?")
             response = str(self.read_back()).replace(' ','').replace('\r\n','')
         else:
@@ -181,7 +181,7 @@ class FibreSwitch(object):
         Get the current Fibre Switch hardware model as a string
         """
         response = None
-        if (self.serial.isOpen() == True ): 
+        if (self.isConnected == True ): 
             self.execute_message("type?")
             response = str(self.read_back()).replace(' ','').replace('\r\n','')
         else:

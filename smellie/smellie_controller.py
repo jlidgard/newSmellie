@@ -1,14 +1,17 @@
 from laser_driver import LaserDriver
 from laser_switch import LaserSwitch
 from fibre_switch import FibreSwitch
+from superk_driver import SuperkDriver
+from power_meter import PowerMeter
 from ni_trigger_generator import TriggerGenerator
 from ni_gain_control import GainVoltageGenerator
+from spectrometer import Spectrometer
 import system_state
 import smellie_config
 from time import sleep
 
 class SmellieController(object):
-    def __enter__(self):
+    def __init__(self):
         """
         Open the SMELLIE Controller, with all hardware in deactivated mode
         """
@@ -17,8 +20,14 @@ class SmellieController(object):
         self.gain_voltage = GainVoltageGenerator()
         self.trig_signals = TriggerGenerator()
         self.laser_driver = LaserDriver()
-        self.laser_driver.open_connection()
-        self.superk.port_open()
+        self.spectrometer = Spectrometer()
+        self.superk_driver = SuperkDriver()
+        #self.power_meter = PowerMeter()
+        self.laser_driver.port_open()
+        self.superk_driver.port_open()
+        self.fibre_switch.port_open()
+        #self.power_meter.port_open()
+        
         self.deactivate()
 
     def __exit__(self, type, value, traceback):
@@ -26,25 +35,33 @@ class SmellieController(object):
         Clean up code goes here - it is guaranteed to get called even if an exception is thrown during one of the other functions
         """
         self.deactivate()
-        self.superk.varia_go_safe()
-        self.laser_driver.close_connection()
-        self.superk.port_close()
+        self.superk_driver.varia_go_safe()
+        self.laser_driver.port_close()
+        self.superk_driver.port_close()
+        self.fibre_switch.port_close()
+        #self.power_meter.port_close()
 
     def go_safe(self):
         """
         Send the entire SMELLIE system into `safe mode` - SEPIA soft-lock = on, SEPIA intensity = 0%
         """
         self.laser_driver.go_safe()
-        self.superk.go_safe()
+        self.superk_driver.go_safe()
         return 0
 
     def deactivate(self):
         """
-        Send the entire SMELLIE system into `deactivated mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V, active Laser Switch channel = 0 (no laser head attached to this channel), Fibre Switch input channel = 5 and output channel = 14 (no detector fibre attached to this output channel)
+        Send the entire SMELLIE system into `deactivated mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V, active Laser Switch channel = 0 (no laser head attached to this channel), Fibre Switch input channel = 5 and output channel = 14 (no detector fibre attached to this output channel, just power meter)
         """
         self.go_safe()
         self.gain_voltage.go_safe()
-        self.laser_switch.set_active_channel(0)
+        
+        #switch laser switch only if not already set
+        if (self.laser_switch.get_active_channel() != 0): 
+            self.laser_driver.port_close() #close before LaserSwitch d/c
+            self.laser_switch.set_active_channel(0)
+            self.laser_driver.port_open()
+            
         self.fibre_switch.set_io_channel_numbers(5, 14)
         return 0
 
@@ -62,11 +79,24 @@ class SmellieController(object):
 
         :param n_pulses: the number of pulses
         """
-        self.laser_switch.set_active_channel(ls_chan)
-        self.laser_driver.set_intensity(intensity)
+        
+        #go into safe mode
+        self.laser_driver.go_safe()
+        
+        #switch laser switch only if not already set
+        if (self.laser_switch.get_active_channel() != channel): 
+            self.laser_driver.port_close() #close before LaserSwitch d/c
+            self.laser_switch.set_active_channel(ls_chan)
+            self.laser_driver.port_open()
+
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
-        self.trig_signals.generate_triggers(n_pulses)
-        self.go_safe()
+
+        #Pulse in master mode
+        self.laser_driver.go_ready(intensity)
+        self.trig_signals.generate_triggers(n_pulses, rep_rate, 'PQ')
+
+        #go back to safe mode
+        self.laser_driver.go_safe()
         return 0
 
     def laserheads_slave_mode(self, ls_chan, intensity, fs_input_chan, fs_output_chan, time):
@@ -85,14 +115,27 @@ class SmellieController(object):
         
         :param time: time until SNODROP exits slave mode
         """
-        self.laser_switch.set_active_channel(ls_chan)
-        self.laser_driver.set_intensity(intensity)
+        
+        #go into safe mode
+        self.laser_driver.go_safe()
+        
+        #switch laser switch only if not already set
+        if (self.laser_switch.get_active_channel() != channel): 
+            self.laser_driver.port_close() #close before LaserSwitch d/c
+            self.laser_switch.set_active_channel(ls_chan)
+            self.laser_driver.port_open()
+
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
+
+        #Wait in slave mode
+        self.laser_driver.go_ready(intensity)
         sleep(time)
-        self.go_safe()
+        
+        #go back to safe mode
+        self.laser_driver.go_safe()
         return 0
 
-    def superK_master_mode(self, intensity, rep_rate, low_wavelength, high_wavelength, fs_input_chan, fs_output_chan, n_pulses):
+    def superk_master_mode(self, intensity, rep_rate, low_wavelength, high_wavelength, fs_input_chan, fs_output_chan, n_pulses):
         """
         Run the SMELLIE system in Master Mode (NI Unit provides the trigger signal for both the lasers and the detector) using the SuperK laser
         
@@ -104,10 +147,24 @@ class SmellieController(object):
 
         :param n_pulses: the number of pulses
         """
+        
+        #go into safe mode
+        self.superk_driver.go_safe()
+        
+        #switch laser_switch only if not already set
+        if (self.laser_switch.get_active_channel() != channel): 
+            self.laser_driver.port_close() #close before LaserSwitch d/c
+            self.laser_switch.set_active_channel(0)
+            self.laser_driver.port_open()
+
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
-        self.superk.go_ready(intensity, low_wavelength, high_wavelength)
-        self.trig_signals.generate_triggers(n_pulses)
-        self.superk.go_safe()
+        
+        #Pulse in master mode
+        self.superk_driver.go_ready(intensity, low_wavelength, high_wavelength)
+        self.trig_signals.generate_triggers(n_pulses, rep_rate, 'SUPERK')
+
+        #go back to safe mode
+        self.superk_driver.go_safe()
         return 0
         
     def set_gain_control(self, voltage):
@@ -147,3 +204,5 @@ class SmellieController(object):
            self.fibre_switch.current_state(),
            self.gain_voltage.current_state()
            )
+
+
