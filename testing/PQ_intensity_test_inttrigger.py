@@ -28,21 +28,23 @@ try:
     ls_original = ls.get_active_channel()
     fs_original = fs.get_global_channel_number()
     pm_original = pm.get_wavelength()
+    pm_avg_original = pm.get_average_count()
     
     logging.debug( "Current settings: Laser switch chan: {}, Fibre switch: {}".format(ls_original, fs_original))
     
-    laser_numbers = range(1,5,1) #test lasers 1 thru 4
+    laser_numbers = range(4,5,1) #test lasers 1 thru 4
     wavelengths = (375, 407, 446, 495)
 
     power_meter_nsamples = 50
-    power_meter_sample_rate = 5
+    power_meter_sample_rate = 10
+    pm.set_average_count(3)
     
     #at 100% intensity @ 100kHz, Laser1(375nm): ~13nW, Laser2(407nm): ~424nW, Laser3(446nm): ~37nW, Laser4(495nm): ~915nW.
 
     for laser_number, wavelength in zip(laser_numbers,wavelengths):
-    
+        wavelength=495
         logging.debug( "Begin intensity scan of laser (internal 2.5MHz trigger): {} ({}nm)".format(  laser_number, wavelength))
-        intensities = range(0,1010,10) #from 0 to 100% intensity in 1% steps
+        intensities = range(0,1010,50) #from 0 to 100% intensity in 1% steps
         powerMean = []
         powerSD = []
         powerRange = []
@@ -60,7 +62,7 @@ try:
         
         for intensity in intensities:
             ld.set_intensity(intensity)
-            time.sleep(2)
+            time.sleep(1)
             
             power_mean, power_sd, power_range = pm.get_mean_power(power_meter_nsamples,power_meter_sample_rate)
             powerMean.append( power_mean )
@@ -85,7 +87,8 @@ try:
     ls.set_active_channel(ls_original)
     fs.set_global_channel_number(fs_original)
     pm.set_wavelength(pm_original)
-    logging.debug( "Current settings (restored/original): Laser switch chan: {}/{}, Fibre switch: {}/{}, Power meter wavelength: {}/{}".format( ls.get_active_channel(),ls_original, fs.get_global_channel_number(),fs_original,pm.get_wavelength(),pm_original))
+    pm.set_average_count(pm_avg_original)
+    logging.debug( "Current settings (restored/original): Laser switch chan: {}/{}, Fibre switch: {}/{}, Power meter wavelength: {}/{} & Avg count: {}/{}".format( ls.get_active_channel(),ls_original, fs.get_global_channel_number(),fs_original,pm.get_wavelength(),pm_original, pm.get_average_count(),pm_avg_original))
     
     #close devices
     fs.port_close()
