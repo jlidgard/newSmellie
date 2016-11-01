@@ -1,0 +1,8 @@
+DEBUG:root:Begin SMELLIE PQ laser intensity scan (internal 2.5MHz trigger). 2016-10-31 22:05:36
+DEBUG:root:Current settings: Laser switch chan: 2, Fibre switch: 14
+DEBUG:root:Begin intensity scan of laser (internal 2.5MHz trigger): 1 (375nm)
+DEBUG:root:Setting: Laser Switch: 1, Fibre switch: 14
+DEBUG:root:Begin intensity scan of laser (internal 2.5MHz trigger): 2 (407nm)
+DEBUG:root:Setting: Laser Switch: 2, Fibre switch: 28
+DEBUG:root:Begin intensity scan of laser (internal 2.5MHz trigger): 3 (446nm)
+DEBUG:root:Setting: Laser Switch: 3, Fibre switch: 42

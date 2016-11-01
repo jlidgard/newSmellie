@@ -13,7 +13,7 @@ def measure_power(nsamples,sample_rate):
 
 if __name__ == "__main__":
 
-    logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan.log', filemode="a", level=logging.DEBUG)
+    logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan_nitrigger.log', filemode="a", level=logging.DEBUG)
     console = logging.StreamHandler() #print logger to console
     console.setLevel(logging.DEBUG)
     logging.getLogger('').addHandler(console)
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         pm = power_meter.PowerMeter()
         pool = ThreadPool(processes=1)
         
-        logging.debug( "Begin SMELLIE PQ laser intensity scan. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
+        logging.debug( "Begin SMELLIE PQ laser intensity scan (default NI trigger). {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
         
         #open devices
         fs.port_open()
@@ -47,7 +47,9 @@ if __name__ == "__main__":
         laser_numbers = range(1,5,1) #test lasers 1 thru 4
         wavelengths = (375, 407, 446, 495)
 
-        measure_power_args = (5,5) #(nsamples,rate)
+        power_meter_nsamples = 5
+        power_meter_sample_rate = 5
+        measure_power_args = (power_meter_nsamples,power_meter_sample_rate) #(nsamples,rate)
         trig_npulses = 300000
         trig_rate = 100000 # at 100% intensity @ 100kHz, Laser1(375nm): ~13nW, Laser2(407nm): ~424nW, Laser3(446nm): ~37nW, Laser4(495nm): ~915nW.
 
@@ -59,10 +61,11 @@ if __name__ == "__main__":
             powerSD = []
             powerRange = []
         
-            logging.debug( "Setting Laser switch chan: {}, Fibre switch: {}".format( ls.get_active_channel(), fs.get_global_channel_number() ) )   
+ 
             ld.port_close() #close Sepia before laser switch d/c it.
             ls.set_active_channel(laser_number)
-            fs.set_io_channel_numbers(laser_number, 14) #output fibre 14 = power , not used here, but detector-safe.
+            fs.set_io_channel_numbers(laser_number, 14) #output fibre 14 = powermeter
+            logging.debug( "Setting: Laser switch chan: {}, Fibre switch: {}".format( ls.get_active_channel(), fs.get_global_channel_number() ) )  
             
             ld.port_open()
             ld.go_safe()
@@ -80,10 +83,10 @@ if __name__ == "__main__":
                 powerSD.append( power_sd )
                 powerRange.append( power_range )
 
-                print "(laser, wavelength, intensity(%), power_mean(W), power_sd(W), power_range(W)): {}, {}, {}, {}, {}".format(laser_number, wavelength, intensity, power_mean, power_sd, power_range)
+                print "(laser, wavelength, intensity(%), power_mean(W), power_sd(W), power_range(W)): {}, {}, {}, {}, {}\n".format(laser_number, wavelength, intensity, power_mean, power_sd, power_range)
      
-            fileOut = open(r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan_{}nm.dat'.format(wavelength), 'a')
-            fileOut.write('Laser, Wavelength(nm):'.format( laser_number, wavelength ))
+            fileOut = open(r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan_nitrigger_{}nm.dat'.format(wavelength), 'a')
+            fileOut.write('Laser: {}, Wavelength(nm): {}, Repetition Rate: {}, Power meter sample average: {}\n'.format(laser_number, wavelength, trig_rate, power_meter_nsamples))
             fileOut.write('Intensity(%), Power_mean(W), Power_sd(W), Power_range(W)\n')
             for i,j,k,l in zip(intensities,powerMean,powerSD,powerRange):
                 fileOut.write( '{},{},{},{}\n'.format( i,j,k,l ) )
@@ -112,7 +115,7 @@ if __name__ == "__main__":
         fs.port_close()
         pm.port_close()
         
-        logging.debug( "Finished SMELLIE PQ laser intensity scan. pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
+        logging.debug( "Finished SMELLIE PQ laser intensity scan (default NI trigger). pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
         
     except Exception, e:
         logging.debug( "Exception:" )
