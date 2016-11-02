@@ -35,24 +35,29 @@ class LaserDriver(object):
         """
         Open the USB connection to SEPIA
         """
-        open_usb_device(self.dev_id)
-        time.sleep(2)
-        get_module_map(self.dev_id)
-        time.sleep(2)
-        # Sets the laser into pulse mode, with the frequency mode = rising edge of the external trigger pulse.
-        # Do not change this for Detector Safety reasons!
-        set_pulse_parameters(self.dev_id, self.laser_slot_id)
-        time.sleep(1)
-        self.check_pulse_mode()
-        self.check_trig_mode()
-        self.isConnected = True
+        if not self.isConnected:
+            open_usb_device(self.dev_id)
+            time.sleep(5)
+            get_module_map(self.dev_id,True)
+            time.sleep(5)
+            self.isConnected = True
+            
+            # Sets the laser into pulse mode, with the frequency mode = rising edge of the external trigger pulse.
+            # Do not change this for Detector Safety reasons!
+            set_pulse_parameters(self.dev_id, self.laser_slot_id)
+            time.sleep(5)
+            self.check_pulse_mode()
+            self.check_trig_mode()
+            time.sleep(1)
+        else:
+            raise LaserDriverLogicError("Laser port already open.") 
 
     def port_close(self):
         """
         (Cleanly!) close the USB connection to SEPIA
         """
         free_module_map(self.dev_id)
-        time.sleep(1)
+        time.sleep(5)
         close_usb_device(self.dev_id)
         self.isConnected = False
         time.sleep(5) #give this some time, otherwise run into USB device errors on next open.
@@ -66,7 +71,11 @@ class LaserDriver(object):
         :returns: head_type
         :rtype: (int, bool, int) tuple
         """
-        return get_pulse_parameters(self.dev_id, self.laser_slot_id)
+        if self.isConnected:
+            return get_pulse_parameters(self.dev_id, self.laser_slot_id)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
 
     def get_frequency_mode(self):
         """
@@ -75,7 +84,11 @@ class LaserDriver(object):
         :returns: frequency_mode
         :rtype:
         """
-        return decode_freq_trig_mode(self.get_pulse_params()[0])
+        if self.isConnected:
+            return decode_freq_trig_mode(self.get_pulse_params()[0])
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
 
     def get_pulse_mode(self):
         """
@@ -84,7 +97,11 @@ class LaserDriver(object):
         :returns: pulse_mode
         :rtype: int
         """
-        return bool(self.get_pulse_params()[1])
+        if self.isConnected:
+            return bool(self.get_pulse_params()[1])
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
 
     def get_head_type(self):
         """
@@ -93,7 +110,11 @@ class LaserDriver(object):
         :returns: head_type
         :rtype: int
         """
-        return self.get_pulse_params()[2]
+        if self.isConnected:
+            return self.get_pulse_params()[2]
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
         
     def check_pulse_mode(self):
         """
@@ -101,12 +122,23 @@ class LaserDriver(object):
 
         :raises: :class:`.LaserDriverHWError` if pulsed mode is not set
         """
-        if not self.get_pulse_params()[1] == 1:
-            raise LaserDriverHWError("Laser Driver is not in pulsed mode!!")
+        if self.isConnected:
+            if not self.get_pulse_params()[1] == 1:
+                raise LaserDriverHWError("Laser Driver is not in pulsed mode!!")
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
 
     def check_trig_mode(self):
-        if not self.get_pulse_params()[0] == 6:
-            raise LaserDriverHWError("Laser Driver is not in external trigger  (rising edge) mode!")
+        """
+        Check which trigger mode is set in SEPIA
+
+        :raises: :class:`.LaserDriverHWError` if pulsed mode is not set
+        """
+        if self.isConnected:
+            if not self.get_pulse_params()[0] == 6:
+                raise LaserDriverHWError("Laser Driver is not in external trigger (rising edge) mode!")
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
 
     def get_intensity(self):
         """
@@ -115,7 +147,11 @@ class LaserDriver(object):
         :returns: intensity
         :rtype: int
         """
-        return get_intensity_fine_step(self.dev_id, self.laser_slot_id)
+        if self.isConnected:
+            return get_intensity_fine_step(self.dev_id, self.laser_slot_id)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
 
     def set_intensity(self, intensity):
         """
@@ -126,9 +162,12 @@ class LaserDriver(object):
 
         :raises: :class:`.LaserDriverHWError` if the command is unsuccessful
         """
-        set_intensity_fine_step(self.dev_id, self.laser_slot_id, intensity)
-        if not self.get_intensity() == intensity:
-            raise LaserDriverHWError("Cannot set Laser head intensity!")
+        if self.isConnected:
+            set_intensity_fine_step(self.dev_id, self.laser_slot_id, intensity)
+            if not self.get_intensity() == intensity:
+                raise LaserDriverHWError("Cannot set Laser head intensity!")
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
 
     def is_laser_locked(self):
         """
@@ -136,8 +175,11 @@ class LaserDriver(object):
         
         :returns: True if the power is off, the soft-lock is on or the sepia key is locked
         """
-        
-        return get_laser_locked(self.dev_id, self.driver_slot_id)
+        if self.isConnected:
+            return get_laser_locked(self.dev_id, self.driver_slot_id)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
 
     def is_soft_lock_on(self):
         """
@@ -145,35 +187,52 @@ class LaserDriver(object):
         
         :returns: True if the soft lock is on
         """
-        return get_laser_soft_lock(self.dev_id, self.driver_slot_id)
+        if self.isConnected:
+            return get_laser_soft_lock(self.dev_id, self.driver_slot_id)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
 
     def set_soft_lock(self, is_locked = True):
         """
         Set the SEPIA soft-lock to on
         """
-        if is_locked != self.is_soft_lock_on(): 
-            set_laser_soft_lock(self.dev_id, self.driver_slot_id, is_locked)
+        if self.isConnected:
+            if is_locked != self.is_soft_lock_on(): 
+                set_laser_soft_lock(self.dev_id, self.driver_slot_id, is_locked)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
 
     def go_safe(self):
         """
         Set SEPIA into its safe state: soft-lock = on, intensity = 0%
         """
-        self.set_soft_lock(is_locked = True)
-        self.set_intensity(0)
-        set_pulse_parameters(self.dev_id, self.laser_slot_id)
+        if self.isConnected:
+            self.set_soft_lock(is_locked = True)
+            self.set_intensity(0)
+            set_pulse_parameters(self.dev_id, self.laser_slot_id)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
 
     def go_ready(self, intensity):
         """
         Set SEPIA into its ready state, given intensity, sets soft-lock = off
         """
-        self.set_intensity(intensity)
-        self.set_soft_lock(False)
+        if self.isConnected:
+            self.set_intensity(intensity)
+            self.set_soft_lock(False)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
         
     def get_firmware_version(self):
         """
         Get the current SEPIA firmware version as a string
         """
-        return get_fwr_version(self.dev_id)
+        if self.isConnected:
+            return get_fwr_version(self.dev_id)
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
         
     def is_connected(self):
         """   
@@ -185,25 +244,33 @@ class LaserDriver(object):
         """
         Quick check alive or not.
         """
-        isAlive = None
         if self.isConnected:
-            checkValue = self.get_firmware_version() #choose to check the firmware version:
-        else: 
-            self.port_open()
-            checkValue = self.get_firmware_version()
-            self.port_close()
-        if (checkValue == '1.05.419'): isAlive = True #current firmware version 1.05.419
-        else: isAlive = False
-        return isAlive
+            checkValue = self.is_soft_lock_on() #choose to check the softlock:
+            if (checkValue == True or checkValue == False): isAlive = True
+            else: isAlive = False
+            return isAlive
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0 
+
+    def system_state(self):
+        """
+        Returns a formatted string with the hardware info and constant settings.
+        """
+        if self.isConnected:
+            return "PQ laser (system):: Firmware Version : {}, Pulse Mode : {}, Pulse Parameters : ({})".format(self.get_firmware_version(),self.get_pulse_mode(), ", ".join(str(x) for x in self.get_pulse_params()), self.get_frequency_mode())
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0
 
     def current_state(self):
         """
         Returns a formatted string with the current hardware settings
         """
-        return "Laser Locked : {0}, Soft Lock : {1}, Intensity : {2}/1000, Pulse Mode : {3}, Pulse Parameters : ({4}), Frequency Mode : {5}, Firmware Version : {6}".format("Unlocked" if (self.is_laser_locked()==1) else "Locked", 
-           "On " if self.is_soft_lock_on() else "Off", 
-           self.get_intensity(), 
-           self.get_pulse_mode(), 
-           ", ".join(str(x) for x in self.get_pulse_params()),
-           self.get_frequency_mode(), 
-           self.get_firmware_version())
+        if self.isConnected:
+            return "PQ laser (settings):: Laser Locked : {}, Soft Lock : {}, Intensity : {}/1000, Frequency Mode : {}".format("Unlocked" if (self.is_laser_locked()==1) else "Locked", 
+               "On " if self.is_soft_lock_on() else "Off", 
+               self.get_intensity(), self.get_frequency_mode())
+        else:
+            raise LaserDriverLogicError("Laser port not open.") 
+            return 0

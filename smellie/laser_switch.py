@@ -174,11 +174,19 @@ class LaserSwitch(object):
         if (checkValue==1 or checkValue==2 or checkValue==3 or checkValue==4 or checkValue==5 ): isAlive = True
         else: isAlive = False
         return isAlive
+            
+    def system_state(self):
+        """
+        Returns a formatted string with the hardware info and constant settings.
+        
+        :returns: Selected channel : {1}
+        """
+        return "Laser switch (system):: Selected channel : {}".format( self.get_selected_channel() )
 
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
         
-        :returns:Active channel : {0} Selected channel : {1}
+        :returns:Active channel : {0}
         """
-        return "Active channel : {0} Selected channel : {1}".format( self.get_active_channel(), self.get_selected_channel() )
+        return "Laser switch (settings):: Active channel : {}".format( self.get_active_channel() )

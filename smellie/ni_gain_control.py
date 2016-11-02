@@ -30,6 +30,7 @@ class GainVoltageGenerator(object):
         self.vResidual = 0.0044
         self._set_up()
         self._start_output(0) # why is the gain always changed? why don't we leave it where it is?
+        self.voltage = None
 
     def generate_voltage(self, vGain):
         """
@@ -86,9 +87,10 @@ class GainVoltageGenerator(object):
         #self._start_output(0)
         #daqmx.functions.DAQmxClearTask(self.taskHandle)
         pass
-    def current_state(self):
+        
+    def check_voltage(self):
         """
-        Return a formatted string with the current hardware settings
+        Read the voltage on the DAQ pin to see if it has been correctly set.
         """
         self.taskHandle2 = daqmx.functions.TaskHandle(0) #read handle
         daqmx.functions.DAQmxCreateTask("",ctypes.byref(self.taskHandle2))  #read task
@@ -109,9 +111,13 @@ class GainVoltageGenerator(object):
 
         data_mean = data.mean()
         if (samples_read.value!=self.number_of_samples): raise GainControlLogicError("Could not correctly check gain voltage, failed reading NI AO channel.")
-        if (samples_read.value>=data_mean*0.9999 and samples_read.value<=data_mean*1.0001): raise GainControlLogicError("Gain voltage not correctly set to specified value.")
+        if (samples_read.value>=data_mean*0.9999 and samples_read.value<=data_mean*1.0001): raise GainControlLogicError("Gain voltage not correctly set to specified value.")  
         
-        return "Output Voltage : {0}({1})".format(data_mean, self.voltage)
+    def current_state(self):
+        """
+        Return a formatted string with the current hardware settings
+        """
+        return "NI gain control (settings):: Output Voltage : {}".format(self.voltage)
 
     def go_safe(self):
         """

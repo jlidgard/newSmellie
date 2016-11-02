@@ -11,7 +11,7 @@ import smellie_config
 from time import sleep
 
 class SmellieController(object):
-    def __init__(self):
+    def __enter__(self):
         """
         Open the SMELLIE Controller, with all hardware in deactivated mode
         """
@@ -25,6 +25,7 @@ class SmellieController(object):
         #self.power_meter = PowerMeter()
         self.laser_driver.port_open()
         self.superk_driver.port_open()
+        self.spectrometer.port_open()
         self.fibre_switch.port_open()
         #self.power_meter.port_open()
         
@@ -38,6 +39,7 @@ class SmellieController(object):
         self.superk_driver.varia_go_safe()
         self.laser_driver.port_close()
         self.superk_driver.port_close()
+        self.spectrometer.port_close()
         self.fibre_switch.port_close()
         #self.power_meter.port_close()
 
@@ -57,7 +59,10 @@ class SmellieController(object):
         self.gain_voltage.go_safe()
         
         #switch laser switch only if not already set
-        if (self.laser_switch.get_active_channel() != 0): 
+        num = self.laser_switch.get_active_channel()
+        print 'laser switch chan:{}'.format(num)
+        if (int(num) != 0): 
+            print 'Moving laser switch to position:0 (safe position)'
             self.laser_driver.port_close() #close before LaserSwitch d/c
             self.laser_switch.set_active_channel(0)
             self.laser_driver.port_open()
@@ -152,9 +157,9 @@ class SmellieController(object):
         self.superk_driver.go_safe()
         
         #switch laser_switch only if not already set
-        if (self.laser_switch.get_active_channel() != channel): 
+        if (self.laser_switch.get_active_channel() != 5): 
             self.laser_driver.port_close() #close before LaserSwitch d/c
-            self.laser_switch.set_active_channel(0)
+            self.laser_switch.set_active_channel(5)
             self.laser_driver.port_open()
 
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
@@ -189,20 +194,28 @@ class SmellieController(object):
         smellie_config.DUMMY_MODE = dummy_mode_on
         return 0
 
-    def info(self):
-        pass
-
     def system_state(self):
+        '''
+        Return a formatted string with the system settings
+        '''
+        return "SMELLIE git SHA: {} git repository dirty : {} CONFIGURATION: {} LASER DRIVER: {} SUPERK DRIVER: {} LASER SWITCH: {} FIBRE SWITCH: {} SPECTROMETER: {}".format(system_state.get_SHA(),
+           True if system_state.git_is_dirty() else False,
+           system_state.get_config_str(),
+           self.laser_driver.system_state(),
+           self.superk_driver.system_state(),
+           self.laser_switch.system_state(),
+           self.fibre_switch.system_state(),
+           self.spectrometer.system_state()
+           )
+
+    def current_state(self):
         '''
         Return a formatted string with the current system settings
         '''
-        return "SMELLIE git SHA: {0} git repository dirty : {1} CONFIGURATION: {2} LASER DRIVER: {3} LASER SWITCH: {4} FIBRE SWITCH: {5} GAIN CONTROL: {6}".format(system_state.get_SHA(),
-           True if system_state.git_is_dirty() else False,
-           system_state.get_config_str(),
-           self.laser_driver.current_state(),
-           self.laser_switch.current_state(),
-           self.fibre_switch.current_state(),
-           self.gain_voltage.current_state()
-           )
-
-
+        return "LASER DRIVER: {} SUPERK DRIVER: {} LASER SWITCH: {} FIBRE SWITCH: {} GAIN CONTROL: {} SPECTROMETER: {}".format(self.laser_driver.current_state(),
+        self.superk_driver.current_state(),
+        self.laser_switch.current_state(),
+        self.fibre_switch.current_state(),
+        self.gain_voltage.current_state(),
+        self.spectrometer.current_state()
+        )

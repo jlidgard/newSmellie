@@ -6,7 +6,13 @@ from time import sleep
 Control of the Varia stepper motor arduino controller hardware
 """
 
-class variaMotorHWError(Exception):
+class VariaMotorLogicError(Exception):
+    """
+    Thrown if an inconsistency is noticed *before* any instructions are sent to the hardware (i.e. a problem with code logic)
+    """
+    pass
+
+class VariaMotorHWError(Exception):
     """
     Thrown if an inconsistency is noticed *after* any hardware instruction is executed (i.e. a problem with the hardware itself)
     """
@@ -19,6 +25,7 @@ class VariaMotor(object):
         Controls the arduino stepper motor controller attached to the Varia ND filter.
         """
         self.serial = None
+        self.acceleration = 1
         self.isConnected = False
          
     def port_open(self):
@@ -28,13 +35,16 @@ class VariaMotor(object):
         :param msg:
         :type msg: string
         """
-        self.channel_num = None
-        self.serial = Serial(VARIAMOTOR_SERIAL_PORT,VARIAMOTOR_BAUD_RATE,timeout=1)
-        sleep(2)
-        self.serial.flushInput()
-        self.serial.flushOutput()
-        sleep(VARIAMOTOR_WAIT_TIME)
-        self.isConnected = True
+        if not self.isConnected:
+            self.channel_num = None
+            self.serial = Serial(VARIAMOTOR_SERIAL_PORT,VARIAMOTOR_BAUD_RATE,timeout=1)
+            sleep(2)
+            self.serial.flushInput()
+            self.serial.flushOutput()
+            sleep(VARIAMOTOR_WAIT_TIME)
+            self.isConnected = True
+        else:
+            raise VariaMotorLogicError("Varia Motor port already open.") 
             
     def port_close(self):
         """
@@ -42,8 +52,8 @@ class VariaMotor(object):
 
         :param msg:
         :type msg: string
-        """    
-        if (self.serial.isOpen() ): self.serial.close()
+        """
+        if (self.serial.isOpen()): self.serial.close()
         self.isConnected = False
                     
     def execute_message(self, msg):
@@ -53,8 +63,11 @@ class VariaMotor(object):
         :param msg:
         :type msg: string
         """
-        self.serial.write(msg+"\r\n")
-        sleep(VARIAMOTOR_WAIT_TIME)
+        if self.isConnected:
+            self.serial.write(msg+"\r\n")
+            sleep(VARIAMOTOR_WAIT_TIME)
+        else:
+            raise VariaMotorLogicError("Varia Motor port not open.")
        
     def read_back(self):
         """
@@ -63,9 +76,13 @@ class VariaMotor(object):
         :returns: message
         :type message: string
         """
-        readback = self.serial.readline()
-        sleep(VARIAMOTOR_WAIT_TIME)
-        return readback
+        if self.isConnected:
+            readback = self.serial.readline()
+            sleep(VARIAMOTOR_WAIT_TIME)
+            return readback
+        else:
+            raise VariaMotorLogicError("Varia Motor port not open.")
+            return 0
      
     def get_connected_status(self):
         """
@@ -74,8 +91,7 @@ class VariaMotor(object):
         :returns: get the current connection status of the controller. If connected returns: 'Connected.' (string)
         """
         self.execute_message( "z" )
-        response = str(self.read_back()).replace('\r\n','')
-        return response
+        return str(self.read_back()).replace('\r\n','')
 
     def get_position(self):
         """
@@ -84,8 +100,7 @@ class VariaMotor(object):
         :returns: get the current position of the motor 'Position: {}' (string)
         """
         self.execute_message( "a" )
-        response = str(self.read_back()).replace('\r\n','')
-        return response
+        return str(self.read_back()).replace('\r\n','')
 
     def get_max_speed(self):
         """
@@ -94,8 +109,7 @@ class VariaMotor(object):
         :returns: max speed of motor 'Max Speed: {}' (string)
         """
         self.execute_message( "j" )
-        response = str(self.read_back()).replace('\r\n','')
-        return response
+        return str(self.read_back()).replace('\r\n','')
 
     def set_max_speed(self, speedValue=5):
         """
@@ -116,6 +130,7 @@ class VariaMotor(object):
         :type msg: string
         """
         self.execute_message( "i"+str(accelValue) )
+        self.acceleration = accelValue
         
     def set_position(self, positionValue=0):
         """
@@ -164,23 +179,25 @@ class VariaMotor(object):
         """
         Quick check alive or not.
         """
-        isAlive = None
-        if self.isConnected:
-            checkValue = self.get_home_status() #choose to check the home status
-        else: 
-            self.port_open()
-            checkValue = self.get_home_status()
-            self.port_close()   
+        checkValue = self.get_home_status() #choose to check the home status
         if (checkValue == True or checkValue == False): isAlive = True
         else: isAlive = False
         return isAlive
+        
+    def system_state(self):
+        """
+        Returns a formatted string with the hardware info
+        
+        :returns: 'varia motor (system):: Port: COM{}, Baudrate: {}, Timeout: {}sec, Max Speed: {}, Acceleration: {}'
+        """
+        return "varia motor (system):: Port: COM{}, Baudrate: {}, Timeout: {}sec, Max Speed: {}, Acceleration: {}".format( self.serial.port+1, self.serial.baudrate, self.serial.timeout, self.get_max_speed(), self.acceleration )
         
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
 
-        :returns: 'variaMotor:: Port:{}, Baudrate:{}, Current Position:{}, Set Max Speed: {}'
+        :returns: 'varia motor (settings):: Position: {}'
         """
-        return "variaMotor:: Position:{}, Speed: {}".format( self.get_position() , self.get_speed() )
+        return "varia motor (settings):: Position: {}".format( self.get_position() )
 
 

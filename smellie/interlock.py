@@ -6,6 +6,12 @@ from time import sleep
 Control of the Interlock hardware
 """
 
+class InterlockLogicError(Exception):
+    """
+    Thrown if an inconsistency is noticed *before* any instructions are sent to the hardware (i.e. a problem with code logic)
+    """
+    pass
+
 class InterlockHWError(Exception):
     """
     Thrown if an inconsistency is noticed *after* any hardware instruction is executed (i.e. a problem with the hardware itself)
@@ -26,8 +32,11 @@ class Interlock(object):
         """
         Open the serial port connection
         """
-        self.serial = Serial(INTERLOCK_SERIAL_PORT,INTERLOCK_BAUD_RATE,timeout=1)
-        self.isConnected = True
+        if not self.isConnected:
+            self.serial = Serial(INTERLOCK_SERIAL_PORT,INTERLOCK_BAUD_RATE,timeout=1)
+            self.isConnected = True
+        else:
+            raise InterlockLogicError("Interlock port already open.") 
     
     def port_close(self):
         """
@@ -43,8 +52,11 @@ class Interlock(object):
         :param msg:
         :type msg: string
         """
-        self.serial.write(msg+"\r\n")
-        sleep(INTERLOCK_WAIT_TIME)
+        if self.isConnected:
+            self.serial.write(msg+"\r\n")
+            sleep(INTERLOCK_WAIT_TIME)
+        else:
+            raise InterlockLogicError("Interlock port not open.") 
         
     def read_back(self):
         """
@@ -53,28 +65,27 @@ class Interlock(object):
         :returns: message
         :type message: string
         """
-        readback = self.serial.readline()
-        sleep(INTERLOCK_WAIT_TIME)
-        return readback
-        
+        if self.isConnected:
+            readback = self.serial.readline()
+            sleep(INTERLOCK_WAIT_TIME)
+            return readback
+        else:
+            raise InterlockLogicError("Interlock port not open.") 
+            
     def get_status(self):
         """
         Send a command to query the arm/disarm status of the internal relay
         :param msg:
         :returns: arm/disarm status message (string)
         """
-        response = None
-        if (self.serial.isOpen() == True ): 
-            self.execute_message("v")
-            response = str(self.read_back()).replace('\r\n','')
-            if (response!="Relay contacts are CLOSED" and response!="Relay contacts are OPEN"):
-                self.port_close()
-                raise InterlockHWError("Unknown status response from interlock. Interlock state unknown.")
-        else:
-            raise InterlockHWError("Interlock port not open.")
+        self.execute_message("v")
+        response = str(self.read_back()).replace('\r\n','')
+        if (response!="Relay contacts are CLOSED" and response!="Relay contacts are OPEN"):
+            self.port_close()
+            raise InterlockHWError("Unknown status response from interlock. Interlock state unknown.")
         return response
         
-    def is_interlocked(self):
+    def lasers_are_locked(self):
         """
         Send a command to query the arm/disarm status of the internal relay
         :param msg:
@@ -82,8 +93,8 @@ class Interlock(object):
         """
         status = None
         response = self.get_status()
-        if (response=="Relay contacts are CLOSED"): status = True
-        elif (response=="Relay contacts are OPEN"): status = False
+        if (response=="Relay contacts are CLOSED"): status = False
+        elif (response=="Relay contacts are OPEN"): status = True
         else: 
             raise InterlockHWError("Unknown status response from interlock. Interlock state unknown.")
         return status
@@ -96,13 +107,8 @@ class Interlock(object):
         :type msg: string
         :returns: arm message (string)
         """
-        response = None
-        if (self.serial.isOpen() == True ): 
-            self.execute_message("a")
-            response = str(self.read_back()).replace('\r\n','')
-        else:
-            raise InterlockHWError("Interlock port not open.")
-        return response
+        self.execute_message("a")
+        return str(self.read_back()).replace('\r\n','')
         
     def set_disarm(self):
         """
@@ -111,13 +117,8 @@ class Interlock(object):
         :param msg: 'd'
         :type msg: string
         """
-        
-        if (self.serial.isOpen() == True ): 
-            self.execute_message("d")
-            #response = str(self.read_back()).replace('\r\n','') #arduino code doesn't send a disarm message unlike the arm.. (change?)
-        else:
-            raise InterlockHWError("Interlock port not open.")
-        return 0
+        self.execute_message("d")
+        #response = str(self.read_back()).replace('\r\n','') #arduino code doesn't send a disarm message unlike the arm.. (change?)
         
     def send_keepalive(self):
         """
@@ -126,11 +127,7 @@ class Interlock(object):
         :param msg: '1'
         :type msg: string
         """
-        if (self.serial.isOpen() == True ): 
-            self.execute_message("1")
-        else:
-            raise InterlockHWError("Interlock port not open.")
-        return 0
+        self.execute_message("1")
 
     def is_connected(self):
         """   
@@ -142,23 +139,25 @@ class Interlock(object):
         """
         Quick check alive or not.
         """
-        isAlive = None
-        if self.isConnected: 
-            checkValue = self.is_interlocked()  #choose to check the interlock status:
-        else:
-            self.port_open()
-            checkValue = self.is_interlocked()
-            self.port_close()
+        checkValue = self.is_interlocked()  #choose to check the interlock status:
         if (checkValue == True or checkValue == False): isAlive = True
         else: isAlive = False
         return isAlive
         
+    def system_state(self):
+        """
+        Returns a formatted string with the hardware info and constant settings.
+
+        :returns: 'Interlock (system):: Port:{}, Baudrate:{}, Status message:{}'
+        """
+        return "Interlock (system):: Port: COM{}, Baudrate: {}, Timeout: {}sec, Status: {}".format(self.serial.port+1, self.serial.baudrate, self.serial.timeout, self.get_status())
+
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
 
-        :returns: 'Interlock:: Port:{}, Baudrate:{}, Status message:{}, State: {}'
+        :returns: 'Interlock (settings):: Lasers Locked: {}'
         """
-        return "Interlock:: Status message:{}, State: {}".format( self.get_status(), self.get_status_boolean() )
-
+        return "Interlock (settings):: Lasers are locked: {}".format(self.lasers_are_locked())
+ 
 
