@@ -54,7 +54,7 @@ class SmellieController(object):
 
     def deactivate(self):
         """
-        Send the entire SMELLIE system into `deactivated mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V, active Laser Switch channel = 0 (no laser head attached to this channel), Fibre Switch input channel = 5 and output channel = 14 (no detector fibre attached to this output channel, just power meter)
+        Send the entire SMELLIE system into `deactivated mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V, active Laser Switch channel = 5 (no laser head attached to this channel), Fibre Switch input channel = 5 and output channel = 14 (no detector fibre attached to this output channel, just power meter)
         """       
         self.go_safe()
         self.gain_voltage.go_safe()
@@ -62,10 +62,10 @@ class SmellieController(object):
         #switch laser switch only if not already set
         ls_chan = self.laser_switch.get_active_channel()
         #print 'laser switch chan:{}'.format(ls_chan)
-        if (int(ls_chan) != 0): 
+        if (int(ls_chan) != 5): 
             #print 'Moving laser switch to position:0 (safe position)'
             self.laser_driver.port_close() #close before LaserSwitch d/c
-            self.laser_switch.set_active_channel(0)
+            self.laser_switch.set_active_channel(5)
             self.laser_driver.port_open()
             
         self.fibre_switch.set_io_channel_numbers(5, 14)
