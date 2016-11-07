@@ -55,13 +55,9 @@ class LaserSwitch(object):
         :raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
         """
         channel_original = self.get_selected_channel()
-        sleep(0.1)
         self.connection.eDigitalOut(self.com_channel, 1, writeD = 1) 
-        sleep(0.1)
         self.connection.eDigitalOut(self.com_channel, 0, writeD = 1)
-        sleep(0.1)
         self.connection.eDigitalOut(self.com_channel, 1, writeD = 1)
-        sleep(0.1)
         
         channel_new = self.get_selected_channel()
         if (channel_original<5) and (1 + channel_original) != channel_new:
@@ -73,13 +69,9 @@ class LaserSwitch(object):
         """
         Change the active Laser Switch channel from the currently active one to the currently selected one
         """
-        sleep(0.1)
         self.connection.eDigitalOut(0, 1, writeD = 1) 
-        sleep(0.1)
-        self.connection.eDigitalOut(0, 0, writeD = 1)
-        sleep(0.1)        
+        self.connection.eDigitalOut(0, 0, writeD = 1)      
         self.connection.eDigitalOut(0, 1, writeD = 1)
-        sleep(0.1)
 
         sleep(RELAY_SLEEP)
         #self.force_USB_restart() #should not have to do this now!. Beware of other devices same hub
@@ -92,17 +84,13 @@ class LaserSwitch(object):
         :returns: selected channel
         :type selected channel: int
         """
-        sleep(0.1)
         bit1 = invert(self.connection.eDigitalIn(2, readD = 1)["state"])
-        sleep(0.1)
         bit2 = invert(self.connection.eDigitalIn(3, readD = 1)["state"])
-        sleep(0.1)
         bit3 = invert(self.connection.eDigitalIn(4, readD = 1)["state"])
-        sleep(0.1)
         
         channel = translate_bits(bit1,bit2,bit3)
         return channel
-
+        
     def get_active_channel(self):
         """
         Poll the Laser Switch for the current active channel, i.e. corresponding to the currently operating laser head
@@ -112,13 +100,9 @@ class LaserSwitch(object):
 
         :raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
         """
-        sleep(0.1)
         bit1 = invert(self.connection.eDigitalIn(5, readD = 1)["state"])
-        sleep(0.1)
         bit2 = invert(self.connection.eDigitalIn(6, readD = 1)["state"])
-        sleep(0.1)
         bit3 = invert(self.connection.eDigitalIn(7, readD = 1)["state"])
-        sleep(0.1)
         
         channel = translate_bits(bit1,bit2,bit3)
         if not channel in xrange(6):

@@ -38,7 +38,7 @@ class LaserDriver(object):
         if not self.isConnected:
             open_usb_device(self.dev_id)
             time.sleep(5)
-            get_module_map(self.dev_id,True)
+            get_module_map(self.dev_id)
             time.sleep(5)
             self.isConnected = True
             
@@ -268,7 +268,7 @@ class LaserDriver(object):
         Returns a formatted string with the current hardware settings
         """
         if self.isConnected:
-            return "PQ laser (settings):: Laser Locked : {}, Soft Lock : {}, Intensity : {}/1000, Frequency Mode : {}".format("Unlocked" if (self.is_laser_locked()==1) else "Locked", 
+            return "PQ laser (settings):: Laser Locked : {}, Soft Lock : {}, Intensity : {}/1000, Frequency Mode : {}".format("Locked" if self.is_laser_locked() else "Unlocked", 
                "On " if self.is_soft_lock_on() else "Off", 
                self.get_intensity(), self.get_frequency_mode())
         else:

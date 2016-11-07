@@ -13,7 +13,8 @@ ADDRESS = "0.0.0.0"
 PORT = 5020
 
 # Logging Server
-LOGGER_PORT = 0
+LOGGER_SERVER = 'minard.sp.snolab.ca'
+LOGGER_PORT = 4001
 
 # Fibre Switch 
 FIBRE_SWITCH_SERIAL_PORT = 5 # = actually COM6(i.e. COM number-1)

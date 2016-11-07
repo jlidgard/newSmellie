@@ -1,0 +1,10 @@
+DEBUG:root:Begin Testing SMELLIE controller. 2016-11-06 22:08:19
+DEBUG:root:Current state: 
+LASER DRIVER: PQ laser (settings):: Laser Locked : Locked, Soft Lock : Off, Intensity : 0/1000, Frequency Mode : rising  edge (ext.) 
+SUPERK DRIVER: Superk laser (settings):: Low Wavelength: 7900, High Wavelength: 8000 varia motor (settings):: Position: Position: 0 
+LASER SWITCH: Laser switch (settings):: Active channel : 0 
+FIBRE SWITCH: Fibre switch (settings):: Channel:70 
+GAIN CONTROL: NI gain control (settings):: Output Voltage : None 
+SPECTROMETER: Spectrometer (settings):: 
+
+DEBUG:root:Finished Testing SMELLIE controller. 2016-11-06 22:10:04

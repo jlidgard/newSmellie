@@ -118,7 +118,7 @@ class SuperkDriver(object):
         if self.isConnected:
             # set varia wavelengths to be beyond the 700nm filter (so light is filtered out)
             low_wavelength, high_wavelength = getVariaControls(self.COMPort)
-            if (intensity*10!=0 and low_wavelength!=7900 and high_wavelength!=8000):
+            if (low_wavelength!=7900 and high_wavelength!=8000):
                 setVariaControls(self.COMPort,8000,7900)
             #logging.error( 'Error Setting SuperK Safe States. ErrorCode: {}'.format( errorCode ) )
         else:
@@ -152,7 +152,7 @@ class SuperkDriver(object):
         return 0
         
     def is_connected(self):
-        """   
+        """
         Check if the connection to the device is open
         """
         return self.isConnected
@@ -178,7 +178,7 @@ class SuperkDriver(object):
         """
         if self.isConnected:
             superK_info, varia_info = self.get_identity()
-            return "Superk laser (settings):: Compact Info: {}, Varia Info: {}\n{}".format(superK_info, varia_info, self.NDfilter.system_state() )
+            return "Superk laser (settings):: Compact Info: {}, Varia Info: {}{}".format(superK_info, varia_info, self.NDfilter.system_state() )
         else:
             raise SuperkDriverLogicError("Laser port not open.") 
             return 0
@@ -189,7 +189,7 @@ class SuperkDriver(object):
         """
         if self.isConnected:
             low_wavelength, high_wavelength = self.get_wavelengths()
-            return "Superk laser (settings):: Low Wavelength: {}Angstrom, High Wavelength: {}Angstrom\n{}".format(low_wavelength, high_wavelength, self.NDfilter.current_state() )
+            return "Superk laser (settings):: Low Wavelength: {}, High Wavelength: {}. {}".format(low_wavelength, high_wavelength, self.NDfilter.current_state() )
         else:
             raise SuperkDriverLogicError("Laser port not open.") 
             return 0    
