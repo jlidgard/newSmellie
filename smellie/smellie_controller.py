@@ -27,7 +27,7 @@ class SmellieController(object):
         self.superk_driver.port_open()
         self.spectrometer.port_open()
         self.fibre_switch.port_open()
-        ##self.power_meter.port_open()
+        #self.power_meter.port_open()
         
         self.deactivate()
         return self
@@ -95,7 +95,11 @@ class SmellieController(object):
             self.laser_switch.set_active_channel(ls_chan)
             self.laser_driver.port_open()
 
+        #set fibre switch channels
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
+        
+        #set gain voltage
+        self.gain_voltage.generate_voltage(gain_voltage)
 
         #Pulse in master mode
         self.laser_driver.go_ready(intensity)
@@ -131,7 +135,11 @@ class SmellieController(object):
             self.laser_switch.set_active_channel(ls_chan)
             self.laser_driver.port_open()
 
+        #set fibre switch channels
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
+        
+        #set gain voltage
+        self.gain_voltage.generate_voltage(gain_voltage)
 
         #Wait in slave mode
         self.laser_driver.go_ready(intensity)
@@ -163,7 +171,11 @@ class SmellieController(object):
             self.laser_switch.set_active_channel(5)
             self.laser_driver.port_open()
 
+        #set fibre switch channels
         self.fibre_switch.set_io_channel_numbers(fs_input_chan, fs_output_chan)
+        
+        #set gain voltage
+        self.gain_voltage.generate_voltage(gain_voltage)
         
         #Pulse in master mode
         self.superk_driver.go_ready(intensity, low_wavelength, high_wavelength)
@@ -171,15 +183,6 @@ class SmellieController(object):
 
         #go back to safe mode
         self.superk_driver.go_safe()
-        return 0
-        
-    def set_gain_control(self, voltage):
-        """
-        Set the Gain Voltage of the MPU's PMT ... applicable to both Master and Slave modes and both the Laser Heads and the SuperK laser
-        
-        :param voltage: PMU gain voltage set value
-        """
-        self.gain_voltage.generate_voltage(voltage)
         return 0
 
     def log_info(self):
