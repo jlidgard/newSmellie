@@ -1,4 +1,4 @@
-# Calibrate the gain setting for each laser
+# Calibrate the gain setting for each PQ laser
 # Runs scan of each laser while incrementing the gain voltage (also uses laser switch).
 
 import logging, time, datetime, numpy
@@ -15,9 +15,6 @@ if __name__ == "__main__":
     console = logging.StreamHandler() #print logger to console
     console.setLevel(logging.DEBUG)
     logging.getLogger('').addHandler(console)
-
-    npass = 0
-    nfail = 0
 
     try:
         ld = laser_driver.LaserDriver()
@@ -63,14 +60,13 @@ if __name__ == "__main__":
             #    logging.debug( "Laser switch chan: {}".format( ls_chan ) )  
             
             ld.go_safe()
-            ld.set_soft_lock(False)
-            ld.set_intensity(intensity)
+            ld.go_ready(intensity)
             
             for gain in gains:
                 gc.generate_voltage(float(gain)/1000.+gain_offset)
                 time.sleep(0.5)
                 async_measure_voltage = pool.apply_async(measure_voltage)
-                logging.debug('Triggers. pulses={}, rate= {}'.format(trig_npulses, trig_rate))
+                logging.debug('Triggers. pulses = {}, rate = {}'.format(trig_npulses, trig_rate))
                 tg.generate_triggers(trig_npulses, trig_rate, 'PQ')
                 voltage, sd = async_measure_voltage.get()
                 voltages.append( voltage )
@@ -79,7 +75,7 @@ if __name__ == "__main__":
                 logging.debug ( "(laser, gain(V), MPU_Mean_Voltage(V), SD(V)): {}, {}, {}, {}\n".format(laser_number, float(gain)/1000.+gain_offset, voltage, sd) )
      
             fileOut = open(r'C:\SMELLIE\workDiary\test_gain_cal_PQlaser{}.dat'.format(laser_number), 'a')
-            fileOut.write('Laser: {}, Repetition Rate: {}, Laser intensity: {}, Gain offset: {}\n'.format(laser_number, trig_rate, intensity, gain_offset))
+            fileOut.write('Laser: {}, Repetition Rate: {}, Npulses: {}, Laser intensity: {}, Gain offset: {}\n'.format(laser_number, trig_rate, trig_npulses, intensity, gain_offset))
             fileOut.write('Gain(V), MPU_Mean_Voltage(V), SD(V)\n')
             for i,j,k in zip(gains,voltages,sds):
                 fileOut.write( '{},{},{}\n'.format( float(i)/1000.+gain_offset,j,k ) )
@@ -93,15 +89,7 @@ if __name__ == "__main__":
         ls_restored = ls.get_active_channel()
         logging.debug( "Current settings (restored/original): Laser switch chan: {}/{}".format( ls_restored,ls_original ) )
 
-        #results
-        if (ls_original==ls_restored):
-            logging.debug("Test PASSED")
-            npass+=1
-        else:
-            logging.debug("Test FAILED")
-            nfail+=1
-
-        logging.debug( "Finished SMELLIE PQ laser gain calibration. pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
+        logging.debug( "Finished SMELLIE PQ laser gain calibration. ")
         
     except Exception, e:
         logging.debug( "Exception:" )
