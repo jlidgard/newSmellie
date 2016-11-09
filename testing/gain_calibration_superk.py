@@ -31,8 +31,8 @@ if __name__ == "__main__":
 
         wavelengths = range(4050,7551,50) #test wavelengths 405 thru 755 in 5nm steps
 
-        trig_npulses = 500000
-        trig_rate = 100000
+        trig_npulses = 50
+        trig_rate = 10
         bandwidth = 100
         intensity = 1
         

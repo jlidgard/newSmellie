@@ -6,7 +6,7 @@ from multiprocessing.pool import ThreadPool
 from smellie import laser_driver, laser_switch, ni_trigger_generator, ni_analog_read, ni_gain_control
 
 def measure_voltage():
-    voltage,sd = ar.read_voltage()
+    voltage,sd = ar.read_voltage_mean()
     return voltage,sd
 
 if __name__ == "__main__":
@@ -37,8 +37,8 @@ if __name__ == "__main__":
         
         laser_numbers = range(1,5,1) #test lasers 1 thru 4
 
-        trig_npulses = 500000
-        trig_rate = 100000
+        trig_npulses = 50
+        trig_rate = 10
         intensity = 1000
         
         gain_offset = 0.0044 # GAIN_CONTROL_VOLTAGE_OFFSET in config file
@@ -51,7 +51,7 @@ if __name__ == "__main__":
             sds = []
         
             ls_chan = ls.get_active_channel()
-            #if (ls_chan != laser_number): 
+            #if (ls_chan != laser_number):
             ld.port_close() #close Sepia before laser switch d/c it.
             ls.set_active_channel(laser_number)
             ld.port_open()
