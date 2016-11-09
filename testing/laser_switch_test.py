@@ -6,7 +6,7 @@ import logging, time, datetime
 from smellie import laser_switch
 ls = laser_switch.LaserSwitch()
 
-logging.basicConfig(filename='test_laser_switch.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:\SMELLIE\logs\test_laser_switch.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)

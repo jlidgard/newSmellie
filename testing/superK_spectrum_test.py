@@ -7,14 +7,14 @@ from smellie import superk_driver
 from smellie import fibre_switch
 from smellie import power_meter
 from superk import SuperK
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy
 
 pm = power_meter.PowerMeter()
 fs = fibre_switch.FibreSwitch()
 sk = superk_driver.SuperK()
 
-logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_superk_spectrum.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename=r'C:\SMELLIE\logs\test_superk_spectrum.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
@@ -83,7 +83,7 @@ try:
     sk.port_close()
     pm.port_close()
     
-    fileOut = open(r'C:\SMELLIE\software\newSmellie\testing\test_superk_spectrum.dat', 'a')
+    fileOut = open(r'C:\SMELLIE\workDiary\test_superk_spectrum.dat', 'a')
     fileOut.write('Wavelength(nm),MeanIntensity(W),SDIntensity(W),MeterRange(W)\n')
     for i,j,k,l in zip(wavelengths,powerDataMean,powerDataSD,powerRangeDataMean):
         fileOut.write( '{},{},{},{}\n'.format( i,j,k,l ) )
@@ -91,9 +91,9 @@ try:
     
     logging.debug( "Finished Testing SMELLIE SuperK spectrum" )
     
-    plt.errorbar(wavelengths,powerDataMean, yerr=powerDataSD,fmt='o')
-    plt.axis([400,750,1E-10,3E-9])
-    plt.show()
+    #plt.errorbar(wavelengths,powerDataMean, yerr=powerDataSD,fmt='o')
+    #plt.axis([400,750,1E-10,3E-9])
+    #plt.show()
     
 except Exception, e:
     logging.debug( "Exception: {}".format(e) )

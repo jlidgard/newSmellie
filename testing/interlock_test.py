@@ -6,7 +6,7 @@ import logging, time, datetime
 from smellie import interlock
 il = interlock.Interlock()
 
-logging.basicConfig(filename='test_interlock.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:\SMELLIE\logs\test_interlock.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)

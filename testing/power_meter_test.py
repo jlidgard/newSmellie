@@ -6,7 +6,7 @@ import logging, time, datetime
 from smellie import power_meter
 pm = power_meter.PowerMeter()
 
-logging.basicConfig(filename='test_power_meter.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:\SMELLIE\logs\test_power_meter.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)

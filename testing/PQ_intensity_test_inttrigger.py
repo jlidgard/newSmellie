@@ -7,7 +7,7 @@ from smellie import laser_driver, power_meter, fibre_switch, laser_switch
 from sepia.slm import get_pulse_parameters, set_pulse_parameters, decode_freq_trig_mode
 from smellie_config import LASER_DRIVER_SLOT_ID, LASER_DRIVER_DEV_ID, LASER_SLOT_ID
 
-logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan_inttrigger.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename=r'C:\SMELLIE\logs\test_PQ_intensity_scan_inttrigger.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
@@ -76,7 +76,7 @@ try:
         ld.port_close()
         
         #write intensity vs power data to file
-        fileOut = open(r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan_inttrigger_{}nm.dat'.format(wavelength), 'a')
+        fileOut = open(r'C:\SMELLIE\workDiary\test_PQ_intensity_scan_inttrigger_{}nm.dat'.format(wavelength), 'a')
         fileOut.write('Laser: {}, Wavelength(nm): {}, Repetition Rate: {}, Power meter sample average: {} \n'.format( laser_number, wavelength, trig_rate, power_meter_nsamples))
         fileOut.write('Intensity(%), Power_mean(W), Power_sd(W), Power_range(W)\n')
         for i,j,k,l in zip(intensities,powerMean,powerSD,powerRange):

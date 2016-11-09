@@ -10,7 +10,7 @@ fs = fibre_switch.FibreSwitch()
 log = Logger()
 
 #create local log file
-log.set_logfile('test_logging_server.log')
+log.set_logfile('C:\SMELLIE\logs\test_logging_server.log')
 
 #connect to logging server
 log.connect('smellie',LOGGER_SERVER,LOGGER_PORT)

@@ -1,6 +1,4 @@
-# Test the SMELLIE fibre switch
-# functions to test the functionality of all the fibre switch control code
-# Test while pulsing laser and monitoring fibre_switch output with power meter
+# Test sending an email with a hardware report/status
 
 import logging, time, datetime, smtplib
 from smellie import fibre_switch
@@ -8,7 +6,7 @@ from email.mime.text import MIMEText
 
 fs = fibre_switch.FibreSwitch()
 
-logging.basicConfig(filename='C:/SMELLIE/software/smellieReport.txt', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:\SMELLIE\logs\test_status_mail.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)

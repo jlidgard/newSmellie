@@ -4,7 +4,7 @@
 import logging, time, datetime
 from smellie import laser_driver, fibre_switch, laser_switch, ni_trigger_generator
 
-logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_PQlaser_fire_test.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename=r'C:\SMELLIE\logs\test_PQ_switch.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
@@ -19,7 +19,7 @@ try:
     ls = laser_switch.LaserSwitch()
     ni = ni_trigger_generator.TriggerGenerator()
     
-    logging.debug( "Begin SMELLIE PQ laser fire all test. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
+    logging.debug( "Begin SMELLIE PQ laser switch test. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
     
     #open devices
     fs.port_open()
@@ -74,7 +74,7 @@ try:
     ld.port_close()
     fs.port_close()
 
-    logging.debug( "Finished SMELLIE PQ laser fire all test. pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
+    logging.debug( "Finished SMELLIE PQ laser switch test. pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
 
 except Exception, e:
     logging.debug( "Exception:" )

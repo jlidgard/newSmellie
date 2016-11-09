@@ -6,7 +6,7 @@ import logging, time, datetime
 from smellie import fibre_switch
 fs = fibre_switch.FibreSwitch()
 
-logging.basicConfig(filename='test_fibre_switch.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:\SMELLIE\logs\test_fibre_switch.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)

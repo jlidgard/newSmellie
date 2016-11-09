@@ -109,6 +109,21 @@ class LaserSwitch(object):
             raise LaserSwitchHWError("Laser Switch returned unphysical active channel number!  It should be between 0 and 5 inclusive.")
         return int(channel)
 
+    # Return the currently active channel as shown on the Laser Switch front panel's LEDs
+    def GetActiveChannel(self):
+        def invert(bit):
+            if (bit == 0):
+                bit = 1
+                return bit
+            elif(bit == 1):
+                bit = 0
+                return bit 
+            else:
+                return "Laser Switch (Get Active Channel) - Invalid input ... check connections to and from the Laser Switch."
+                
+        channel = invert(self.connection.eDigitalIn(5, readD = 1)["state"]) + (2.0 * float(invert(self.connection.eDigitalIn(6, readD = 1)["state"]))) + (4.0 * float(invert(self.connection.eDigitalIn(7, readD = 1)["state"])))
+        return int(channel)
+        
     def set_active_channel(self, channel):
         """
         Set the active Laser Switch channel - must be between 0 and 5 inclusive

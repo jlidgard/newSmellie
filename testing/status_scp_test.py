@@ -1,16 +1,14 @@
-# Test the SMELLIE fibre switch
-# functions to test the functionality of all the fibre switch control code
-# Test while pulsing laser and monitoring fibre_switch output with power meter
+# Test sending a hardware status message via scp (requires a ssh key)
 
 import logging, time, datetime
 from smellie import fibre_switch
 
 import paramiko
-paramiko.util.log_to_file('./test_status_scp_login.log')
+paramiko.util.log_to_file('C:\SMELLIE\logs\test_status_scp_login.log')
 
 fs = fibre_switch.FibreSwitch()
 
-logging.basicConfig(filename='C:/SMELLIE/software/smellieReport.txt', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:\SMELLIE\logs\test_status_scp.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
@@ -38,7 +36,7 @@ finally:
     myhost = 'pplxint9.physics.ox.ac.uk'
     myport = 22
     myuser = 'lidgard'
-    mykey = paramiko.RSAKey.from_private_key_file('C:/SMELLIE/software/smelliekey.prv')
+    mykey = paramiko.RSAKey.from_private_key_file('C:\SMELLIE\software\smelliekey.prv')
     
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -46,8 +44,8 @@ finally:
     sftp = ssh.open_sftp()
 
     #send file
-    filepath = '/home/lidgard/SMELLIE/smellieReport.txt'
-    localpath = 'C:/SMELLIE/software/smellieReport.txt'
+    filepath = '/home/lidgard/SMELLIE/test_status_scp.log'
+    localpath = 'C:\SMELLIE\logs\test_status_scp.log'
     sftp.put(localpath, filepath)
 
     #close connections

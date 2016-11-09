@@ -1,6 +1,6 @@
 import daqmx.functions
 import daqmx.constants
-from smellie_config import NI_DEV_NAME, GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ, GAIN_CONTROL_PIN_OUT
+from smellie_config import NI_DEV_NAME, GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ, GAIN_CONTROL_PIN_OUT, GAIN_CONTROL_VOLTAGE_OFFSET
 import ctypes
 import numpy
 
@@ -27,7 +27,7 @@ class GainVoltageGenerator(object):
         self.out_pin = GAIN_CONTROL_PIN_OUT
         self.number_of_samples = GAIN_CONTROL_N_SAMPLES
         self.sampling_frequency = GAIN_CONTROL_SAMP_FREQ
-        self.vResidual = 0.0044
+        self.vResidual = GAIN_CONTROL_VOLTAGE_OFFSET
         self._set_up()
         self._start_output(0) # why is the gain always changed? why don't we leave it where it is?
         self.voltage = None
@@ -42,7 +42,7 @@ class GainVoltageGenerator(object):
 
         :raises: :class:`.GainControlLogicError` if the requested Gain Voltage is outside the safe range for the MPU's PMT
         """
-        if(vGain < 0.5 or vGain > 1.0):
+        if(vGain < 0.0 or vGain > 1.0):
             raise GainControlLogicError("Cannot set Gain Voltage - must be between 0.5 and 1.0V to avoid damage to the MPU's PMT")
         self._set_up()
         vOutput = vGain - self.vResidual

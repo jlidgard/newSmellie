@@ -13,7 +13,7 @@ def measure_power(nsamples,sample_rate):
 
 if __name__ == "__main__":
 
-    logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan_nitrigger.log', filemode="a", level=logging.DEBUG)
+    logging.basicConfig(filename=r'C:\SMELLIE\logs\test_PQ_intensity_scan_nitrigger.log', filemode="a", level=logging.DEBUG)
     console = logging.StreamHandler() #print logger to console
     console.setLevel(logging.DEBUG)
     logging.getLogger('').addHandler(console)
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
                 print "(laser, wavelength, intensity(%), power_mean(W), power_sd(W), power_range(W)): {}, {}, {}, {}, {}\n".format(laser_number, wavelength, intensity, power_mean, power_sd, power_range)
      
-            fileOut = open(r'C:\SMELLIE\software\newSmellie\testing\test_PQ_intensity_scan_nitrigger_{}nm.dat'.format(wavelength), 'a')
+            fileOut = open(r'C:\SMELLIE\workDiary\test_PQ_intensity_scan_nitrigger_{}nm.dat'.format(wavelength), 'a')
             fileOut.write('Laser: {}, Wavelength(nm): {}, Repetition Rate: {}, Power meter sample average: {}\n'.format(laser_number, wavelength, trig_rate, power_meter_nsamples))
             fileOut.write('Intensity(%), Power_mean(W), Power_sd(W), Power_range(W)\n')
             for i,j,k,l in zip(intensities,powerMean,powerSD,powerRange):

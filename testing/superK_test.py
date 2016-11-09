@@ -8,7 +8,7 @@ fs = fibre_switch.FibreSwitch()
 ni = ni_trigger_generator.TriggerGenerator()
 sk = superk.SuperK()
 
-logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_superk.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename=r'C:\SMELLIE\logs\test_superk.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)

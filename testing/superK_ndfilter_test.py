@@ -10,7 +10,7 @@ pm = power_meter.PowerMeter()
 fs = fibre_switch.FibreSwitch()
 sk = superk_driver.SuperK()
 
-logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_superk_ndfilter.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename=r'C:\SMELLIE\logs\test_superk_ndfilter.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
@@ -77,7 +77,7 @@ try:
 
             print "(Wavelength, NDPosition, Power, SD, Range): {}, {}, {}, {}, {}".format(setWavelength, currentNDPosition, powermean, powersd, powerrange)
 
-        fileOut = open(r'C:\SMELLIE\software\newSmellie\testing\test_superk_ndfilter_{}nm.dat'.format(setWavelength), 'a')
+        fileOut = open(r'C:\SMELLIE\workDiary\test_superk_ndfilter_{}nm.dat'.format(setWavelength), 'a')
         fileOut.write('NDposition,MeanIntensity(W),SDIntensity(W),MeterRange(W)\n')
         for i,j,k,l in zip(NDPositions,powerDataMean,powerDataSD,powerRangeDataMean):
             fileOut.write( '{},{},{},{}\n'.format( i,j,k,l ) )

@@ -6,7 +6,7 @@ import logging, time, datetime
 from smellie import spectrometer
 spec = spectrometer.Spectrometer()
 
-logging.basicConfig(filename=r'C:\SMELLIE\software\newSmellie\testing\test_spectrometer.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename=r'C:\SMELLIE\logs\test_spectrometer.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)

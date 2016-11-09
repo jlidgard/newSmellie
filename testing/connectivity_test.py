@@ -13,7 +13,7 @@ pm = power_meter.PowerMeter()
 sk = superk_driver.SuperkDriver()
 sp = spectrometer.Spectrometer()
 
-logging.basicConfig(filename='test_connectivity.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:\SMELLIE\logs\test_connectivity.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
