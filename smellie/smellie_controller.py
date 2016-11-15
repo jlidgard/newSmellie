@@ -184,6 +184,9 @@ class SmellieController(object):
         #go back to safe mode
         self.superk_driver.go_safe()
         return 0
+        
+    def new_run():
+        
 
     def log_info(self):
         # pipe info return into logger
@@ -224,3 +227,4 @@ class SmellieController(object):
         self.spectrometer.current_state()
         )
         
+

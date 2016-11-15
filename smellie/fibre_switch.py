@@ -1,6 +1,7 @@
 from smellie_config import FIBRE_SWITCH_SERIAL_PORT, FIBRE_SWITCH_BAUD_RATE, FIBRE_SWITCH_WAIT_TIME
 from serial import Serial
 from time import sleep
+from smellie import smellie_logger.SMELLIELogger
 
 """
 Control of the Fibre Switch hardware
