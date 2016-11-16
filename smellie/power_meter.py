@@ -4,6 +4,7 @@ from ctypes import OleDLL, create_string_buffer, c_int, c_double, c_uint, c_int1
 from smellie_config import PM_ADDRESS, PM_DLL_PATH, PM_STR_BUFFER_SIZE
 from functools import wraps
 import os
+from smellie.smellie_logger import SMELLIELogger
 
 class PMDLLError(Exception):
     """
@@ -277,7 +278,7 @@ class PowerMeter(object):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
-        
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.port_open()')
         iDQueryDoQuery = c_int16(iDQueryDoQuery)
         resetDevice = c_int16(resetDevice)
         taskHandle = c_uint()
@@ -301,6 +302,7 @@ class PowerMeter(object):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.port_close()')
         dll.PM100DClose( byref(self.taskHandle) ) 
         self.isConnected = False
         
@@ -315,6 +317,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DGetBeamDiameter(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_beam_diameter() = {}'.format(retValue.value))
         return retValue.value
 
     @raise_on_error_code
@@ -324,6 +327,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DMeasurePower(byref(self.taskHandle), None, byref(retValue))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_power() = {}'.format(retValue.value))
         return retValue.value
         
     @raise_on_error_code
@@ -342,6 +346,7 @@ class PowerMeter(object):
                 raise PMDLLError('Power meter cannot sample this fast. Select a slower rate. {}'.format(retValue))
         else:
             raise PMLogicError('Selected sampling rate too fast. Must be <10Hz.')
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_mean_power = {},{},{}'.format(retMean.value, retSD.value, retRange.value))
         return retMean.value, retSD.value, retRange.value
         
     @raise_on_error_code
@@ -351,6 +356,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DGetWavelength(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_wavelength = {}'.format(retMean.value))
         return retValue.value
         
     @raise_on_error_code
@@ -360,6 +366,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DGetPowerRange(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_power_range = {}'.format(retMean.value))
         return retValue.value
         
     @raise_on_error_code
@@ -369,6 +376,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DGetDarkOffset(byref(self.taskHandle), None, byref(retValue))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_dark_offset() = {}'.format(retMean.value))
         return retValue.value
         
     @raise_on_error_code
@@ -376,6 +384,7 @@ class PowerMeter(object):
         """
         :undocumented
         """
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_dark_offset_cancel()')
         dll.PM100DCancelDarkAdjustment(byref(self.taskHandle), None)
         return 0
         
@@ -384,6 +393,7 @@ class PowerMeter(object):
         """
         :undocumented
         """
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_dark_offset()')
         dll.PM100DStartDarkOffsetAdjustment(byref(self.taskHandle), None)
         return 0
 
@@ -392,6 +402,7 @@ class PowerMeter(object):
         """
         :undocumented
         """
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_wavelength({})'.format(setValue))
         setValue = c_double(setValue)
         dll.PM100DSetWavelength(byref(self.taskHandle), setValue, None)
         return 0
@@ -401,6 +412,7 @@ class PowerMeter(object):
         """
         :undocumented
         """
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_average_count({})'.format(setValue))
         setValue = c_int16(setValue)
         dll.PM100DSetAverageCount(byref(self.taskHandle), setValue, None)
         return 0
@@ -412,6 +424,7 @@ class PowerMeter(object):
         """
         retValue = c_int16()
         dll.PM100DGetAverageCount(byref(self.taskHandle), None, byref(retValue))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_average_count() = {}'.format(retMean.value))
         return retValue.value
     
     @raise_on_error_code
@@ -419,6 +432,7 @@ class PowerMeter(object):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.default_settings()')
         self.set_average_count(100)
         self.set_wavelength(400)
         ##PM100DSetAttenuation

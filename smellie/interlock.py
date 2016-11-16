@@ -77,7 +77,7 @@ class Interlock(object):
         if self.isConnected:
             readback = self.serial.readline()
             sleep(INTERLOCK_WAIT_TIME)
-            SMELLIEInterlockLogger.debug('SNODROP DEBUG: Interlock.read_back({})'.format(readback))
+            SMELLIEInterlockLogger.debug('SNODROP DEBUG: Interlock.read_back() = {}'.format(readback))
             return readback
         else:
             raise InterlockLogicError("Interlock port not open.") 
@@ -94,7 +94,7 @@ class Interlock(object):
         if (response!="Relay contacts are CLOSED" and response!="Relay contacts are OPEN"):
             self.port_close()
             raise InterlockHWError("Unknown status response from interlock. Interlock state unknown.")
-        SMELLIEInterlockLogger.debug('SNODROP DEBUG: Interlock.get_status({})'.format(response))
+        SMELLIEInterlockLogger.debug('SNODROP DEBUG: Interlock.get_status() = {}'.format(response))
         return response
         
     @str_wrap_exceptions    
@@ -110,7 +110,7 @@ class Interlock(object):
         elif (response=="Relay contacts are OPEN"): status = True
         else: 
             raise InterlockHWError("Unknown status response from interlock. Interlock state unknown.")
-        SMELLIEInterlockLogger.debug('SNODROP DEBUG: Interlock.lasers_are_locked({})'.format(status))
+        SMELLIEInterlockLogger.debug('SNODROP DEBUG: Interlock.lasers_are_locked() = {}'.format(status))
         return status
 
     @str_wrap_exceptions    

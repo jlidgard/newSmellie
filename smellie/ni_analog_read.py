@@ -2,6 +2,7 @@ import daqmx.functions
 import daqmx.constants
 from smellie_config import NI_DEV_NAME, MPU_SAMPLE_N_SAMPLES, MPU_SAMPLE_SAMP_FREQ, MPU_SAMPLE_PIN_IN
 import ctypes,numpy,time
+from smellie.smellie_logger import SMELLIELogger
 
 """
 Generation of the MPU Gain Voltage using the National Instruments (NI) Unit
@@ -28,6 +29,7 @@ class AnalogRead(object):
         """
         undocumented
         """
+        SMELLIELogger.debug('SNODROP DEBUG: AnalogRead.__del__()')
         daqmx.functions.DAQmxClearTask(self.taskHandle)
 
     def read_voltage_mean(self, number_of_samples=100000, sampling_frequency=100000):
@@ -45,6 +47,7 @@ class AnalogRead(object):
         voltages_high = voltages[ numpy.where( voltages > voltages_max*0.7 ) ]
         voltages_mean = numpy.mean(voltages_high)
         voltages_sd = numpy.std(voltages_high)
+        SMELLIELogger.debug('SNODROP DEBUG: AnalogRead.read_voltage_mean() = {},{}'.format(voltages_mean, voltages_sd))
         return voltages_mean, voltages_sd
 
     def read_voltage(self, number_of_samples=100000, sampling_frequency=100000):
@@ -58,12 +61,14 @@ class AnalogRead(object):
         :raises: :class:`.AnalogReadLogicError` if the requested Gain Voltage is outside the safe range for the MPU's PMT
         """
         voltages = self._start_read(number_of_samples, sampling_frequency)
+        SMELLIELogger.debug('SNODROP DEBUG: AnalogRead.read_voltage() = (array)')
         return voltages
 
     def _set_up(self, vMin, vMax, in_pin):
         """
         Create the Gain Voltage task, the channel minimum and maximum parameters, the physical output channel.
         """
+        SMELLIELogger.debug('SNODROP DEBUG: AnalogRead._set_up()')
         self.taskHandle = daqmx.functions.TaskHandle(0)
         daqmx.functions.DAQmxCreateTask("",ctypes.byref(self.taskHandle))
         
@@ -74,7 +79,7 @@ class AnalogRead(object):
         Start the Gain Voltage task using the parameters previously set up in the _set_up function, and a given output voltage
         This is a private function, indicated by the underscore before the name - do not change that!
         """
-
+        SMELLIELogger.debug('SNODROP DEBUG: AnalogRead._start_read()')
         daqmx.functions.DAQmxCfgSampClkTiming(self.taskHandle, "", sampling_frequency, daqmx.constants.DAQmx_Val_Rising,daqmx.constants.DAQmx_Val_FiniteSamps, number_of_samples)
         
         samples_read_n = ctypes.c_int()

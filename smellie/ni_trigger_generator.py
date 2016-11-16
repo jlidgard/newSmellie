@@ -1,7 +1,7 @@
-import daqmx.functions
-import daqmx.constants
+import daqmx.functions,daqmx.constants
 from smellie_config import NI_DEV_NAME, TRIG_GEN_HIGH_TIME, TRIG_GEN_MINIMUM_LOW_TIME, TRIG_GEN_MAX_FREQUENCY, TRIG_GEN_MINIMUM_LOW_TIME, TRIG_GEN_PIN_OUT_PQ, TRIG_GEN_PIN_OUT_SUPERK
 from ctypes import byref, c_ulong, create_string_buffer
+from smellie.smellie_logger import SMELLIELogger
 
 """
 Generation of the SEPIA and SuperK trigger signals using the National Instruments (NI) Unit
@@ -25,6 +25,7 @@ class TriggerGenerator(object):
         Set up the single-pulse parameters - the high time and the low time, and the digital output channel X to be used.
         The channel string must be of the form `deviceName/digitalOutputPin`, i.e. `Dev1/Ctr0`.  /Ctr0 is used by default, but can be changed in config.py if required.
         """
+        SMELLIELogger.debug('SNODROP DEBUG: TriggerGenerator._setup()')
         self.high_time = TRIG_GEN_HIGH_TIME
         self.low_time = (1.0 / self.frequency) - self.high_time
         if self.low_time < TRIG_GEN_MINIMUM_LOW_TIME:
@@ -38,12 +39,19 @@ class TriggerGenerator(object):
         """
         Wait until all n trigger pulses have been sent, and then stop the Trigger Generation task and clear the NI Unit's task memory.
         """
+        SMELLIELogger.debug('SNODROP DEBUG: TriggerGenerator._cleanup()')
         if self.taskHandle is not None:
             daqmx.functions.DAQmxStopTask(self.taskHandle)
             daqmx.functions.DAQmxClearTask(self.taskHandle)
         self.taskHandle = None
         
     def set_trigger_destination(self, name):
+        """
+        Set the appropriate NI DAQ output channel for either laser system. 
+        
+        :params: "SUPERK" or "PQ"
+        """
+        SMELLIELogger.debug('SNODROP DEBUG: TriggerGenerator.set_trigger_destination({})'.format(name))
         if name=="SUPERK": 
             self.trig_out_pin = TRIG_GEN_PIN_OUT_SUPERK
         elif name=="PQ": 
@@ -52,6 +60,12 @@ class TriggerGenerator(object):
             raise ValueError("Select either SUPERK or PQ")
             
     def set_repetition(self, frequency):
+        """
+        Set the repetition rate of the generated triggers.
+        
+        :params: frequency
+        """
+        SMELLIELogger.debug('SNODROP DEBUG: TriggerGenerator.set_repetition({})'.format(frequency))
         if frequency <= TRIG_GEN_MAX_FREQUENCY and frequency>0:
             self.frequency = frequency
         else: 
@@ -60,8 +74,10 @@ class TriggerGenerator(object):
     def generate_triggers(self, n_pulses, repetition_rate, destination):
         """
         Start the Trigger Generation task using the single-pulse parameters previously set up in the __enter__ function, and the requested number of pulses
-        :param n_pulses:
+        
+        :param n_pulses, repetition_rate, destination
         """
+        SMELLIELogger.debug('SNODROP DEBUG: TriggerGenerator.generate_triggers({}, {},{})'.format(n_pulses, repetition_rate, destination))
         self.set_trigger_destination(destination)
         self.set_repetition(repetition_rate)
         try:
@@ -74,7 +90,7 @@ class TriggerGenerator(object):
             self._cleanup()
 
     def is_connected(self):
-        """   
+        """
         Check if the connection to the device is open
         For the NI device, this just calls is_alive()
         """

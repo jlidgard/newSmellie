@@ -5,6 +5,8 @@ from sepia.com import get_module_type, decode_module_type
 from sepia.scm import get_laser_locked, get_laser_soft_lock, set_laser_soft_lock
 from smellie_config import LASER_DRIVER_SLOT_ID, LASER_DRIVER_DEV_ID, LASER_SLOT_ID
 import time
+from smellie.smellie_logger import SMELLIELogger
+
 """
 Control of the SEPIA II Laser Driver hardware
 """
@@ -35,6 +37,7 @@ class LaserDriver(object):
         """
         Open the USB connection to SEPIA
         """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.port_open()')
         if not self.isConnected:
             open_usb_device(self.dev_id)
             time.sleep(5)
@@ -56,6 +59,7 @@ class LaserDriver(object):
         """
         (Cleanly!) close the USB connection to SEPIA
         """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.port_close()')
         free_module_map(self.dev_id)
         time.sleep(5)
         close_usb_device(self.dev_id)
@@ -72,7 +76,9 @@ class LaserDriver(object):
         :rtype: (int, bool, int) tuple
         """
         if self.isConnected:
-            return get_pulse_parameters(self.dev_id, self.laser_slot_id)
+            params = get_pulse_parameters(self.dev_id, self.laser_slot_id)
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.get_pulse_params() = {}'.format(params))
+            return params
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0
@@ -85,7 +91,9 @@ class LaserDriver(object):
         :rtype:
         """
         if self.isConnected:
-            return decode_freq_trig_mode(self.get_pulse_params()[0])
+            mode = decode_freq_trig_mode(self.get_pulse_params()[0])
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.get_frequency_mode() = {}'.format(mode))
+            return mode
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0
@@ -98,7 +106,9 @@ class LaserDriver(object):
         :rtype: int
         """
         if self.isConnected:
-            return bool(self.get_pulse_params()[1])
+            pulse_mode = bool(self.get_pulse_params()[1])
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.get_pulse_mode() = {}'.format(pulse_mode))
+            return pulse_mode
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0
@@ -111,7 +121,9 @@ class LaserDriver(object):
         :rtype: int
         """
         if self.isConnected:
-            return self.get_pulse_params()[2]
+            head_type = self.get_pulse_params()[2]
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.get_head_type() = {}'.format(head_type))
+            return head_type
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0
@@ -123,6 +135,7 @@ class LaserDriver(object):
         :raises: :class:`.LaserDriverHWError` if pulsed mode is not set
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.check_pulse_mode()')
             if not self.get_pulse_params()[1] == 1:
                 raise LaserDriverHWError("Laser Driver is not in pulsed mode!!")
         else:
@@ -135,6 +148,7 @@ class LaserDriver(object):
         :raises: :class:`.LaserDriverHWError` if pulsed mode is not set
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.check_trig_mode()')
             if not self.get_pulse_params()[0] == 6:
                 raise LaserDriverHWError("Laser Driver is not in external trigger (rising edge) mode!")
         else:
@@ -148,7 +162,9 @@ class LaserDriver(object):
         :rtype: int
         """
         if self.isConnected:
-            return get_intensity_fine_step(self.dev_id, self.laser_slot_id)
+            intensity = get_intensity_fine_step(self.dev_id, self.laser_slot_id)
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.get_intensity() = {}'.format(intensity))
+            return intensity
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0
@@ -163,6 +179,7 @@ class LaserDriver(object):
         :raises: :class:`.LaserDriverHWError` if the command is unsuccessful
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.set_intensity({})'.format(intensity))
             set_intensity_fine_step(self.dev_id, self.laser_slot_id, intensity)
             if not self.get_intensity() == intensity:
                 raise LaserDriverHWError("Cannot set Laser head intensity!")
@@ -176,7 +193,9 @@ class LaserDriver(object):
         :returns: True if the power is off, the soft-lock is on or the sepia key is locked
         """
         if self.isConnected:
-            return get_laser_locked(self.dev_id, self.driver_slot_id)
+            locked_status = get_laser_locked(self.dev_id, self.driver_slot_id)
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.is_laser_locked() = {}'.format(locked_status))
+            return locked_status
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0
@@ -188,7 +207,9 @@ class LaserDriver(object):
         :returns: True if the soft lock is on
         """
         if self.isConnected:
-            return get_laser_soft_lock(self.dev_id, self.driver_slot_id)
+            locked_status = get_laser_soft_lock(self.dev_id, self.driver_slot_id)
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.is_soft_lock_on() = {}'.format(locked_status))
+            return locked_status
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0
@@ -198,6 +219,7 @@ class LaserDriver(object):
         Set the SEPIA soft-lock to on
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.set_soft_lock({})'.format(is_locked))
             if is_locked != self.is_soft_lock_on(): 
                 set_laser_soft_lock(self.dev_id, self.driver_slot_id, is_locked)
         else:
@@ -208,6 +230,7 @@ class LaserDriver(object):
         Set SEPIA into its safe state: soft-lock = on, intensity = 0%
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.go_safe()')
             self.set_soft_lock(is_locked = True)
             self.set_intensity(0)
             set_pulse_parameters(self.dev_id, self.laser_slot_id)
@@ -219,6 +242,7 @@ class LaserDriver(object):
         Set SEPIA into its ready state, given intensity, sets soft-lock = off
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.go_ready()')
             self.set_intensity(intensity)
             self.set_soft_lock(False)
         else:
@@ -229,7 +253,9 @@ class LaserDriver(object):
         Get the current SEPIA firmware version as a string
         """
         if self.isConnected:
-            return get_fwr_version(self.dev_id)
+            fwr_ver = get_fwr_version(self.dev_id)
+            SMELLIELogger.debug('SNODROP DEBUG: LaserDriver.get_firmware_version() = {}'.format(fwr_ver))
+            return fwr_ver
         else:
             raise LaserDriverLogicError("Laser port not open.") 
             return 0

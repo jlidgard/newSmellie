@@ -1,7 +1,7 @@
 from smellie_config import RELAY_COM_CHANNEL, RELAY_SLEEP, RESET_NAME
 from time import sleep
-import u12
-import subprocess 
+import u12, subprocess 
+from smellie.smellie_logger import SMELLIELogger
 
 """
 Control of the Laser Switch hardware
@@ -54,6 +54,7 @@ class LaserSwitch(object):
 
         :raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
         """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.selected_channel_up()')
         channel_original = self.get_selected_channel()
         self.connection.eDigitalOut(self.com_channel, 1, writeD = 1) 
         self.connection.eDigitalOut(self.com_channel, 0, writeD = 1)
@@ -69,6 +70,7 @@ class LaserSwitch(object):
         """
         Change the active Laser Switch channel from the currently active one to the currently selected one
         """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.execute()')
         self.connection.eDigitalOut(0, 1, writeD = 1) 
         self.connection.eDigitalOut(0, 0, writeD = 1)      
         self.connection.eDigitalOut(0, 1, writeD = 1)
@@ -89,6 +91,7 @@ class LaserSwitch(object):
         bit3 = invert(self.connection.eDigitalIn(4, readD = 1)["state"])
         
         channel = translate_bits(bit1,bit2,bit3)
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_selected_channel() = {}'.format(channel))
         return channel
         
     def get_active_channel(self):
@@ -107,9 +110,11 @@ class LaserSwitch(object):
         channel = translate_bits(bit1,bit2,bit3)
         if not channel in xrange(6):
             raise LaserSwitchHWError("Laser Switch returned unphysical active channel number!  It should be between 0 and 5 inclusive.")
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_active_channel() = {}'.format(int(channel)))
         return int(channel)
 
     # Return the currently active channel as shown on the Laser Switch front panel's LEDs
+    # Function from old code, still here for testing purposes.
     def GetActiveChannel(self):
         def invert(bit):
             if (bit == 0):
@@ -122,6 +127,7 @@ class LaserSwitch(object):
                 return "Laser Switch (Get Active Channel) - Invalid input ... check connections to and from the Laser Switch."
                 
         channel = invert(self.connection.eDigitalIn(5, readD = 1)["state"]) + (2.0 * float(invert(self.connection.eDigitalIn(6, readD = 1)["state"]))) + (4.0 * float(invert(self.connection.eDigitalIn(7, readD = 1)["state"])))
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.GetActiveChannel() = {}'.format(int(channel)))
         return int(channel)
         
     def set_active_channel(self, channel):
@@ -132,7 +138,7 @@ class LaserSwitch(object):
 
         :raises: :class:`.LaserSwitchLogicError` if the requested active channel number is unphysical
         """
-        
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.set_active_channel({})'.format(int(channel)))
         if (self.get_active_channel() != channel):
             if not channel in xrange(6):
                 raise LaserSwitchLogicError("Cannot set selected Laser Switch channel to {0} - must be between 0 and 5 inclusive.".format(channel))
@@ -146,6 +152,7 @@ class LaserSwitch(object):
         
         :returns: successful reset (True) or otherwise (False) (boolean)
         """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.force_USB_restart()')
         path = r"C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
         try:
             response = subprocess.check_output([path,"restart",RESET_NAME]) 

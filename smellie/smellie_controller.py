@@ -9,12 +9,14 @@ from spectrometer import Spectrometer
 import system_state
 import smellie_config
 from time import sleep
+from smellie.smellie_logger import SMELLIELogger
 
 class SmellieController(object):
     def __enter__(self):
         """
         Open the SMELLIE Controller, with all hardware in deactivated mode
         """
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.__enter__()')
         self.fibre_switch = FibreSwitch()
         self.laser_switch = LaserSwitch()
         self.gain_voltage = GainVoltageGenerator()
@@ -36,6 +38,7 @@ class SmellieController(object):
         """
         Clean up code goes here - it is guaranteed to get called even if an exception is thrown during one of the other functions
         """
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.__exit__()')
         self.deactivate()
         self.superk_driver.varia_go_safe()
         if self.laser_driver.is_connected(): self.laser_driver.port_close()
@@ -48,6 +51,7 @@ class SmellieController(object):
         """
         Send the entire SMELLIE system into `safe mode` - SEPIA soft-lock = on, SEPIA intensity = 0%
         """
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.go_safe()')
         self.laser_driver.go_safe()
         self.superk_driver.go_safe()
         return 0
@@ -56,6 +60,7 @@ class SmellieController(object):
         """
         Send the entire SMELLIE system into `deactivated mode` - SEPIA soft-lock = on, SEPIA intensity = 0%, NI gain voltage = 0V, active Laser Switch channel = 5 (no laser head attached to this channel), Fibre Switch input channel = 5 and output channel = 14 (no detector fibre attached to this output channel, just power meter)
         """       
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.deactivate()')
         self.go_safe()
         self.gain_voltage.go_safe()
         
@@ -86,6 +91,7 @@ class SmellieController(object):
         :param n_pulses: the number of pulses
         """
         
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.laserheads_master_mode({},{},{},{},{},{},{})'.format(ls_chan, intensity, rep_rate, fs_input_chan, fs_output_chan, n_pulses, gain_voltage))
         #go into safe mode
         self.laser_driver.go_safe()
         
@@ -125,7 +131,7 @@ class SmellieController(object):
         
         :param time: time until SNODROP exits slave mode
         """
-        
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.laserheads_slave_mode({},{},{},{},{},{})'.format(ls_chan, intensity, fs_input_chan, fs_output_chan, time, gain_voltage))
         #go into safe mode
         self.laser_driver.go_safe()
         
@@ -161,7 +167,7 @@ class SmellieController(object):
 
         :param n_pulses: the number of pulses
         """
-        
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.superk_master_mode({},{},{},{},{},{},{},{})'.format(intensity, rep_rate, low_wavelength, high_wavelength, fs_input_chan, fs_output_chan, n_pulses, gain_voltage))
         #go into safe mode
         self.superk_driver.go_safe()
         
@@ -185,8 +191,12 @@ class SmellieController(object):
         self.superk_driver.go_safe()
         return 0
         
-    def new_run():
+    def new_run(run_number):
+        '''
+        Collect the run information from ORCA
         
+        '''
+        SMELLIELogger.debug('SNODROP DEBUG: SmellieController.new_run({})'.format(run_number)
 
     def log_info(self):
         # pipe info return into logger

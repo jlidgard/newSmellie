@@ -145,7 +145,7 @@ class FibreSwitch(object):
         """
         self.execute_message("ch?")
         channel_num = int(str(self.read_back()).replace(' ','').replace('\r\n',''))
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number({})'.format(channel_num))
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number() = {}'.format(channel_num))
         return channel_num
         
     @str_wrap_exceptions
@@ -157,7 +157,7 @@ class FibreSwitch(object):
         :type current channel: string
         """
         in_out_num = find_input_output_number(self.get_global_channel_number())
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_input_output_channel_number({})'.format(in_out_num))
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_input_output_channel_number() = {}'.format(in_out_num))
         return in_out_num
 
     @str_wrap_exceptions

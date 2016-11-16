@@ -1,8 +1,7 @@
-import daqmx.functions
-import daqmx.constants
+import daqmx.functions,daqmx.constants
 from smellie_config import NI_DEV_NAME, GAIN_CONTROL_N_SAMPLES, GAIN_CONTROL_SAMP_FREQ, GAIN_CONTROL_PIN_OUT, GAIN_CONTROL_VOLTAGE_OFFSET
-import ctypes
-import numpy
+import ctypes,numpy
+from smellie.smellie_logger import SMELLIELogger
 
 """
 Generation of the MPU Gain Voltage using the National Instruments (NI) Unit
@@ -42,6 +41,7 @@ class GainVoltageGenerator(object):
 
         :raises: :class:`.GainControlLogicError` if the requested Gain Voltage is outside the safe range for the MPU's PMT
         """
+        SMELLIELogger.debug('SNODROP DEBUG: GainVoltageGenerator.generate_voltage({})'.format(vGain))
         if(vGain < 0.0 or vGain > 1.0):
             raise GainControlLogicError("Cannot set Gain Voltage - must be between 0.5 and 1.0V to avoid damage to the MPU's PMT")
         self._set_up()
@@ -55,6 +55,7 @@ class GainVoltageGenerator(object):
         The channel string must be of the form `deviceName/analogueOutputPin`, i.e. `Dev1/ao0`.  /ao0 is used by default, but can be changed in config.py if required.
         This is a private function, indicated by the underscore before the name - do not change that!
         """
+        SMELLIELogger.debug('SNODROP DEBUG: GainVoltageGenerator._set_up()')
         self.taskHandle = daqmx.functions.TaskHandle(0)
         daqmx.functions.DAQmxCreateTask("",ctypes.byref(self.taskHandle)) #write task
         
@@ -69,6 +70,7 @@ class GainVoltageGenerator(object):
         Start the Gain Voltage task using the parameters previously set up in the _set_up function, and a given output voltage
         This is a private function, indicated by the underscore before the name - do not change that!
         """
+        SMELLIELogger.debug('SNODROP DEBUG: GainVoltageGenerator._start_output()')
         data = numpy.array([[float(voltage)]],numpy.float64)
         samples_written = ctypes.c_int(-1)
         daqmx.functions.DAQmxStartTask(self.taskHandle)
@@ -84,6 +86,7 @@ class GainVoltageGenerator(object):
         Stop the Gain Voltage task and clear the NI Unit's task memory
         This is a private function, indicated by the underscore before the name - do not change that!
         """
+        SMELLIELogger.debug('SNODROP DEBUG: GainVoltageGenerator.__del__()')
         #self._start_output(0)
         #daqmx.functions.DAQmxClearTask(self.taskHandle)
         pass
@@ -92,6 +95,8 @@ class GainVoltageGenerator(object):
         """
         Read the voltage on the DAQ pin to see if it has been correctly set.
         """
+        SMELLIELogger.debug('SNODROP DEBUG: GainVoltageGenerator.check_voltage()')
+        
         self.taskHandle2 = daqmx.functions.TaskHandle(0) #read handle
         daqmx.functions.DAQmxCreateTask("",ctypes.byref(self.taskHandle2))  #read task
         
