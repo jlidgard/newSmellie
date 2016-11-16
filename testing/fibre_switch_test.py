@@ -3,7 +3,9 @@
 # Test while pulsing laser and monitoring fibre_switch output with power meter
 
 import logging, time, datetime
-from smellie import fibre_switch, SMELLIELogger
+from smellie import fibre_switch
+from smellie.smellie_logger import SMELLIELogger
+
 fs = fibre_switch.FibreSwitch()
 
 logging.basicConfig(filename='C:/SMELLIE/logs/test_fibre_switch.log', filemode="a", level=logging.DEBUG)
@@ -17,6 +19,8 @@ nfail = 0
 try:
 
     logging.debug( "Begin Testing SMELLIE Fibre Switch. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
+    
+    SMELLIELogger.new_logger("test_run")
     
     #open serial connection
     fs.port_open()
