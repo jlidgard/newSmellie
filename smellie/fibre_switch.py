@@ -107,10 +107,10 @@ class FibreSwitch(object):
         :returns: message
         :type message: string
         """
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.read_back = {}'.format(readback))
         if self.isConnected:
             readback = self.serial.readline()
             sleep(FIBRE_SWITCH_WAIT_TIME)
+            SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.read_back = {}'.format(readback))
             return readback
         else:
             raise FibreSwitchLogicError("Fibre Switch port not open.")

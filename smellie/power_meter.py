@@ -356,7 +356,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DGetWavelength(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
-        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_wavelength = {}'.format(retMean.value))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_wavelength = {}'.format(retValue.value))
         return retValue.value
         
     @raise_on_error_code
@@ -366,7 +366,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DGetPowerRange(byref(self.taskHandle), c_int16(self.attributeValue), None, byref(retValue))
-        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_power_range = {}'.format(retMean.value))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_power_range = {}'.format(retValue.value))
         return retValue.value
         
     @raise_on_error_code
@@ -376,7 +376,7 @@ class PowerMeter(object):
         """
         retValue = c_double()
         dll.PM100DGetDarkOffset(byref(self.taskHandle), None, byref(retValue))
-        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_dark_offset() = {}'.format(retMean.value))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_dark_offset() = {}'.format(retValue.value))
         return retValue.value
         
     @raise_on_error_code
@@ -424,7 +424,7 @@ class PowerMeter(object):
         """
         retValue = c_int16()
         dll.PM100DGetAverageCount(byref(self.taskHandle), None, byref(retValue))
-        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_average_count() = {}'.format(retMean.value))
+        SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_average_count() = {}'.format(retValue.value))
         return retValue.value
     
     @raise_on_error_code
