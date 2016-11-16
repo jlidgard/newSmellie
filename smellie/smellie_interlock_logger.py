@@ -6,29 +6,29 @@ import time,datetime
 Interface with the SNOTDAQ Logger
 """
 
-class SMELLIELoggerLogicError(Exception):
+class SMELLIEInterlockLoggerLogicError(Exception):
     """
     Thrown if an inconsistency is noticed *after* any hardware instruction is executed (i.e. a problem with the hardware itself)
     """
     pass
 
-class SMELLIELogger(object):
+class SMELLIEInterlockLogger(object):
 
     the_logger = None  
     def __init__(self):
-        raise SMELLIELoggerLogicError("Do not initiate object. Use classes only.")
+        raise SMELLIEInterlockLoggerLogicError("Do not initiate object. Use classes only.")
 
     @classmethod
-    def new_logger(cls, run_number = "-1"):
+    def new_logger(cls):
         """
         Create a new logger
         """
         cls.the_logger = Logger()
-        
+
         if LOGGER_CONNECT_TO_SERVER:
            cls.connect()
 
-        cls.the_logger.set_logfile('C:\SMELLIE\logs\smellie_logger_run{}_time{}.log'.format( run_number, datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S') ) )  #write local log 
+        cls.the_logger.set_logfile('C:\SMELLIE\logs\smellie_interlock_logger_time{}.log'.format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S') ) )  #write local log 
   
     @classmethod    
     def connect(cls):
@@ -50,4 +50,4 @@ class SMELLIELogger(object):
     def warn(cls,*args, **kwargs):
         cls.the_logger.warn(*args, **kwargs)
         
-SMELLIELogger.new_logger()
+SMELLIEInterlockLogger.new_logger()

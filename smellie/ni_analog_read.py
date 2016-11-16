@@ -15,16 +15,15 @@ class AnalogReadLogicError(Exception):
 
 class AnalogRead(object):
     """
-    Controls the Gain Voltage of the MPU's PMT, as produced by the NI Unit via commands sent down a USB port.
+    Reads an analog input channel on the NI Unit.
     """
     def __init__(self, vMin=0, vMax=5, in_pin='/ai1'):
         """
-        There is a residual voltage of 0.0044V always present in the MPU's PMT.
-        The NI Unit should be initialised with a zero voltage output ... note that this means that the total Gain Voltage at the PMT will be equal to the residual voltage, but there's nothing we can do about that (we would need the NI Unit to output a negative voltage in order for the Gain Voltage at PMT to be truly zero!).
+        undocumented
         """
         self.dev_name = NI_DEV_NAME
         self._set_up(vMin, vMax, in_pin)
-        
+
     def __del__(self):
         """
         undocumented
@@ -47,7 +46,7 @@ class AnalogRead(object):
         voltages_mean = numpy.mean(voltages_high)
         voltages_sd = numpy.std(voltages_high)
         return voltages_mean, voltages_sd
-        
+
     def read_voltage(self, number_of_samples=100000, sampling_frequency=100000):
         """
         Generate the Gain Voltage as exactly requested by the user, and which would be found on measuring the gain voltage *at the MPU's PMT itself*.

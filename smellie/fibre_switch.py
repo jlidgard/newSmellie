@@ -1,7 +1,9 @@
 from smellie_config import FIBRE_SWITCH_SERIAL_PORT, FIBRE_SWITCH_BAUD_RATE, FIBRE_SWITCH_WAIT_TIME
 from serial import Serial
 from time import sleep
-from smellie import smellie_logger.SMELLIELogger
+from smellie.smellie_logger import SMELLIELogger
+from server.exception_handler import str_wrap_exceptions
+from functools import wraps
 
 """
 Control of the Fibre Switch hardware
@@ -27,7 +29,7 @@ def find_global_channel_number(in_chan, out_chan):
     :type global channel: int
     """
     return ((in_chan - 1) * 14) + out_chan
-    
+
 def find_input_output_number(chan):
     """
     Convert a global Fibre Switch channel number into a specific combination of (input channel, output channel)
@@ -38,7 +40,6 @@ def find_input_output_number(chan):
     input_channel = int( (chan+7)/14.1 )//1
     if (chan%14==0): output_channel = 14
     else: output_channel = chan%14
-    
     return "({},{})".format( str(input_channel), str(output_channel) )
 
 def check_global_channel_number(channel_num):
@@ -61,24 +62,29 @@ class FibreSwitch(object):
         self.channel_num = None
         self.serial = None
         self.isConnected = False
-        
+    
+    @str_wrap_exceptions
     def port_open(self):
         """
         Open the serial port connection
         """
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.port_open()')
         if not self.isConnected:
             self.serial = Serial(FIBRE_SWITCH_SERIAL_PORT, FIBRE_SWITCH_BAUD_RATE, timeout=1)
             self.isConnected = True
         else:
-            raise FibreSwitchLogicError("Fibre switch port already open.") 
+            raise FibreSwitchLogicError("Fibre switch port already open.")
         
+    @str_wrap_exceptions
     def port_close(self):
         """
         Close the serial port connection
         """
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.port_close()')
         if (self.serial.isOpen()): self.serial.close()
         self.isConnected = False
-
+ 
+    @str_wrap_exceptions
     def execute_message(self, msg):
         """
         Send a command message over the serial port for the Fibre Switch to execute.  The message is automatically followed by \\r\\n , so you do not need to add this.
@@ -86,12 +92,14 @@ class FibreSwitch(object):
         :param msg:
         :type msg: string
         """
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.execute_message({})'.format(msg))
         if self.isConnected:
             self.serial.write(msg+"\r\n")
             sleep(FIBRE_SWITCH_WAIT_TIME)
         else:
             raise FibreSwitchLogicError("Fibre Switch port not open.") 
         
+    @str_wrap_exceptions
     def read_back(self):
         """
         Wait for a configuration-determined time, and read back a line from the hardware
@@ -99,6 +107,7 @@ class FibreSwitch(object):
         :returns: message
         :type message: string
         """
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.read_back = {}'.format(readback))
         if self.isConnected:
             readback = self.serial.readline()
             sleep(FIBRE_SWITCH_WAIT_TIME)
@@ -107,6 +116,7 @@ class FibreSwitch(object):
             raise FibreSwitchLogicError("Fibre Switch port not open.")
             return 0
 
+    @str_wrap_exceptions
     def set_global_channel_number(self, channel_num):
         """
         Set the global Fibre Switch channel, and check that it succeeded
@@ -117,6 +127,7 @@ class FibreSwitch(object):
 
         :raises: :class:`.FibreSwitchHWError` if the command is unsuccessful
         """ 
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.set_global_channel_number({})'.format(channel_num))
         check_global_channel_number(channel_num)
         self.execute_message("ch{0}".format(channel_num))
         if(self.get_global_channel_number() != channel_num): #check set value was set
@@ -124,6 +135,7 @@ class FibreSwitch(object):
         else:
             self.channel_num = channel_num
 
+    @str_wrap_exceptions
     def get_global_channel_number(self):
         """
         Poll the Fibre Switch for the current global channel number
@@ -132,8 +144,11 @@ class FibreSwitch(object):
         :type current channel: int
         """
         self.execute_message("ch?")
-        return int(str(self.read_back()).replace(' ','').replace('\r\n',''))
+        channel_num = int(str(self.read_back()).replace(' ','').replace('\r\n',''))
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number({})'.format(channel_num))
+        return channel_num
         
+    @str_wrap_exceptions
     def get_input_output_channel_number(self):
         """
         Poll the Fibre Switch for the current input and output channels
@@ -141,8 +156,11 @@ class FibreSwitch(object):
         :returns: {input channel, output channel}
         :type current channel: string
         """
-        return find_input_output_number(self.get_global_channel_number())
+        in_out_num = find_input_output_number(self.get_global_channel_number())
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_input_output_channel_number({})'.format(in_out_num))
+        return in_out_num
 
+    @str_wrap_exceptions
     def set_io_channel_numbers(self, in_channel, out_channel):
         """
         Set the global Fibre Switch channel number using explicit input and output channels
@@ -154,28 +172,37 @@ class FibreSwitch(object):
 
         :raises: :class:`.FibreSwitchHWError` if the command is unsuccessful
         """
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.set_io_channel_numbers({},{})'.format(in_channel, out_channel))
         self.set_global_channel_number(find_global_channel_number(in_channel, out_channel))
 
+    @str_wrap_exceptions
     def get_fwr_version(self):
         """
         Get the current Fibre Switch firmware version as a string
         """
         self.execute_message("firmware?")
-        return str(self.read_back()).replace(' ','').replace('\r\n','')
+        fwr_ver = str(self.read_back()).replace(' ','').replace('\r\n','')
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_fwr_version = {}'.format(fwr_ver))
+        return fwr_ver
 
+    @str_wrap_exceptions
     def get_type(self):
         """
         Get the current Fibre Switch hardware model as a string
         """ 
         self.execute_message("type?")
-        return str(self.read_back()).replace(' ','').replace('\r\n','')
+        type = str(self.read_back()).replace(' ','').replace('\r\n','')
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_type = {}'.format(type))
+        return type
 
+    @str_wrap_exceptions
     def is_connected(self):
         """   
         Check if the connection to the device is open
         """
         return self.isConnected
 
+    @str_wrap_exceptions
     def is_alive(self):
         """
         Quick check alive or not.
@@ -184,12 +211,14 @@ class FibreSwitch(object):
         else: isAlive = False
         return isAlive
         
+    @str_wrap_exceptions
     def system_state(self):
         """
         Returns a formatted string with the hardware info
         """
         return "Fibre switch (system):: Port: COM{}, Baudrate: {}, Timeout: {}sec, Type:{}, Firmware:{}".format( self.serial.port+1, self.serial.baudrate, self.serial.timeout, self.get_type(), self.get_fwr_version() )  
         
+    @str_wrap_exceptions
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
