@@ -19,7 +19,7 @@ class SMELLIELogger(object):
         raise SMELLIELoggerLogicError("Do not initiate object. Use classes only.")
 
     @classmethod
-    def new_logger(cls, run_number = "-1"):
+    def new_logger(cls, name):
         """
         Create a new logger
         """
@@ -28,26 +28,33 @@ class SMELLIELogger(object):
         if LOGGER_CONNECT_TO_SERVER:
            cls.connect()
 
-        cls.the_logger.set_logfile('C:\SMELLIE\logs\smellie_logger_run{}_time{}.log'.format( run_number, datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S') ) )  #write local log 
+        cls.the_logger.set_logfile('C:\SMELLIE\logs\smellie_logger_{}_time{}.log'.format( name, datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S') ) )  #write local log 
   
     @classmethod    
     def connect(cls):
-         cls.the_logger.connect('SMELLIE',LOGGER_SERVER,LOGGER_PORT) #connect to logging server
+        cls.the_logger.connect('SMELLIE',LOGGER_SERVER,LOGGER_PORT) #connect to logging server
    
     @classmethod
-    def debug(cls,*args, **kwargs):
+    def debug(cls, *args, **kwargs):
+        cls.check_handle()
         cls.the_logger.debug(*args, **kwargs)
         
     @classmethod
     def verbose(cls,*args, **kwargs):
+        cls.check_handle()
         cls.the_logger.verbose(*args, **kwargs)
     
     @classmethod
     def notice(cls,*args, **kwargs):
+        cls.check_handle()
         cls.the_logger.notice(*args, **kwargs)
     
     @classmethod
     def warn(cls,*args, **kwargs):
+        cls.check_handle()
         cls.the_logger.warn(*args, **kwargs)
-        
-SMELLIELogger.new_logger()
+    
+    @classmethod
+    def check_handle(cls):
+        if cls.the_logger is None:
+            cls.new_logger("undefined")

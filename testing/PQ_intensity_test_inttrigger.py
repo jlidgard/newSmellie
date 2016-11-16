@@ -32,7 +32,7 @@ try:
     
     logging.debug( "Current settings: Laser switch chan: {}, Fibre switch: {}".format(ls_original, fs_original))
     
-    laser_numbers = range(4,5,1) #test lasers 1 thru 4
+    laser_numbers = range(1,5,1) #test lasers 1 thru 4
     wavelengths = (375, 407, 446, 495)
 
     power_meter_nsamples = 50
@@ -42,7 +42,6 @@ try:
     #at 100% intensity @ 100kHz, Laser1(375nm): ~13nW, Laser2(407nm): ~424nW, Laser3(446nm): ~37nW, Laser4(495nm): ~915nW.
 
     for laser_number, wavelength in zip(laser_numbers,wavelengths):
-        wavelength=495
         logging.debug( "Begin intensity scan of laser (internal 2.5MHz trigger): {} ({}nm)".format(  laser_number, wavelength))
         intensities = range(0,1010,50) #from 0 to 100% intensity in 1% steps
         powerMean = []

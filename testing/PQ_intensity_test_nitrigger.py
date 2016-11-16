@@ -54,19 +54,18 @@ if __name__ == "__main__":
         trig_rate = 100000 # at 100% intensity @ 100kHz, Laser1(375nm): ~13nW, Laser2(407nm): ~424nW, Laser3(446nm): ~37nW, Laser4(495nm): ~915nW.
 
         for laser_number, wavelength in zip(laser_numbers,wavelengths):
-        
+
             logging.debug( "Begin intensity scan of laser: {} ({}nm)".format(  laser_number, wavelength ) )
-            intensities = range(0,1010,10) #from 0 to 100% intensity in 1% steps
+            intensities = range(0,1010,50) #from 0 to 100% intensity in 5% steps
             powerMean = []
             powerSD = []
             powerRange = []
-        
- 
+
             ld.port_close() #close Sepia before laser switch d/c it.
             ls.set_active_channel(laser_number)
             fs.set_io_channel_numbers(laser_number, 14) #output fibre 14 = powermeter
             logging.debug( "Setting: Laser switch chan: {}, Fibre switch: {}".format( ls.get_active_channel(), fs.get_global_channel_number() ) )  
-            
+
             ld.port_open()
             ld.go_safe()
             ld.set_soft_lock(False)
@@ -75,9 +74,9 @@ if __name__ == "__main__":
                 ld.set_intensity(intensity)
                 
                 async_measure_power = pool.apply_async(measure_power, measure_power_args)
-                logging.debug('Triggers Begin. pulses={}, rate= {}'.format(trig_npulses, trig_rate))
+                logging.debug('\nTriggers Begin. pulses={}, rate= {}'.format(trig_npulses, trig_rate))
                 ni.generate_triggers(trig_npulses, trig_rate, 'PQ')
-                logging.debug("Triggers Finished.")
+                logging.debug("\nTriggers Finished.")
                 power_mean, power_sd, power_range = async_measure_power.get()
                 powerMean.append( power_mean )
                 powerSD.append( power_sd )

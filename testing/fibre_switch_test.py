@@ -3,7 +3,7 @@
 # Test while pulsing laser and monitoring fibre_switch output with power meter
 
 import logging, time, datetime
-from smellie import fibre_switch
+from smellie import fibre_switch, SMELLIELogger
 fs = fibre_switch.FibreSwitch()
 
 logging.basicConfig(filename='C:/SMELLIE/logs/test_fibre_switch.log', filemode="a", level=logging.DEBUG)
@@ -53,5 +53,5 @@ try:
     logging.debug( "Finished Testing SMELLIE Fibre Switch, pass: {}/{}, fail:{}/{}".format(npass,npass+nfail,nfail,npass+nfail) )
     
 except Exception, e:
-    logging.debug( "Exception:" )
-    logging.debug( e )
+    logging.debug( "Exception: {}".format(e) )
+    SMELLIELogger.warn(e)

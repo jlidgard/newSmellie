@@ -191,11 +191,11 @@ class SmellieController(object):
         self.superk_driver.go_safe()
         return 0
         
-    def new_run(run_number):
+    def new_run(run_number=-1):
         '''
         Collect the run information from ORCA
-        
         '''
+        SMELLIELogger.new_logger('RunNumber_'.format(str(run_number)) )
         SMELLIELogger.debug('SNODROP DEBUG: SmellieController.new_run({})'.format(run_number)
 
     def log_info(self):
