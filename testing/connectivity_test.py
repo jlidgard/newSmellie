@@ -13,7 +13,7 @@ pm = power_meter.PowerMeter()
 sk = superk_driver.SuperkDriver()
 sp = spectrometer.Spectrometer()
 
-logging.basicConfig(filename='C:\SMELLIE\logs\test_connectivity.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename='C:/SMELLIE/logs/test_connectivity.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
@@ -48,11 +48,11 @@ try:
         nfail+=1
     
     #Now open (and close) all and test if connection is successful 
-    logging.debug( "Testing connected states (connection = True):" )
+    logging.debug( "Testing connected states (True = connected):" )
     lsc = ls.is_connected()
     logging.debug( "Laser Switch: {}".format( lsc ) )
     
-    nic = ls.is_connected()
+    nic = ni.is_connected()
     logging.debug( "NI DAQ: {}".format( nic ) )
     
     fs.port_open()

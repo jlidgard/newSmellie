@@ -1,7 +1,7 @@
 from smellie_config import SK_COM_PORT
 from varia_motor import VariaMotor
 from superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
-
+from smellie.smellie_logger import SMELLIELogger
 
 from ctypes import c_uint32, c_uint16, c_uint8
 
@@ -30,6 +30,7 @@ class SuperkDriver(object):
         """
         undocumented
         """
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.port_open()')
         if not self.isConnected:
             portOpen(self.COMPort) #open superK
             self.NDfilter.port_open() #open varia ND filter arduino motor controller
@@ -42,7 +43,8 @@ class SuperkDriver(object):
         """
         undocumented
         """
-        #open superK
+        #close superK
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.port_close()')
         portClose(self.COMPort)
         #close varia ND filter arduino motor controller
         self.NDfilter.port_close()
@@ -53,6 +55,7 @@ class SuperkDriver(object):
         undocumented
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.set_parameters()')
             superKControls = superKControlStructure()
             superKControls.trigLevelSetpointmV = c_uint16(1000) #c_uint16
             superKControls.displayBacklightPercent = c_uint8(0) #c_uint8
@@ -71,6 +74,7 @@ class SuperkDriver(object):
         """
         if self.isConnected:
             high_wavelength, low_wavelength = getVariaControls(self.COMPort)
+            SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.get_wavelengths() = {}, {}'.format(low_wavelength, high_wavelength))
             return low_wavelength, high_wavelength
         else:
             raise SuperkDriverLogicError("Laser port not open.")
@@ -82,6 +86,7 @@ class SuperkDriver(object):
         """
         if self.isConnected:
             # set the intensity, low and high wavelengths of the Varia (checking if the settings aren't already set)
+            SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.go_ready({},{},{})'.format(intensity, low_wavelength, high_wavelength))
             SWFilterSetpointAngstrom, LPFilterSetpointAngstrom = self.get_wavelengths()
             if (low_wavelength!=LPFilterSetpointAngstrom or high_wavelength!=SWFilterSetpointAngstrom):
                 setVariaControls(self.COMPort,high_wavelength,low_wavelength)
@@ -100,6 +105,8 @@ class SuperkDriver(object):
         undocumented
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.go_safe()')
+        
             self.set_parameters()
             
             # turn off emission then set lock on (checking if the settings aren't already set)
@@ -116,6 +123,8 @@ class SuperkDriver(object):
         undocumented
         """
         if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.go_safe()')
+        
             # set varia wavelengths to be beyond the 700nm filter (so light is filtered out)
             low_wavelength, high_wavelength = getVariaControls(self.COMPort)
             if (low_wavelength!=7900 and high_wavelength!=8000):
@@ -133,21 +142,28 @@ class SuperkDriver(object):
             superK_info = "Firmware: {} Version Info: {} Module Type: {} Serial Number: {}".format( firmware, version_info, module_type, serial_number )
             firmware, version_info, module_type, serial_number = getVariaInfo(self.COMPort)
             varia_info = "Firmware: {} Version Info: {} Module Type: {} Serial Number: {}".format( firmware, version_info, module_type, serial_number )
+            SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.get_identity() = {},{}'.format(superK_info, varia_info))
             return superK_info, varia_info
         else:
             raise SuperkDriverLogicError("Laser port not open.")
             return 0
         
     def NDfilter_position(self):
-        return self.NDfilter.get_position()
+        NDfilterPosition = self.NDfilter.get_position()
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_position() = {}'.format(NDfilterPosition))
+        return NDfilterPosition
         
     def NDfilter_set_position(self, positionValue):
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_set_position({})'.format(positionValue))
         self.NDfilter.set_position(positionValue)
         
     def NDfilter_get_home_status(self):
-        return self.NDfilter.get_home_status()
+        NDfilterHomeStatus = self.NDfilter.get_home_status()
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_get_home_status() = {}'.format(NDfilterHomeStatus))
+        return NDfilterHomeStatus
         
     def NDfilter_set_reference(self):
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_set_reference()')
         self.NDfilter.set_reference_position()
         return 0
         

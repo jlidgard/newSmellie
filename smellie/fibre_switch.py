@@ -136,8 +136,8 @@ class FibreSwitch(object):
         :type current channel: int
         """
         self.execute_message("ch?")
-        channel_num = int(str(self.read_back()).replace(' ','').replace('\n',''))
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number() = {}'.format(channel_num))
+        channel_num = int(str(self.read_back()).replace('\n',' ').replace('\r','').replace(' ',''))
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number() = {}\n'.format(str(channel_num)))
         return channel_num
         
     def get_input_output_channel_number(self):
@@ -170,7 +170,7 @@ class FibreSwitch(object):
         Get the current Fibre Switch firmware version as a string
         """
         self.execute_message("firmware?")
-        fwr_ver = str(self.read_back()).replace(' ','').replace('\n','')
+        fwr_ver = str(self.read_back()).replace(' ','').replace('\r\n','')
         SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_fwr_version = {}'.format(fwr_ver))
         return fwr_ver
 
@@ -179,7 +179,7 @@ class FibreSwitch(object):
         Get the current Fibre Switch hardware model as a string
         """ 
         self.execute_message("type?")
-        type = str(self.read_back()).replace(' ','').replace('\n','')
+        type = str(self.read_back()).replace(' ','').replace('\r\n','')
         SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_type = {}'.format(type))
         return type
 

@@ -150,7 +150,7 @@ class Interlock(object):
         """
         Quick check alive or not.
         """
-        checkValue = self.is_interlocked()  #choose to check the interlock status:
+        checkValue = self.lasers_are_locked()  #choose to check the interlock status:
         if (checkValue == True or checkValue == False): isAlive = True
         else: isAlive = False
         return isAlive

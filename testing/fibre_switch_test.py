@@ -20,7 +20,7 @@ try:
 
     logging.debug( "Begin Testing SMELLIE Fibre Switch. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
     
-    SMELLIELogger.new_logger("test_run")
+    SMELLIELogger.new_logger("test")
     
     #open serial connection
     fs.port_open()
