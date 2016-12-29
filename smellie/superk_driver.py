@@ -1,5 +1,5 @@
 from smellie_config import SK_COM_PORT
-from varia_motor import VariaMotor
+from varia_ndfilter import VariaNDFilter
 from superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
 from smellie.smellie_logger import SMELLIELogger
 
@@ -21,10 +21,8 @@ class SuperkDriver(object):
 
     def __init__(self):
         self.COMPort = SK_COM_PORT
-        self.NDfilter = VariaMotor()
+        self.NDFilter = VariaNDFilter()
         self.isConnected = False
-        self.superkisConnected = False
-        self.NDfilterisConnected = False
         
     def port_open(self):
         """
@@ -33,7 +31,7 @@ class SuperkDriver(object):
         SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.port_open()')
         if not self.isConnected:
             portOpen(self.COMPort) #open superK
-            self.NDfilter.port_open() #open varia ND filter arduino motor controller
+            self.NDFilter.port_open() #open varia ND filter arduino motor controller
             self.isConnected = True
             self.set_parameters() #load default settings
         else:
@@ -47,7 +45,7 @@ class SuperkDriver(object):
         SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.port_close()')
         portClose(self.COMPort)
         #close varia ND filter arduino motor controller
-        self.NDfilter.port_close()
+        self.NDFilter.port_close()
         self.isConnected = False
 
     def set_parameters(self):
@@ -148,23 +146,23 @@ class SuperkDriver(object):
             raise SuperkDriverLogicError("Laser port not open.")
             return 0
         
-    def NDfilter_position(self):
-        NDfilterPosition = self.NDfilter.get_position()
-        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_position() = {}'.format(NDfilterPosition))
-        return NDfilterPosition
+    def NDFilter_position(self):
+        NDFilterPosition = self.NDFilter.get_position()
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDFilter_position() = {}'.format(NDFilterPosition))
+        return NDFilterPosition
         
-    def NDfilter_set_position(self, positionValue):
-        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_set_position({})'.format(positionValue))
-        self.NDfilter.set_position(positionValue)
+    def NDFilter_set_position(self, positionValue):
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDFilter_set_position({})'.format(positionValue))
+        self.NDFilter.set_position(positionValue)
         
-    def NDfilter_get_home_status(self):
-        NDfilterHomeStatus = self.NDfilter.get_home_status()
-        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_get_home_status() = {}'.format(NDfilterHomeStatus))
-        return NDfilterHomeStatus
+    def NDFilter_get_home_status(self):
+        NDFilterHomeStatus = self.NDFilter.get_home_status()
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDFilter_get_home_status() = {}'.format(NDFilterHomeStatus))
+        return NDFilterHomeStatus
         
-    def NDfilter_set_reference(self):
-        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDfilter_set_reference()')
-        self.NDfilter.set_reference_position()
+    def NDFilter_set_reference(self):
+        SMELLIELogger.debug('SNODROP DEBUG: SuperkDriver.NDFilter_set_reference()')
+        self.NDFilter.set_reference_position()
         return 0
         
     def is_connected(self):
@@ -180,7 +178,7 @@ class SuperkDriver(object):
         if self.isConnected:
             checkValue = getSuperKInfo(self.COMPort) #check superK Compact HW model ('74')
             checkValue2 = getVariaInfo(self.COMPort) #check superK Varia HW model ('68')
-            checkValue3 = self.NDfilter.is_alive() #check variamotor controller
+            checkValue3 = self.NDFilter.is_alive() #check variamotor controller
             if (checkValue[2] == '74' and checkValue2[2] == '68' and checkValue3 == True): isAlive = True
             else: isAlive = False
             return isAlive
@@ -194,7 +192,7 @@ class SuperkDriver(object):
         """
         if self.isConnected:
             superK_info, varia_info = self.get_identity()
-            return "Superk laser (settings):: Compact Info: {}, Varia Info: {}{}".format(superK_info, varia_info, self.NDfilter.system_state() )
+            return "Superk laser (settings):: Compact Info: {}, Varia Info: {}{}".format(superK_info, varia_info, self.NDFilter.system_state() )
         else:
             raise SuperkDriverLogicError("Laser port not open.") 
             return 0
@@ -205,7 +203,7 @@ class SuperkDriver(object):
         """
         if self.isConnected:
             low_wavelength, high_wavelength = self.get_wavelengths()
-            return "Superk laser (settings):: Low Wavelength: {}, High Wavelength: {}. {}".format(low_wavelength, high_wavelength, self.NDfilter.current_state() )
+            return "Superk laser (settings):: NDFilter Step: {}, Low Wavelength: {}, High Wavelength: {}. {}".format(self.NDFilter.current_state(), low_wavelength, high_wavelength )
         else:
             raise SuperkDriverLogicError("Laser port not open.") 
             return 0    

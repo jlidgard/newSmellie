@@ -4,9 +4,9 @@ DUMMY_MODE = False
 # SEPIA Laser Driver
 SEPIA_DLL_PATH        = "C:\\Program Files\\PicoQuant\\GenericLaserDriver\\API\\x64\\Sepia2_Lib.dll"
 SEPIA_STR_BUFFER_SIZE = 128  # must be at minimum = 64 bytes
-LASER_DRIVER_DEV_ID   = 0
-LASER_SLOT_ID  = 200
-LASER_DRIVER_SLOT_ID  = 0
+PQ_DRIVER_DEV_ID   = 0
+PQ_SLOT_ID  = 200
+PQ_DRIVER_SLOT_ID  = 0
 
 # Smellie Controller Server
 ADDRESS = "0.0.0.0"
@@ -15,7 +15,7 @@ PORT = 5020
 # Logging Server
 LOGGER_SERVER = 'minard.sp.snolab.ca'
 LOGGER_PORT = 4001
-LOGGER_CONNECT_TO_SERVER = True
+LOGGER_CONNECT_TO_SERVER = False
 
 # Fibre Switch 
 FIBRE_SWITCH_SERIAL_PORT = 11 # = actually COM6 6(i.e. value = COM number - 1)
@@ -28,9 +28,9 @@ INTERLOCK_BAUD_RATE = 9600
 INTERLOCK_WAIT_TIME   = 0.1  # in seconds
 
 # Varia Motor Controller
-VARIAMOTOR_SERIAL_PORT = 7  # = actually COM8(i.e. COM number-1)
-VARIAMOTOR_BAUD_RATE = 57600
-VARIAMOTOR_WAIT_TIME   = 0.1  # in seconds
+VARIANDFILTER_SERIAL_PORT = 7  # = actually COM8(i.e. COM number-1)
+VARIANDFILTER_BAUD_RATE = 57600
+VARIANDFILTER_WAIT_TIME   = 0.1  # in seconds
 
 # Laser Switch
 RELAY_COM_CHANNEL = 1

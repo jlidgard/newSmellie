@@ -38,7 +38,7 @@ def find_input_output_number(chan):
     input_channel = int( (chan+7)/14.1 )//1
     if (chan%14==0): output_channel = 14
     else: output_channel = chan%14
-    return "({},{})".format( str(input_channel), str(output_channel) )
+    return input_channel, output_channel
 
 def check_global_channel_number(channel_num):
     """
@@ -147,9 +147,9 @@ class FibreSwitch(object):
         :returns: {input channel, output channel}
         :type current channel: string
         """
-        in_out_num = find_input_output_number(self.get_global_channel_number())
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_input_output_channel_number() = {}'.format(in_out_num))
-        return in_out_num
+        input_channel, output_channel = find_input_output_number(self.get_global_channel_number())
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_input_output_channel_number() = input:{}, output:{}'.format(input_channel,output_channel))
+        return input_channel, output_channel
 
     def set_io_channel_numbers(self, in_channel, out_channel):
         """
