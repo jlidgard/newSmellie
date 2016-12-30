@@ -51,7 +51,6 @@ class PQDriver(object):
             time.sleep(5)
             self.check_pulse_mode()
             self.check_trig_mode()
-            time.sleep(1)
         else:
             raise PQDriverLogicError("Laser port already open.") 
 
@@ -60,11 +59,14 @@ class PQDriver(object):
         (Cleanly!) close the USB connection to the Sepia driver
         """
         SMELLIELogger.debug('SNODROP DEBUG: PQDriver.port_close()')
-        free_module_map(self.dev_id)
-        time.sleep(5)
-        close_usb_device(self.dev_id)
-        self.isConnected = False
-        time.sleep(5) #give this some time, otherwise run into USB device errors on next open.
+        if self.isConnected:
+            free_module_map(self.dev_id)
+            time.sleep(5)
+            close_usb_device(self.dev_id)
+            time.sleep(5) #give this some time, otherwise run into USB device errors on next open.
+            self.isConnected = False
+        else:
+            raise PQDriverLogicError("Laser port not open.") 
 
     def get_pulse_params(self):
         """
@@ -207,7 +209,6 @@ class PQDriver(object):
         :returns: True if the soft lock is on
         """
         if self.isConnected:
-            time.sleep(0.1)
             locked_status = get_laser_soft_lock(self.dev_id, self.driver_slot_id)
             SMELLIELogger.debug('SNODROP DEBUG: PQDriver.is_soft_lock_on() = {}'.format(locked_status))
             return locked_status
@@ -221,10 +222,8 @@ class PQDriver(object):
         """
         if self.isConnected:
             SMELLIELogger.debug('SNODROP DEBUG: PQDriver.set_soft_lock({})'.format(is_locked))
-            if is_locked != self.is_soft_lock_on(): 
-                time.sleep(0.1)
+            if is_locked != self.is_soft_lock_on():
                 set_laser_soft_lock(self.dev_id, self.driver_slot_id, is_locked)
-                time.sleep(0.1)
         else:
             raise PQDriverLogicError("Laser port not open.") 
 
@@ -235,11 +234,8 @@ class PQDriver(object):
         if self.isConnected:
             SMELLIELogger.debug('SNODROP DEBUG: PQDriver.go_safe()')
             self.set_soft_lock(is_locked = True)
-            time.sleep(0.1)
             self.set_intensity(0)
-            time.sleep(0.1)
             set_pulse_parameters(self.dev_id, self.laser_slot_id)
-            time.sleep(0.1)
         else:
             raise PQDriverLogicError("Laser port not open.") 
 
@@ -250,9 +246,7 @@ class PQDriver(object):
         if self.isConnected:
             SMELLIELogger.debug('SNODROP DEBUG: PQDriver.go_ready()')
             self.set_intensity(intensity)
-            time.sleep(0.1)
             self.set_soft_lock(False)
-            time.sleep(0.1)
         else:
             raise PQDriverLogicError("Laser port not open.") 
         

@@ -53,8 +53,11 @@ class VariaNDFilter(object):
         :param msg:
         :type msg: string
         """
-        if (self.serial.isOpen()): self.serial.close()
-        self.isConnected = False
+        if self.isConnected: 
+            self.serial.close()
+            self.isConnected = False
+        else:
+            raise VariaNDFilterLogicError("Varia NDFilter port not open.")
                     
     def execute_message(self, msg):
         """

@@ -26,15 +26,18 @@ class Spectrometer(object):
             openAllSpectrometers(self.wrapper)
             self.isConnected = True
         else:
-            raise SpectrometerLogicError("Spectrometer already open.") 
+            raise SpectrometerLogicError("Spectrometer port already open.") 
 
     def port_close(self):
         """   
         undocumented
         """
-        closeAllSpectrometers(self.wrapper)
-        destroyWrapper(self.wrapper)
-        self.isConnected = False
+        if self.isConnected:
+            closeAllSpectrometers(self.wrapper)
+            destroyWrapper(self.wrapper)
+            self.isConnected = False
+        else:
+            raise SpectrometerLogicError("Spectrometer port not open.") 
         
     def get_identity(self):
         """   
@@ -43,7 +46,7 @@ class Spectrometer(object):
         if self.isConnected:
             return getName(self.wrapper), getFirmwareVersion(self.wrapper), getSerialNumber(self.wrapper)
         else:
-            raise SpectrometerLogicError("Spectrometer not open.") 
+            raise SpectrometerLogicError("Spectrometer port not open.") 
             return 0
         
     def is_connected(self):
@@ -61,7 +64,7 @@ class Spectrometer(object):
             else: isAlive = False
             return isAlive
         else:
-            raise SpectrometerLogicError("Spectrometer not open.") 
+            raise SpectrometerLogicError("Spectrometer port not open.") 
             return 0
         
     def system_state(self):
@@ -71,7 +74,7 @@ class Spectrometer(object):
         if self.isConnected:
             return "Spectrometer (system):: Identity (name, Firmware, SerialNumber): {}".format( self.get_identity() )
         else:
-            raise SpectrometerLogicError("Spectrometer not open.") 
+            raise SpectrometerLogicError("Spectrometer port not open.") 
             return 0
         
     def current_state(self):
@@ -81,5 +84,5 @@ class Spectrometer(object):
         if self.isConnected:
             return "Spectrometer (settings):: ".format( )
         else:
-            raise SpectrometerLogicError("Spectrometer not open.") 
+            raise SpectrometerLogicError("Spectrometer port not open.") 
             return 0

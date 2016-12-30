@@ -35,8 +35,10 @@ class Interlock(object):
         """
         SMELLIELogger.debug('SNODROP DEBUG: Interlock.port_open()')
         if not self.isConnected:
-            self.serial = Serial(INTERLOCK_SERIAL_PORT,INTERLOCK_BAUD_RATE,timeout=1)
+            self.serial = Serial(INTERLOCK_SERIAL_PORT,INTERLOCK_BAUD_RATE,timeout=2)
+            sleep(1)
             self.isConnected = True
+            self.flush()
         else:
             raise InterlockLogicError("Interlock port already open.") 
     
@@ -45,9 +47,12 @@ class Interlock(object):
         Close the serial port connection
         """
         SMELLIELogger.debug('SNODROP DEBUG: Interlock.port_close()')
-        if (self.serial.isOpen() ): self.serial.close()
-        self.isConnected = False
-        
+        if self.isConnected:
+            self.serial.close()
+            self.isConnected = False
+        else:
+            raise InterlockLogicError("Interlock port not open.")
+
     def execute_message(self, msg):
         """
         Send a command message over the serial port for the Fibre Switch to execute.  The message is automatically followed by \\r\\n , so you do not need to add this.
@@ -57,6 +62,7 @@ class Interlock(object):
         """
         if not msg=='1': SMELLIELogger.debug('SNODROP DEBUG: Interlock.execute_message({})'.format(msg)) #dont log all the keepalive messages
         if self.isConnected:
+            self.flush()
             self.serial.write(msg+"\r\n")
             sleep(INTERLOCK_WAIT_TIME)
         else:
@@ -73,10 +79,21 @@ class Interlock(object):
             readback = self.serial.readline()
             sleep(INTERLOCK_WAIT_TIME)
             SMELLIELogger.debug('SNODROP DEBUG: Interlock.read_back() = {}'.format(readback))
-            return readback
+            return str(readback).replace('\r\n','')
         else:
-            raise InterlockLogicError("Interlock port not open.") 
+            raise InterlockLogicError("Interlock port not open.")
+            return 0
             
+    def flush(self):
+        """
+        Flushes serial input and output buffers (used to get ready for next command).
+        """
+        if self.isConnected:
+            self.serial.flushInput()
+            self.serial.flushOutput()
+        else:
+            raise InterlockLogicError("Interlock port not open.")  
+
     def get_status(self):
         """
         Send a command to query the arm/disarm status of the internal relay
@@ -84,8 +101,8 @@ class Interlock(object):
         :returns: arm/disarm status message (string)
         """
         self.execute_message("v")
-        response = str(self.read_back()).replace('\r\n','')
-        if (response!="Relay contacts are CLOSED" and response!="Relay contacts are OPEN"):
+        response = self.read_back()
+        if (response!='Relay contacts are CLOSED' and response!='Relay contacts are OPEN'):
             self.port_close()
             raise InterlockHWError("Unknown status response from interlock. Interlock state unknown.")
         SMELLIELogger.debug('SNODROP DEBUG: Interlock.get_status() = {}'.format(response))
@@ -95,7 +112,8 @@ class Interlock(object):
         """
         Send a command to query the arm/disarm status of the internal relay
         :param msg:
-        :returns: arm/disarm boolean: True for closed, False for open (None for unknown)
+        :returns: arm/disarm boolean: True for OPEN, False for CLOSED (None for unknown)
+        i.e. disarmed = locked = relay contacts are open = True
         """
         status = None
         response = self.get_status()
@@ -116,7 +134,7 @@ class Interlock(object):
         """
         SMELLIELogger.debug('SNODROP DEBUG: Interlock.set_arm()')
         self.execute_message("a")
-        arm_return = str(self.read_back()).replace('\r\n','')
+        arm_return = self.read_back()
         return arm_return
         
     def set_disarm(self):
@@ -128,7 +146,8 @@ class Interlock(object):
         """
         SMELLIELogger.debug('SNODROP DEBUG: Interlock.set_disarm()')
         self.execute_message("d")
-        #response = #arduino code doesn't send a disarm message, unlike the arm.
+        response = self.read_back()
+        return response
         
     def send_keepalive(self):
         """

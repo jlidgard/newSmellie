@@ -6,13 +6,13 @@ from functools import wraps
 import os
 from smellie.smellie_logger import SMELLIELogger
 
-class PMDLLError(Exception):
+class PowerMeterDLLError(Exception):
     """
     Raised if an exception is flagged up *during* a call to the .dll
     """
     pass
 
-class PMLogicError(Exception):
+class PowerMeterLogicError(Exception):
     """
     Raised *before* any call to the .dll if function arguments are incorrect
     """
@@ -26,11 +26,11 @@ class PowerMeterHWError(Exception):
 
 # Open the .dll on import
 if not os.path.exists(PM_DLL_PATH):
-    raise PMLogicError("Cannot open dll on path {0}".format(PM_DLL_PATH))
+    raise PowerMeterLogicError("Cannot open dll on path {0}".format(PM_DLL_PATH))
 try:
     dll = OleDLL(PM_DLL_PATH)
 except Exception as e:
-    raise PMLogicError("Opening dll failed! : {0}".format(str(e)))
+    raise PowerMeterLogicError("Opening dll failed! : {0}".format(str(e)))
     
     
 # Error Handling and Decoding
@@ -66,7 +66,7 @@ def raise_on_error_code(in_function):
         try:
             return in_function(*args, **kwargs)
         except WindowsError as e:
-            raise PMDLLError(decode_error(e.winerror))
+            raise PowerMeterDLLError(decode_error(e.winerror))
     return modified
 
 @raise_on_error_code
@@ -77,7 +77,7 @@ def getTaskHandle():
     taskHandle = c_uint(0)
     dll.GetTaskHandle( PM_ADDRESS, byref(taskHandle) )
     if (taskHandle.value == 0):
-        raise PMDLLError("Task handle not found.")
+        raise PowerMeterDLLError("Task handle not found.")
     return taskHandle
 
 @raise_on_error_code
@@ -217,7 +217,6 @@ def setPowerUnit(taskHandle, setValue):
     """
     setValue = c_int16(setValue)
     dll.PM100DSetPowerUnit(byref(taskHandle), setValue, None)
-    return 0
     
 @raise_on_error_code
 def getDisplayContrast(taskHandle):
@@ -235,7 +234,6 @@ def setDisplayContrast(taskHandle, setValue):
     """
     setValue = c_double(setValue)
     dll.PM100DSetDisplayContrast(byref(taskHandle), setValue, None)
-    return 0
     
 @raise_on_error_code
 def getDisplayBrightness(taskHandle):
@@ -253,7 +251,6 @@ def setDisplayBrightness(taskHandle, setValue):
     """
     setValue = c_double(setValue)
     dll.PM100DSetDisplayBrightness(byref(taskHandle), setValue, None)
-    return 0
 
 @raise_on_error_code
 def selfTest(taskHandle):
@@ -284,18 +281,13 @@ class PowerMeter(object):
         taskHandle = c_uint()
         dll.Initialise(self.COMPort, iDQueryDoQuery, resetDevice, byref(taskHandle) )
         self.taskHandle = taskHandle
-        
         #run a quick self test
         selfTestResult, selfTestMessage = selfTest(self.taskHandle)
-
         if selfTestResult != 0:
             raise PowerMeterHWError("Self test of device failed. {}".format(message))
-        
         #set default settings
         self.default_settings()
-        
         self.isConnected = True
-        return 0
 
     @raise_on_error_code
     def port_close(self):
@@ -303,12 +295,15 @@ class PowerMeter(object):
         :returns: ctype string buffer, the size of which is set in :mod:config
         """
         SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.port_close()')
-        dll.PM100DClose( byref(self.taskHandle) ) 
-        self.isConnected = False
+        if self.isConnected:
+            dll.PM100DClose( byref(self.taskHandle) ) 
+            self.isConnected = False
+        else:
+            raise PowerMeterLogicError("Power meter port not open.") 
         
-        #handle = dll._handle #to unload dll if it misbehaves.
+        #to unload dll if it misbehaves.
+        #handle = dll._handle 
         #windll.kernel32.FreeLibrary(handle)
-        return 0
         
     @raise_on_error_code
     def get_beam_diameter(self):
@@ -343,9 +338,9 @@ class PowerMeter(object):
         if nsamples>0 and samplingRate>0 and samplingRate<12:
             retValue = dll.MeanPower(byref(self.taskHandle), c_int32(nsamples), c_int64(samplingRate), byref(retMean), byref(retSD), byref(retRange))
             if retValue!=0: 
-                raise PMDLLError('Power meter cannot sample this fast. Select a slower rate. {}'.format(retValue))
+                raise PowerMeterDLLError('Power meter cannot sample this fast. Select a slower rate. {}'.format(retValue))
         else:
-            raise PMLogicError('Selected sampling rate too fast. Must be <10Hz.')
+            raise PowerMeterLogicError('Selected sampling rate too fast. Must be <10Hz.')
         SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.get_mean_power = {},{},{}'.format(retMean.value, retSD.value, retRange.value))
         return retMean.value, retSD.value, retRange.value
         
@@ -386,7 +381,6 @@ class PowerMeter(object):
         """
         SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_dark_offset_cancel()')
         dll.PM100DCancelDarkAdjustment(byref(self.taskHandle), None)
-        return 0
         
     @raise_on_error_code
     def set_dark_offset(self):
@@ -395,7 +389,6 @@ class PowerMeter(object):
         """
         SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_dark_offset()')
         dll.PM100DStartDarkOffsetAdjustment(byref(self.taskHandle), None)
-        return 0
 
     @raise_on_error_code
     def set_wavelength(self, setValue):
@@ -405,7 +398,6 @@ class PowerMeter(object):
         SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_wavelength({})'.format(setValue))
         setValue = c_double(setValue)
         dll.PM100DSetWavelength(byref(self.taskHandle), setValue, None)
-        return 0
         
     @raise_on_error_code
     def set_average_count(self, setValue):
@@ -415,7 +407,6 @@ class PowerMeter(object):
         SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.set_average_count({})'.format(setValue))
         setValue = c_int16(setValue)
         dll.PM100DSetAverageCount(byref(self.taskHandle), setValue, None)
-        return 0
         
     @raise_on_error_code
     def get_average_count(self):
@@ -449,7 +440,6 @@ class PowerMeter(object):
         setPowerUnit(self.taskHandle,0)
         ##PM100DSetPyrosensorResponsivity
         ##PM100DSetThermopileResponsivity
-        return 0
 
     @raise_on_error_code
     def identificationQuery(self):

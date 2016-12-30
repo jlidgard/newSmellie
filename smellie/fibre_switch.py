@@ -77,9 +77,12 @@ class FibreSwitch(object):
         Close the serial port connection
         """
         SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.port_close()')
-        if (self.serial.isOpen()): self.serial.close()
-        self.isConnected = False
- 
+        if self.isConnected:
+            self.serial.close()
+            self.isConnected = False
+        else:
+            raise FibreSwitchLogicError("Fibre Switch port not open.")
+
     def execute_message(self, msg):
         """
         Send a command message over the serial port for the Fibre Switch to execute.  The message is automatically followed by \\r\\n , so you do not need to add this.
