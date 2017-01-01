@@ -311,16 +311,7 @@ def setSuperKControls(COMPort,controlCluster):
     if (controlCluster.internalPulseFreqHz <= SK_MAX_INT_FREQUENCY): #do customise the maximum rate so add this check.
         dll.SetSuperKControls(COMPort, controlCluster)
     else:
-        raise SuperKHWError('ERROR (superk.setSuperKControls). Specified pulse rate faster than SuperK maximum (20k).')
-
-@raise_on_error_code
-def checkSuperKStatusBits(COMPort,state):
-    """
-    Sets the SuperK emission.
-    """
-    waitTime = 3 #wait time for emission to switch (can take a few seconds)
-    superKBitCluster = getSuperKStatusBits(COMPort)
-    variaBitCluster = getVariaStatusBits(COMPort)      
+        raise SuperKHWError('ERROR (superk.setSuperKControls). Specified pulse rate faster than SuperK maximum (20k).')     
         
 @raise_on_error_code
 def setSuperKControlEmission(COMPort,state):

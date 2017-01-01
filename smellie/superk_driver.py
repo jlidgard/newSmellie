@@ -377,6 +377,8 @@ class SuperKDriver(object):
             raise SuperKDriverLogicError("SuperK port not open.")
             return 0
         
+    #upon open, move until home status. then move up to step -300. set reference (moving away from home - noted for backlash).
+    #set position increases position, but for a change in direction, reverse direction plus an addition 30 steps, then reverse direction again and go forward 30 steps. Backlash in both directions hopefully cancel.
     def NDFilter_position(self):
         NDFilterPosition = self.NDFilter.get_position()
         SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.NDFilter_position() = {}'.format(NDFilterPosition))
