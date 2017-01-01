@@ -33,7 +33,12 @@ class SuperKDLLError(Exception):
 
 class SuperKLogicError(Exception):
     """
-    Raised *before* any call to the .dll if function arguments are incorrect
+    Raised *before* any call to the .dll if function arguments are incorrect.
+    """
+    pass
+class SuperKHWError(Exception):
+    """
+    Raised if there is a problem with the hardware.
     """
     pass
 
@@ -148,103 +153,59 @@ def getVariaStatusBits(COMPort):
     """
     bitMaskDecimal = c_int32(0)
     bitCluster = statusBitStructure()
-    dll.GetVariaStatusBits(COMPort, byref(bitMaskDecimal), bitCluster)    
+    dll.GetVariaStatusBits(COMPort, byref(bitMaskDecimal), bitCluster)  
+    #printVariaStatusBits(bitCluster) #for use in debugging 
     return bitCluster
 
 @raise_on_error_code
-def printVariaStatusBits(bitCluster,option="ALL"):
+def printVariaStatusBits(bitCluster):
     """
-    undocumented
+    Prints Varia status bits. For use when debugging.
     """
     print "Varia Bit Status:"
-    if (option=="ALL"):
-        if (bitCluster.bit1 == 0): print "\tbit 1: OFF (Interlock Off)" 
-        elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock Off)" 
-        else: print "\tbit 1: OutOfRange (Interlock On)"
-        
-        if (bitCluster.bit2 == 0): print "\tbit 2: OFF (InterlockLoopIn)" 
-        elif (bitCluster.bit2 == 1): print "\tbit 2: ON (InterlockLoopIn)" 
-        else: print "\tbit 2: OutOfRange (InterlockLoopIn)"
-        
-        if (bitCluster.bit3 == 0): print "\tbit 3: OFF (InterlockLoopOut)" 
-        elif (bitCluster.bit3 == 1): print "\tbit 3: ON (InterlockLoopOut)" 
-        else: print "\tbit 3: OutOfRange (InterlockLoopOut)"
-        
-        if (bitCluster.bit5 == 0): print "\tbit 5: OFF (SupplyVoltageLow)" 
-        elif (bitCluster.bit5 == 1): "\tbit 5: ON (SupplyVoltageLow)" 
-        else: print "\tbit 5: OutOfRange (SupplyVoltageLow)"
-        
-        if (bitCluster.bit6 == 0): print "\tbit 6: OFF (ModuleTempRange)" 
-        elif (bitCluster.bit6 == 1): print "\tbit 6: ON (ModuleTempRange)" 
-        else: print "\tbit 6: OutOfRange (ModuleTempRange)"
-        
-        if (bitCluster.bit8 == 0): print "\tbit 8: OFF (ShutterSensor1)" 
-        elif (bitCluster.bit8 == 1): print "\tbit 8: ON (ShutterSensor1)" 
-        else: print "\tbit 8: OutOfRange (ShutterSensor1)"
-        
-        if (bitCluster.bit9 == 0): print "\tbit 9: OFF (ShutterSensor2)" 
-        elif (bitCluster.bit9 == 1): print "\tbit 9: ON (ShutterSensor2)" 
-        else: print "\tbit 9: OutOfRange (ShutterSensor2)"
-        
-        if (bitCluster.bit12 == 0): print "\tbit 12: OFF (Filter1Moving)" 
-        elif (bitCluster.bit12 == 1): print "\tbit 12: ON (Filter1Moving)" 
-        else: print "\tbit 12: OutOfRange (Filter1Moving)"
-        
-        if (bitCluster.bit13 == 0): print "\tbit 13: OFF (Filter2Moving)" 
-        elif (bitCluster.bit13 == 1): print "\tbit 13: ON (Filter2Moving)" 
-        else: print "\tbit 13: OutOfRange (Filter2Moving)"
-        
-        if (bitCluster.bit14 == 0): print "\tbit 14: OFF (Filter3Moving)" 
-        elif (bitCluster.bit14 == 1): print "\tbit 14: ON (Filter3Moving)" 
-        else: print "\tbit 14: OutOfRange (Filter3Moving)"
-        
-        if (bitCluster.bit15 == 0): print "\tbit 15: OFF (ErrorCodePresent)" 
-        elif (bitCluster.bit15 == 1): print "\tbit 15: ON (ErrorCodePresent)" 
-        else: print "\tbit 15: OutOfRange (ErrorCodePresent)"
-    if (option=="ON"):
-        if (bitCluster.bit1 == 0): pass
-        elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock Off)" 
-        else: print "\tbit 1: OutOfRange (Interlock On)"
-        
-        if (bitCluster.bit2 == 0): pass 
-        elif (bitCluster.bit2 == 1): print "\tbit 2: ON (InterlockLoopIn)" 
-        else: print "\tbit 2: OutOfRange (InterlockLoopIn)"
-        
-        if (bitCluster.bit3 == 0): pass
-        elif (bitCluster.bit3 == 1): print "\tbit 3: ON (InterlockLoopOut)" 
-        else: print "\tbit 3: OutOfRange (InterlockLoopOut)"
-        
-        if (bitCluster.bit5 == 0): pass
-        elif (bitCluster.bit5 == 1): "\tbit 5: ON (SupplyVoltageLow)" 
-        else: print "\tbit 5: OutOfRange (SupplyVoltageLow)"
-        
-        if (bitCluster.bit6 == 0): pass
-        elif (bitCluster.bit6 == 1): print "\tbit 6: ON (ModuleTempRange)" 
-        else: print "\tbit 6: OutOfRange (ModuleTempRange)"
-        
-        if (bitCluster.bit8 == 0): pass
-        elif (bitCluster.bit8 == 1): print "\tbit 8: ON (ShutterSensor1)" 
-        else: print "\tbit 8: OutOfRange (ShutterSensor1)"
-        
-        if (bitCluster.bit9 == 0): pass
-        elif (bitCluster.bit9 == 1): print "\tbit 9: ON (ShutterSensor2)" 
-        else: print "\tbit 9: OutOfRange (ShutterSensor2)"
-        
-        if (bitCluster.bit12 == 0): pass
-        elif (bitCluster.bit12 == 1): print "\tbit 12: ON (Filter1Moving)" 
-        else: print "\tbit 12: OutOfRange (Filter1Moving)"
-        
-        if (bitCluster.bit13 == 0): pass
-        elif (bitCluster.bit13 == 1): print "\tbit 13: ON (Filter2Moving)" 
-        else: print "\tbit 13: OutOfRange (Filter2Moving)"
-        
-        if (bitCluster.bit14 == 0): pass
-        elif (bitCluster.bit14 == 1): print "\tbit 14: ON (Filter3Moving)" 
-        else: print "\tbit 14: OutOfRange (Filter3Moving)"
-        
-        if (bitCluster.bit15 == 0): pass
-        elif (bitCluster.bit15 == 1): print "\tbit 15: ON (ErrorCodePresent)" 
-        else: print "\tbit 15: OutOfRange (ErrorCodePresent)"
+    if (bitCluster.bit1 == 0): print "\tbit 1: OFF (Interlock Off)" 
+    elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock Off)" 
+    else: print "\tbit 1: OutOfRange (Interlock On)"
+    
+    if (bitCluster.bit2 == 0): print "\tbit 2: OFF (InterlockLoopIn)" 
+    elif (bitCluster.bit2 == 1): print "\tbit 2: ON (InterlockLoopIn)" 
+    else: print "\tbit 2: OutOfRange (InterlockLoopIn)"
+    
+    if (bitCluster.bit3 == 0): print "\tbit 3: OFF (InterlockLoopOut)" 
+    elif (bitCluster.bit3 == 1): print "\tbit 3: ON (InterlockLoopOut)" 
+    else: print "\tbit 3: OutOfRange (InterlockLoopOut)"
+    
+    if (bitCluster.bit5 == 0): print "\tbit 5: OFF (SupplyVoltageLow)" 
+    elif (bitCluster.bit5 == 1): "\tbit 5: ON (SupplyVoltageLow)" 
+    else: print "\tbit 5: OutOfRange (SupplyVoltageLow)"
+    
+    if (bitCluster.bit6 == 0): print "\tbit 6: OFF (ModuleTempRange)" 
+    elif (bitCluster.bit6 == 1): print "\tbit 6: ON (ModuleTempRange)" 
+    else: print "\tbit 6: OutOfRange (ModuleTempRange)"
+    
+    if (bitCluster.bit8 == 0): print "\tbit 8: OFF (ShutterSensor1)" 
+    elif (bitCluster.bit8 == 1): print "\tbit 8: ON (ShutterSensor1)" 
+    else: print "\tbit 8: OutOfRange (ShutterSensor1)"
+    
+    if (bitCluster.bit9 == 0): print "\tbit 9: OFF (ShutterSensor2)" 
+    elif (bitCluster.bit9 == 1): print "\tbit 9: ON (ShutterSensor2)" 
+    else: print "\tbit 9: OutOfRange (ShutterSensor2)"
+    
+    if (bitCluster.bit12 == 0): print "\tbit 12: OFF (Filter1Moving)" 
+    elif (bitCluster.bit12 == 1): print "\tbit 12: ON (Filter1Moving)" 
+    else: print "\tbit 12: OutOfRange (Filter1Moving)"
+    
+    if (bitCluster.bit13 == 0): print "\tbit 13: OFF (Filter2Moving)" 
+    elif (bitCluster.bit13 == 1): print "\tbit 13: ON (Filter2Moving)" 
+    else: print "\tbit 13: OutOfRange (Filter2Moving)"
+    
+    if (bitCluster.bit14 == 0): print "\tbit 14: OFF (Filter3Moving)" 
+    elif (bitCluster.bit14 == 1): print "\tbit 14: ON (Filter3Moving)" 
+    else: print "\tbit 14: OutOfRange (Filter3Moving)"
+    
+    if (bitCluster.bit15 == 0): print "\tbit 15: OFF (ErrorCodePresent)" 
+    elif (bitCluster.bit15 == 1): print "\tbit 15: ON (ErrorCodePresent)" 
+    else: print "\tbit 15: OutOfRange (ErrorCodePresent)"
 
 @raise_on_error_code
 def getSuperKStatusBits(COMPort):
@@ -254,102 +215,59 @@ def getSuperKStatusBits(COMPort):
     bitMaskDecimal = c_int32(0)
     bitCluster = statusBitStructure()
     dll.GetSuperKStatusBits(COMPort, byref(bitMaskDecimal), bitCluster)
+    #printSuperKStatusBits(bitCluster) #for use in debugging
     return bitCluster
 
 @raise_on_error_code
-def printSuperKStatusBits(bitCluster,option="ALL"):
+def printSuperKStatusBits(bitCluster):
     """
-    undocumented
+    Prints SuperK status bits. For use when debugging.
     """
     print "SuperK Bit Status:"
-    if (option=="ALL"):
-        if (bitCluster.bit0 == 0): print "\tbit 0: OFF (Emission)" 
-        elif (bitCluster.bit0 == 1): print "\tbit 0: ON (Emission)" 
-        else: print "\tbit 0: OutOfRange (Emission unknown)" 
-        
-        if (bitCluster.bit1 == 0): print "\tbit 1: OFF (Interlock off)" 
-        elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock ON)"
-        else: print "\tbit 1: OutOfRange (Interlock unknown)"
-        
-        if (bitCluster.bit2 == 0): print "\tbit 2: OFF (Interlock power failure)" 
-        elif (bitCluster.bit2 == 1): print "\tbit 2: ON (Interlock power failure)" 
-        else: print "\tbit 2: OutOfRange (Interlock power unknown)"
-        
-        if (bitCluster.bit3 == 0): print "\tbit 3: OFF (Interlock loop off)" 
-        elif (bitCluster.bit3 == 1): print "\tbit 3: ON (Interlock loop off)" 
-        else: print "\tbit 3: OutOfRange (Interlock loop unknown)"
-        
-        if (bitCluster.bit5 == 0): print "\tbit 5: OFF (Supply voltage low)" 
-        elif (bitCluster.bit5 == 1): print "\tbit 5: ON (Supply voltage low)" 
-        else: print "\tbit 5: OutOfRange (Supply voltage unknown)"
-        
-        if (bitCluster.bit6 == 0): print "\tbit 6: OFF (Module temp range)" 
-        elif(bitCluster.bit6 == 1): print "\tbit 6: ON (Module temp range)" 
-        else: print "\tbit 6: OutOfRange (Module temp range unknown)"
-        
-        if (bitCluster.bit7 == 0): print "\tbit 7: OFF (Pump temp high)" 
-        elif (bitCluster.bit7 == 1): print "\tbit 7: ON (Pump temp high)" 
-        else: print "\tbit 7: OutOfRange (Pump temp unknown)"
-        
-        if (bitCluster.bit8 == 0): print "\tbit 8: OFF (Pulse overrun)" 
-        elif (bitCluster.bit8 == 1): print "\tbit 8: ON (Pulse overrun)" 
-        else: print "\tbit 8: OutOfRange (Pulse overrun unknown)"
-        
-        if (bitCluster.bit9 == 0): print "\tbit 9: OFF (Trig signal level)" 
-        elif (bitCluster.bit9 == 1): print "\tbit 9: ON (Trig signal level)" 
-        else: print "\tbit 9: OutOfRange (Trig signal level unknown)"
-        
-        if (bitCluster.bit10 == 0): print "\tbit 10: OFF (Trig edge)" 
-        elif (bitCluster.bit10 == 1): print "\tbit 10: ON (Trig edge)" 
-        else: print "\tbit 10: OutOfRange (Trig edge unknown)"
-        
-        if (bitCluster.bit15 == 0): print "\tbit 15: OFF (Error code present)" 
-        elif (bitCluster.bit15 == 1): print "\tbit 15: ON (Error code present)" 
-        else: print "\tbit 15: OutOfRange (Error code present unknown)"
-    if (option=="ON"):
-        if (bitCluster.bit0 == 0): pass
-        elif (bitCluster.bit0 == 1): print "\tbit 0: ON (Emission)" 
-        else: print "\tbit 0: OutOfRange (Emission)" 
-        
-        if (bitCluster.bit1 == 0): pass
-        elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock off)"
-        else: print "\tbit 1: OutOfRange (Interlock unknown)"
-        
-        if (bitCluster.bit2 == 0): pass
-        elif (bitCluster.bit2 == 1): print "\tbit 2: ON (Interlock power failure)" 
-        else: print "\tbit 2: OutOfRange (Interlock power unknown)"
-        
-        if (bitCluster.bit3 == 0): pass
-        elif (bitCluster.bit3 == 1): print "\tbit 3: ON (Interlock loop off)" 
-        else: print "\tbit 3: OutOfRange (Interlock loop unknown)"
-        
-        if (bitCluster.bit5 == 0): pass
-        elif (bitCluster.bit5 == 1): print "\tbit 5: ON (Supply voltage low)" 
-        else: print "\tbit 5: OutOfRange (Supply voltage unknown)"
-        
-        if (bitCluster.bit6 == 0): pass
-        elif(bitCluster.bit6 == 1): print "\tbit 6: ON (Module temp range)" 
-        else: print "\tbit 6: OutOfRange (Module temp range unknown)"
-        
-        if (bitCluster.bit7 == 0): pass
-        elif (bitCluster.bit7 == 1): print "\tbit 7: ON (Pump temp high)" 
-        else: print "\tbit 7: OutOfRange (Pump temp unknown)"
-        
-        if (bitCluster.bit8 == 0): pass
-        elif (bitCluster.bit8 == 1): print "\tbit 8: ON (Pulse overrun)" 
-        else: print "\tbit 8: OutOfRange (Pulse overrun unknown)"
-        
-        if (bitCluster.bit9 == 0): pass
-        elif (bitCluster.bit9 == 1): print "\tbit 9: ON (Trig signal level)" 
-        else: print "\tbit 9: OutOfRange (Trig signal level unknown)"
-        
-        if (bitCluster.bit10 == 0): pass
-        elif (bitCluster.bit10 == 1): print "\tbit 10: ON (Trig edge)" 
-        else: print "\tbit 10: OutOfRange (Trig edge unknown)"
-        
-        if (bitCluster.bit15 == 0): pass
-        elif (bitCluster.bit15 == 1): print "\tbit 15: ON (Error code present)" 
-        else: print "\tbit 15: OutOfRange (Error code present unknown)"
+
+    if (bitCluster.bit0 == 0): print "\tbit 0: OFF (Emission)" 
+    elif (bitCluster.bit0 == 1): print "\tbit 0: ON (Emission)" 
+    else: print "\tbit 0: OutOfRange (Emission unknown)" 
+    
+    if (bitCluster.bit1 == 0): print "\tbit 1: OFF (Interlock off)" 
+    elif (bitCluster.bit1 == 1): print "\tbit 1: ON (Interlock ON)"
+    else: print "\tbit 1: OutOfRange (Interlock unknown)"
+    
+    if (bitCluster.bit2 == 0): print "\tbit 2: OFF (Interlock power failure)" 
+    elif (bitCluster.bit2 == 1): print "\tbit 2: ON (Interlock power failure)" 
+    else: print "\tbit 2: OutOfRange (Interlock power unknown)"
+    
+    if (bitCluster.bit3 == 0): print "\tbit 3: OFF (Interlock loop off)" 
+    elif (bitCluster.bit3 == 1): print "\tbit 3: ON (Interlock loop off)" 
+    else: print "\tbit 3: OutOfRange (Interlock loop unknown)"
+    
+    if (bitCluster.bit5 == 0): print "\tbit 5: OFF (Supply voltage low)" 
+    elif (bitCluster.bit5 == 1): print "\tbit 5: ON (Supply voltage low)" 
+    else: print "\tbit 5: OutOfRange (Supply voltage unknown)"
+    
+    if (bitCluster.bit6 == 0): print "\tbit 6: OFF (Module temp range)" 
+    elif(bitCluster.bit6 == 1): print "\tbit 6: ON (Module temp range)" 
+    else: print "\tbit 6: OutOfRange (Module temp range unknown)"
+    
+    if (bitCluster.bit7 == 0): print "\tbit 7: OFF (Pump temp high)" 
+    elif (bitCluster.bit7 == 1): print "\tbit 7: ON (Pump temp high)" 
+    else: print "\tbit 7: OutOfRange (Pump temp unknown)"
+    
+    if (bitCluster.bit8 == 0): print "\tbit 8: OFF (Pulse overrun)" 
+    elif (bitCluster.bit8 == 1): print "\tbit 8: ON (Pulse overrun)" 
+    else: print "\tbit 8: OutOfRange (Pulse overrun unknown)"
+    
+    if (bitCluster.bit9 == 0): print "\tbit 9: OFF (Trig signal level)" 
+    elif (bitCluster.bit9 == 1): print "\tbit 9: ON (Trig signal level)" 
+    else: print "\tbit 9: OutOfRange (Trig signal level unknown)"
+    
+    if (bitCluster.bit10 == 0): print "\tbit 10: OFF (Trig edge)" 
+    elif (bitCluster.bit10 == 1): print "\tbit 10: ON (Trig edge)" 
+    else: print "\tbit 10: OutOfRange (Trig edge unknown)"
+    
+    if (bitCluster.bit15 == 0): print "\tbit 15: OFF (Error code present)" 
+    elif (bitCluster.bit15 == 1): print "\tbit 15: ON (Error code present)" 
+    else: print "\tbit 15: OutOfRange (Error code present unknown)"
 
 @raise_on_error_code
 def getSuperKControls(COMPort):
@@ -366,10 +284,10 @@ def getVariaControls(COMPort):
     undocumented
     """
     NDFilterSetpointPercentx10 = c_uint16(0) #not used
-    SWFilterSetpointAngstrom = c_uint16(0)
-    LPFilterSetpointAngstrom = c_uint16(0)
-    dll.GetVariaControls(COMPort, byref(NDFilterSetpointPercentx10), byref(SWFilterSetpointAngstrom), byref(LPFilterSetpointAngstrom))
-    return SWFilterSetpointAngstrom.value, LPFilterSetpointAngstrom.value
+    SWPFilterAngstrom = c_uint16(0)
+    LWPFilterAngstrom = c_uint16(0)
+    dll.GetVariaControls(COMPort, byref(NDFilterSetpointPercentx10), byref(SWPFilterAngstrom), byref(LWPFilterAngstrom))
+    return SWPFilterAngstrom.value, LWPFilterAngstrom.value
 
 @raise_on_error_code
 def setSuperKControls(COMPort,controlCluster):
@@ -381,138 +299,75 @@ def setSuperKControls(COMPort,controlCluster):
 @raise_on_error_code
 def setSuperKControlEmission(COMPort,state):
     """
-    undocumented
+    Sets the SuperK emission.
     """
     waitTime = 3 #wait time for emission to switch (can take a few seconds)
     superKBitCluster = getSuperKStatusBits(COMPort)
     variaBitCluster = getVariaStatusBits(COMPort)
     
-    if (state == 0):
-        dll.SetSuperKControlEmission(COMPort, c_uint8(0) )
+    if (superKBitCluster.bit2 == 0 and superKBitCluster.bit5 == 0 and superKBitCluster.bit6 == 0 and superKBitCluster.bit7 == 0 
+    and variaBitCluster.bit5 == 0 and variaBitCluster.bit6 == 0 and variaBitCluster.bit9 == 0 and variaBitCluster.bit12 == 0 and variaBitCluster.bit13 == 0 and variaBitCluster.bit14 == 0 and variaBitCluster.bit15 == 0):
+        dll.SetSuperKControlEmission(COMPort, c_uint8(state) )
         sleep(waitTime) #wait for emission to switch
-        #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(0).value) )
         superKBitCluster = getSuperKStatusBits(COMPort)
-        #if (superKBitCluster.bit0 == 1):
-            #logging.error( 'Setting SuperK emission: ERROR! Emission set to zero but EMISSION IS ON.')
-        #elif (superKBitCluster.bit0 == 0):
-            #logging.info( 'Setting SuperK emission: Emission set to zero. Emission is OFF.')
-        #else:
-            #logging.error( 'Setting SuperK emission: ERROR! Emission set to zero but EMISSION STATE IS UNKNOWN: {}'.format(superKBitCluster.bit0) )
-    
-    elif (state == 1):
-        if (superKBitCluster.bit15 == 1) or (variaBitCluster.bit15 == 1):
-            dll.SetSuperKControlEmission(COMPort, 0 )
-            #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(0).value) )
-            sleep(waitTime)
-            superKBitCluster = getSuperKStatusBits(COMPort)
-            #if (superKBitCluster.bit0 == 1):
-                #logging.error( 'Setting SuperK emission: ERROR present. Emission set to zero. Check system. WARNING EMISSION IS ON.')
-            #elif (superKBitCluster.bit0 == 0):
-                #logging.error( 'Setting SuperK emission: ERROR present. Emission set to zero. Emission is OFF.')
-            #else:
-                #logging.error( 'Setting SuperK emission: ERROR present. Emission set to zero. Check system. WARNING EMISSION IS UNKNOWN.')
-            
-        elif (superKBitCluster.bit15 == 0) and (variaBitCluster.bit15 == 0):
-            if (variaBitCluster.bit12 == 0) and (variaBitCluster.bit13 == 0) and (variaBitCluster.bit14 == 0):
-                dll.SetSuperKControlEmission(COMPort, c_uint8(state) )
-                #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(state).value) )
-                sleep(waitTime)
-                superKBitCluster = getSuperKStatusBits(COMPort)
-                #if (superKBitCluster.bit0 == 1):
-                    #logging.info( 'Setting SuperK emission: {}, Emission is ON.'.format(state) )
-                #elif (superKBitCluster.bit0 == 0):
-                    #logging.error( 'Setting SuperK emission: ERROR, emission set to {} but emission is OFF. Check system.'.format(superKBitCluster.bit0) )
-                #else:
-                    #logging.error( 'Setting SuperK emission: ERROR, state UNKNOWN: {}. Check system.'.format(superKBitCluster.bit0) )
-            else:
-                dll.SetSuperKControlEmission(COMPort, 0 )
-                #logging.debug( 'Setting SuperK emission to: {}'.format(c_uint8(0).value) )
-                sleep(waitTime)
-                superKBitCluster = getSuperKStatusBits(COMPort)
-                #if (superKBitCluster.bit0 == 1):
-                    #logging.error( 'Setting SuperK emission: Unable to set while Varia filters moving. WARNING Emission is ON.' )
-                #elif (superKBitCluster.bit0 == 0):
-                    #logging.error( 'Setting SuperK emission: Unable to set while Varia filters moving. Emission set to zero.' )
-                #else:
-                    #logging.error( 'Setting SuperK emission: Unable to set while Varia filters moving. ERROR: Emission set to UNKNOWN state: {}'.format(superKBitCluster.bit0) )
+        if (superKBitCluster.bit15 == 1): #if superK status bit15 tripped due to interlock, it should have cleared. If it hasn't here, it must be another error so stop. 
+            dll.SetSuperKControlEmission(COMPort, c_uint8(0) )
+            raise SuperKHWError('ERROR (superk.setSuperKControlEmission). System error. Emission state unknown. Check system.')
+    elif (variaBitCluster.bit9 == 1):
+        raise SuperKHWError('ERROR (superk.setSuperKControlEmission). Error from shutter sensor on Varia output. Check shutter.')          
+    else:
+        raise SuperKHWError('ERROR (superk.setSuperKControlEmission). System error. Check system.')
 
 @raise_on_error_code
 def setSuperKControlInterlock(COMPort,state):
     """
-    undocumented
-    setting interlock to 1 unlocks laser (status bit shows 0 for interlock off)
-    setting interlock to 0 unlocks laser (status bit shows 1 for interlock on)
+    Sets the SuperK internal interlock. Checks for hardware errors before doing so. Checks if external interlock is unlocked before unlocking laser.
+    If laser is locked while emission is on, HW will report a warning (SuperK status bit 15 on).
+    setting interlock to 1 unlocks laser (status bit1 reads 0 for interlock off)
+    setting interlock to 0 locks laser (status bit1 reads 1 for interlock on)
     """
-    dll.SetSuperKControlInterlock(COMPort, c_uint8(state) )
-    sleep(1)
     bitCluster = getSuperKStatusBits(COMPort)
-
-    # if (state == 1):
-        # if (bitCluster.bit15 == 1):
-            # if (bitCluster.bit1 == 0):
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock ON. Check system.'.format(state) )
-            # elif (bitCluster.bit1 == 1):
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock Off. Check system.'.format(state) )
-            # else:
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock state UNKNOWN. Check system.'.format(state) )
-        # elif (bitCluster.bit15 == 0):
-            # if (bitCluster.bit1 == 0):
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock ON. Check system.'.format(state) )
-            # elif (bitCluster.bit1 == 1):
-                # #logging.info( 'Setting SuperK Control Interlock to {}: Success. Interlock Off.'.format(state) )
-            # else:
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock state UNKNOWN. Check system.'.format(state) )
-    # elif (state == 0):
-        # if (bitCluster.bit15 == 1):
-            # if (bitCluster.bit1 == 0):
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock ON. Check system.'.format(state) )
-            # elif (bitCluster.bit1 == 1):
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock Off. Check system.'.format(state) )
-            # else:
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock state UNKNOWN. Check system.'.format(state) )
-        # elif (bitCluster.bit15 == 0):
-            # if (bitCluster.bit1 == 0):
-                # #logging.info( 'Setting SuperK Control Interlock to {}: Success. Interlock ON.'.format(state) )
-            # elif (bitCluster.bit1 == 1):
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock Off. Check system.'.format(state) )
-            # else:
-                # #logging.error( 'Setting SuperK Control Interlock to {}: ERROR present. Interlock state UNKNOWN. Check system.'.format(state) )
+    if (bitCluster.bit2 == 0 and bitCluster.bit5 == 0 and bitCluster.bit6 == 0 and bitCluster.bit7 == 0): #check for system errors (not bit 15 which occurs if external interlock had been tripped while unlocked or running)
+        if (state==1 and bitCluster.bit3 == 0): #only unlock if external interlock is already unlocked.
+            dll.SetSuperKControlInterlock(COMPort, c_uint8(state))
+        elif (state==1 and bitCluster.bit3 == 1):
+            raise SuperKLogicError('ERROR (superk.setSuperKControlInterlock): Ensure interlock circuit is unlocked before unlocking laser.')
+        if (state==0):
+            dll.SetSuperKControlInterlock(COMPort, c_uint8(state))
+    elif (bitCluster.bit2 == 1):
+        raise SuperKHWError('ERROR (superk.setSuperKControlInterlock): Interlock power failure. Check system.')
+    else:
+        raise SuperKHWError('ERROR (superk.setSuperKControlInterlock). Unable to set interlock due to system error. Check system.')
 
 @raise_on_error_code
-def setVariaControls(COMPort, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom):
-    NDFilterSetpointPercentx10 = c_uint16(0)
-    SWFilterSetpointAngstrom = c_uint16(SWFilterSetpointAngstrom)
-    LPFilterSetpointAngstrom = c_uint16(LPFilterSetpointAngstrom)
-    
+def setVariaControls(COMPort, SWPFilterAngstrom, LWPFilterAngstrom):
     variaBitCluster = getVariaStatusBits(COMPort)
-    superKBitCluster = getSuperKStatusBits(COMPort)
-
-    if (superKBitCluster.bit0 == 0 or superKBitCluster.bit0 == 1 ): #if emmission OFF, (OR ON, this needs discussing)
-        if (variaBitCluster.bit15 == 0): #if no other errors,
-            if (SWFilterSetpointAngstrom.value > LPFilterSetpointAngstrom.value): #if high > low wavelength
-                if ((SWFilterSetpointAngstrom.value - LPFilterSetpointAngstrom.value) >= 100 and (SWFilterSetpointAngstrom.value - LPFilterSetpointAngstrom.value) <= 1000): # check wavelength difference is >0.1nm and <100nm
-                    dll.SetVariaControls(COMPort, NDFilterSetpointPercentx10, SWFilterSetpointAngstrom, LPFilterSetpointAngstrom)
+    #superKBitCluster = getSuperKStatusBits(COMPort)
+    #if (superKBitCluster.bit0 == 0 or superKBitCluster.bit0 == 1 ): #require emission to be OFF (this needs discussing, I think it's ok to leave o.)
+    if (variaBitCluster.bit15 == 0): #require no error (bit15 'general' error bit),
+        if (SWPFilterAngstrom > LWPFilterAngstrom): #require high > low wavelength
+            if ((SWPFilterAngstrom - LWPFilterAngstrom) >= 100 and (SWPFilterAngstrom - LWPFilterAngstrom) <= 1000): # check wavelength difference is >10nm and <100nm (min and max bandwidth spec'd by manufacturer)
+                if (SWPFilterAngstrom <= 8400 and LWPFilterAngstrom >= 4000):
+                    dll.SetVariaControls(COMPort, c_uint16(0), c_uint16(SWPFilterAngstrom), c_uint16(LWPFilterAngstrom))
                     variaBitCluster = getVariaStatusBits(COMPort)
                     
-                    for x in range(60): #test to see if filters are moving, 30sec is about the time for the largest possible move
-                        if (variaBitCluster.bit12 == 1 or variaBitCluster.bit13 == 1 or variaBitCluster.bit14 == 1):
+                    #now test to see if filters are moving. 30sec is about the time for the largest possible move (give a bit longer)
+                    #function keeps running until they have stopped moving (blocking other functions until so)
+                    for x in range(71):
+                        if (variaBitCluster.bit12 == 1 or variaBitCluster.bit13 == 1 or variaBitCluster.bit14 == 1): #check all filter movement sensors
                             sleep(0.5)
                             variaBitCluster = getVariaStatusBits(COMPort)
-                            #print( 'Warning (setVariaControls): Filters moving. Waiting.' )
                             if (variaBitCluster.bit12 == 0 and variaBitCluster.bit13 == 0 and variaBitCluster.bit14 == 0):
-                                #print ( 'Warning (setVariaControls): Ok filters stopped moving.' )
                                 break
-                        #if (x == 60):
-                            #print( 'ERROR (setVariaControls): Filters have not stopped moving. Check system.')
-                    
-                    #if (variaBitCluster.bit12 == 0) and (variaBitCluster.bit13 == 0) and (variaBitCluster.bit14 == 0):
-                        #print( 'Setting Varia Filters to: {} and {} : Success.'.format(LPFilterSetpointAngstrom.value,SWFilterSetpointAngstrom.value) )
+                        if (x >= 70):
+                            raise SuperKLogicError( 'ERROR (superk.setVariaControls): Filters have not stopped moving after a long time. Check system.')
                 else:
-                    print( 'ERROR (setVariaControls): Minimum bandwidth is 10nm. Maximum bandwidth is 100nm. SP & LP filters must differ by at least 10nm and no more than 100nm.')
+                    raise SuperKLogicError( 'ERROR (superk.setVariaControls): Cannot set to specified values. Minimum LWP wavelength is 400nm. Maximum SWP wavelength is 840nm (with 10nm <= BW <= 100nm).')
             else:
-                print( 'ERROR (setVariaControls): SWP filter value must be larger than LPP filter value')
-        elif (variaBitCluster.bit15 == 0):
-            print( 'Setting Varia Filters: ERROR present. Filters not set. Check system.')
-    elif (superKBitCluster.bit0 == 1):
-        print( 'Setting Varia Filters: ERROR: Emission is ON. Cannot adjust wavelength without turning off emission.')
-    return 0
+                raise SuperKLogicError( 'ERROR (superk.setVariaControls): Minimum bandwidth is 10nm. Maximum bandwidth is 100nm. SP & LP filters must differ by at least 10nm and no more than 100nm.')
+        else:
+            raise SuperKLogicError( 'ERROR (superk.setVariaControls): SWP filter value must be larger than LWP filter value')
+    else:
+        raise SuperKLogicError( 'ERROR (superk.setVariaControls): Setting Varia Filters: ERROR present. Filters not set. Check system.')
+    #else:
+    #    raise SuperKLogicError( 'Setting Varia Filters: ERROR: Emission is ON. Cannot adjust wavelength without turning off emission.')

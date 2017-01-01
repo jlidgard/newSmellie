@@ -79,56 +79,20 @@ class SuperKDriver(object):
             raise SuperKDriverLogicError("SuperK port not open.")
             return 0
     
-    def go_ready(self, intensity, low_wavelength, high_wavelength):
+    def set_wavelengths(self, set_low_wavelength, set_high_wavelength):
         """
-        undocumented
-        """
-        if self.isConnected:
-            # set the intensity, low and high wavelengths of the Varia (checking if the settings aren't already set)
-            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.go_ready({},{},{})'.format(intensity, low_wavelength, high_wavelength))
-            SWFilterSetpointAngstrom, LPFilterSetpointAngstrom = self.get_wavelengths()
-            if (low_wavelength!=LPFilterSetpointAngstrom or high_wavelength!=SWFilterSetpointAngstrom):
-                setVariaControls(self.COMPort,high_wavelength,low_wavelength)
-            
-            # turn the lock off then turn the emission on (checking if the settings aren't already set)
-            superKStatus = getSuperKStatusBits(self.COMPort)
-            if superKStatus.bit1!=0:
-                setSuperKControlInterlock(self.COMPort,1) #setting interlock to 1 unlocks laser (status bit shows 0 for interlock off)
-            if superKStatus.bit0!=1:
-                setSuperKControlEmission(self.COMPort,1)
-        else:
-            raise SuperKDriverLogicError("SuperK port not open.")
-            
-    def go_safe(self):
-        """
-        undocumented
+        Set the low and high wavelengths of the Varia (checking if the settings aren't already set)
         """
         if self.isConnected:
-            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.go_safe()')
-        
-            self.set_parameters()
-            
-            # turn off emission then set lock on (checking if the settings aren't already set)
-            superKStatus = getSuperKStatusBits(self.COMPort)
-            if superKStatus.bit0!=0:
-                setSuperKControlEmission(self.COMPort,0) #emission before interlock when shutting down (or interlock warning)
-            if superKStatus.bit1!=1:
-                setSuperKControlInterlock(self.COMPort,0) #setting interlock to 0 locks laser (status bit shows 1 for interlock on)
-        else:
-            raise SuperKDriverLogicError("SuperK port not open.")
-
-    def varia_go_safe(self):
-        """
-        undocumented
-        """
-        if self.isConnected:
-            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.go_safe()')
-        
-            # set varia wavelengths to be beyond the 700nm filter (so light is filtered out)
-            low_wavelength, high_wavelength = getVariaControls(self.COMPort)
-            if (low_wavelength!=7900 and high_wavelength!=8000):
-                setVariaControls(self.COMPort,8000,7900)
-            #logging.error( 'Error Setting SuperK Safe States. ErrorCode: {}'.format( errorCode ) )
+            # set the low and high wavelengths of the Varia (checking if the settings aren't already set)
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.set_wavelengths({},{})'.format(set_low_wavelength, set_high_wavelength))
+            low_wavelength, high_wavelength = self.get_wavelengths()
+            if (set_low_wavelength!=low_wavelength or set_high_wavelength!=high_wavelength):
+                setVariaControls(self.COMPort,set_high_wavelength,set_low_wavelength)
+                low_wavelength, high_wavelength = self.get_wavelengths()
+                #check values set correctly,
+                if (set_low_wavelength!=low_wavelength or set_high_wavelength!=high_wavelength):
+                    raise SuperKDriverLogicError("SuperK Varia wavelengths not set correctly.")
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
 
@@ -140,7 +104,6 @@ class SuperKDriver(object):
         """
         if self.isConnected:
             SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.is_laser_locked()')
-            
             #interlock circuit
             superKStatus = getSuperKStatusBits(self.COMPort)
             if (superKStatus.bit3 == 0):
@@ -174,16 +137,119 @@ class SuperKDriver(object):
                 raise SuperKDriverLogicError("Unknown response for interlock value.")
                 interlock_locked = None
 
-            #combination of interlock and laser interlocks
-            if (laser_locked and interlock_locked):
+            #combination of external interlock and SuperK internal interlock
+            if (laser_locked or interlock_locked):
                 is_locked = True
-            else:
+            elif (laser_locked==False and interlock_locked==False):
                 is_locked = False
+            else:
+                raise SuperKDriverLogicError("Unknown response for interlock value.")
+                is_locked = None
             return is_locked
             
         else:
             raise SuperKDriverLogicError("SuperK port not open.") 
             return None
+            
+    def set_laser_lock(self, set_locked = True):
+        """
+        Set the superK internal lock.
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.set_laser_lock({})'.format(set_locked))
+            if set_locked != self.is_laser_locked():
+                if set_locked==True:
+                    setSuperKControlInterlock(self.COMPort,0) #setting interlock to 0 locks laser
+                elif set_locked==False:
+                    setSuperKControlInterlock(self.COMPort,1) #setting interlock to 1 unlocks laser
+                #check value was set correctly
+                if set_locked != self.is_laser_locked():
+                    raise SuperKDriverLogicError("SuperK interlock not set correctly.")
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+
+    def is_emission_on(self):
+        """
+        Check the status of the SuperK emission.
+        
+        :returns: True if the emission is on (pulsing or ready to pulse).
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.is_emission_on()')
+            superKStatus = getSuperKStatusBits(self.COMPort)
+            if (superKStatus.bit0 == 0):
+                emission_on = False
+            elif (superKStatus.bit0 == 1):
+                emission_on = True
+            else:
+                raise SuperKDriverLogicError("Unknown response for emission value.")
+                emission_on = None
+        return emission_on
+
+    def set_laser_emission(self, set_emission = False):
+        """
+        Set the superK emission (laser pulses if triggered - either by its own trigger or an external trigger, as set in the trigger settings).
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.set_laser_emission({})'.format(set_emission))
+            if set_emission != self.is_emission_on():
+                if (set_emission==True and self.is_laser_locked() == False): #laser must be unlocked before turning emission on
+                    setSuperKControlEmission(self.COMPort,1) #setting interlock to 1 turns emission on
+                elif (set_emission==True and self.is_laser_locked() == True):
+                    raise SuperKDriverLogicError("Interlocks must be unlocked before SuperK emission can be set.")
+                if set_emission==False: #turn emission off
+                    setSuperKControlEmission(self.COMPort,0) #setting emission to 0 turns emission off
+                #check emission was set correctly
+                if set_emission != self.is_emission_on():
+                    raise SuperKDriverLogicError("SuperK emission not set correctly.")
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+
+    def go_ready(self, step_number, low_wavelength, high_wavelength):
+        """
+        undocumented
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.go_ready({},{},{})'.format(step_number, low_wavelength, high_wavelength))
+            
+            # set the wavelengths of the Varia
+            self.set_wavelengths(low_wavelength,high_wavelength)
+            
+            # set the Varia ND filter (the step number to the stepper motor controller)
+            #NDFilter_set_position(step_number)
+            
+            # turn the lock off then turn the emission on (in this order)
+            self.set_laser_lock(False)
+            self.set_laser_emission(True)
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+            
+    def go_safe(self):
+        """
+        undocumented
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.go_safe()')
+            # turn the emission off then turn the emission on (in this order)
+            self.set_laser_emission(False)
+            self.set_laser_lock(True)
+            # re-apply safe settings (external trigger etc.)
+            self.set_parameters()
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+
+    def varia_go_safe(self):
+        """
+        undocumented
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.varia_go_safe()')
+            # set varia wavelengths to be beyond the 700nm filter (so light is filtered out)
+            low_wavelength, high_wavelength = getVariaControls(self.COMPort)
+            if (low_wavelength!=7900 and high_wavelength!=8000):
+                setVariaControls(self.COMPort,8000,7900)
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
             
     def get_identity(self):
         """
