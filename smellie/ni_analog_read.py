@@ -34,13 +34,10 @@ class AnalogRead(object):
 
     def read_voltage_mean(self, number_of_samples=100000, sampling_frequency=100000):
         """
-        Generate the Gain Voltage as exactly requested by the user, and which would be found on measuring the gain voltage *at the MPU's PMT itself*.
-        This voltage (vGain) = the residual voltage on the PMT (vResidual) + some required voltage output from the NI Unit (vOutput).
-        First, set up the output task (_set_up) and then output vOutput (_start_read) through one of the NI Unit's analogue output (ao) pins.
+        undocumented
 
         :param vGain: requested Gain Voltage
 
-        :raises: :class:`.AnalogReadLogicError` if the requested Gain Voltage is outside the safe range for the MPU's PMT
         """
         voltages = self._start_read(number_of_samples, sampling_frequency)
         voltages_max = numpy.amax(voltages)
@@ -52,9 +49,7 @@ class AnalogRead(object):
 
     def read_voltage(self, number_of_samples=100000, sampling_frequency=100000):
         """
-        Generate the Gain Voltage as exactly requested by the user, and which would be found on measuring the gain voltage *at the MPU's PMT itself*.
-        This voltage (vGain) = the residual voltage on the PMT (vResidual) + some required voltage output from the NI Unit (vOutput).
-        First, set up the output task (_set_up) and then output vOutput (_start_read) through one of the NI Unit's analogue output (ao) pins.
+        undocumented
 
         :param vGain: requested Gain Voltage
 
@@ -77,7 +72,6 @@ class AnalogRead(object):
     def _start_read(self, number_of_samples, sampling_frequency):
         """
         Start the Gain Voltage task using the parameters previously set up in the _set_up function, and a given output voltage
-        This is a private function, indicated by the underscore before the name - do not change that!
         """
         SMELLIELogger.debug('SNODROP DEBUG: AnalogRead._start_read()')
         daqmx.functions.DAQmxCfgSampClkTiming(self.taskHandle, "", sampling_frequency, daqmx.constants.DAQmx_Val_Rising,daqmx.constants.DAQmx_Val_FiniteSamps, number_of_samples)
