@@ -1,6 +1,6 @@
 from time import sleep
 from ctypes import Structure, OleDLL, create_string_buffer, c_char_p, c_double, c_int16, c_int32, c_uint16, c_uint32, c_uint8,byref
-from smellie_config import SK_COM_PORT, SK_DLL_PATH, SK_STR_BUFFER_SIZE
+from smellie_config import SK_COM_PORT, SK_DLL_PATH, SK_STR_BUFFER_SIZE, SK_MAX_INT_FREQUENCY
 from functools import wraps
 import os
 
@@ -154,7 +154,15 @@ def getVariaStatusBits(COMPort):
     bitMaskDecimal = c_int32(0)
     bitCluster = statusBitStructure()
     dll.GetVariaStatusBits(COMPort, byref(bitMaskDecimal), bitCluster)  
-    #printVariaStatusBits(bitCluster) #for use in debugging 
+    printVariaStatusBits(bitCluster) #for use in debugging 
+    
+    #check for errors:
+    if (variaBitCluster.bit5 == 1 or variaBitCluster.bit6 == 1 or variaBitCluster.bit9 == 1 or variaBitCluster.bit12 == 1 or variaBitCluster.bit13 == 1 or variaBitCluster.bit14 == 1 or variaBitCluster.bit15 == 1):
+        if (variaBitCluster.bit9 == 1):
+            raise SuperKHWError('ERROR (superk.getVariaStatusBits). Error from shutter sensor on Varia output. Check shutter.')          
+        else:
+            raise SuperKHWError('ERROR (superk.getVariaStatusBits). System error. Check system.')
+    
     return bitCluster
 
 @raise_on_error_code
@@ -216,6 +224,11 @@ def getSuperKStatusBits(COMPort):
     bitCluster = statusBitStructure()
     dll.GetSuperKStatusBits(COMPort, byref(bitMaskDecimal), bitCluster)
     #printSuperKStatusBits(bitCluster) #for use in debugging
+    
+    #check for errors:
+    if (superKBitCluster.bit2 == 1 or superKBitCluster.bit5 == 1 or superKBitCluster.bit6 == 1 or superKBitCluster.bit7 == 1):
+        raise SuperKHWError('ERROR (superk.getSuperKStatusBits). System error. Check system.')
+    
     return bitCluster
 
 @raise_on_error_code
@@ -294,8 +307,20 @@ def setSuperKControls(COMPort,controlCluster):
     """
     undocumented
     """
-    dll.SetSuperKControls(COMPort, controlCluster)
+    if (controlCluster.internalPulseFreqHz < SK_MAX_INT_FREQUENCY and controlCluster.trigLevelSetpointmV>=0 and controlCluster.trigLevelSetpointmV<=5000 and controlCluster.displayBacklightPercent>=0 and controlCluster.displayBacklightPercent<=100):
+        dll.SetSuperKControls(COMPort, controlCluster)
+    else:
+        raise SuperKHWError('ERROR (superk.setSuperKControls). Specified pulse rate faster than SuperK maximum (20k).')
 
+@raise_on_error_code
+def checkSuperKStatusBits(COMPort,state):
+    """
+    Sets the SuperK emission.
+    """
+    waitTime = 3 #wait time for emission to switch (can take a few seconds)
+    superKBitCluster = getSuperKStatusBits(COMPort)
+    variaBitCluster = getVariaStatusBits(COMPort)      
+        
 @raise_on_error_code
 def setSuperKControlEmission(COMPort,state):
     """
@@ -305,18 +330,12 @@ def setSuperKControlEmission(COMPort,state):
     superKBitCluster = getSuperKStatusBits(COMPort)
     variaBitCluster = getVariaStatusBits(COMPort)
     
-    if (superKBitCluster.bit2 == 0 and superKBitCluster.bit5 == 0 and superKBitCluster.bit6 == 0 and superKBitCluster.bit7 == 0 
-    and variaBitCluster.bit5 == 0 and variaBitCluster.bit6 == 0 and variaBitCluster.bit9 == 0 and variaBitCluster.bit12 == 0 and variaBitCluster.bit13 == 0 and variaBitCluster.bit14 == 0 and variaBitCluster.bit15 == 0):
-        dll.SetSuperKControlEmission(COMPort, c_uint8(state) )
-        sleep(waitTime) #wait for emission to switch
-        superKBitCluster = getSuperKStatusBits(COMPort)
-        if (superKBitCluster.bit15 == 1): #if superK status bit15 tripped due to interlock, it should have cleared. If it hasn't here, it must be another error so stop. 
-            dll.SetSuperKControlEmission(COMPort, c_uint8(0) )
-            raise SuperKHWError('ERROR (superk.setSuperKControlEmission). System error. Emission state unknown. Check system.')
-    elif (variaBitCluster.bit9 == 1):
-        raise SuperKHWError('ERROR (superk.setSuperKControlEmission). Error from shutter sensor on Varia output. Check shutter.')          
-    else:
-        raise SuperKHWError('ERROR (superk.setSuperKControlEmission). System error. Check system.')
+    dll.SetSuperKControlEmission(COMPort, c_uint8(state) )
+    sleep(waitTime) #wait for emission to switch
+    superKBitCluster = getSuperKStatusBits(COMPort)
+    if (superKBitCluster.bit15 == 1): #if superK status bit15 tripped due to interlock, it should have cleared. If it hasn't here, it must be another error so stop. 
+        dll.SetSuperKControlEmission(COMPort, c_uint8(0) )
+        raise SuperKHWError('ERROR (superk.setSuperKControlEmission). System error. Emission state unknown. Check system.')
 
 @raise_on_error_code
 def setSuperKControlInterlock(COMPort,state):

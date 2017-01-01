@@ -1,6 +1,6 @@
 from smellie_config import SK_COM_PORT
 from varia_ndfilter import VariaNDFilter
-from superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
+from superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, getSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
 from smellie.smellie_logger import SMELLIELogger
 
 from ctypes import c_uint32, c_uint16, c_uint8
@@ -48,24 +48,102 @@ class SuperKDriver(object):
             self.isConnected = False
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
+            
+    def get_superK_status(self):
+        """
+        Check the status of the SuperK Laser status bits.
+        
+        :returns: superk status bits
+        """
+        if self.isConnected:
+            superKStatus = getSuperKStatusBits(self.COMPort)
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.get_superK_status()')
+            #check if any errors are present. If so, log and throw exception.
+            if (superkStatus.bit2==1 or superkStatus.bit5==1 or superkStatus.bit6==1 or superkStatus.bit7==1 or superkStatus.bit8==1 or superkStatus.bit9==1 or superkStatus.bit10==1 or superkStatus.bit15==1):
+                SMELLIELogger.warn('SNODROP DEBUG: SuperKDriver.get_superK_status()')
+                raise SuperKDriverHWError("Error reported in SuperK status bits. Check system.")
+            return superKStatus
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+            return 0
+        
+    def get_varia_status(self):
+        """
+        Check the status of the SuperK Varia status bits.
+        
+        :returns: varia status bits
+        """
+        if self.isConnected:
+            variaStatus = getvariaStatusBits(self.COMPort)
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.get_varia_status()')
+            #check if any errors are present. If so, log and throw exception.
+            #variaStatus.bit8 is the shutter of the infrared outlet of the Varia which is blanked off (option provided by manufacturer which we don't use). Sensor indicator works but has no relevance for our use.
+            if (variaStatus.bit5==1 or variaStatus.bit6==1 or variaStatus.bit9==1 or variaStatus.bit15==1):
+                SMELLIELogger.warn('SNODROP DEBUG: SuperKDriver.get_superK_status()')
+                raise SuperKDriverHWError("Error reported in SuperK status bits. Check system.")
+            return variaStatus
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+            return 0
 
-    def set_parameters(self):
+    def set_parameters(self, trig_mode=1, pulse_rate=0):
+        """
+        set superK control parameters. Most of these should not be configurable and hard-coded for safety.
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.set_parameters({},{})'.format(trig_mode,pulse_rate))
+            if (trig_mode<=1):
+                if (pulse_rate<=TRIG_GEN_MAX_FREQUENCY)
+                    superKControls = superKControlStructure()
+                    superKControls.trigLevelSetpointmV = c_uint16(1000)
+                    superKControls.displayBacklightPercent = c_uint8(0)
+                    superKControls.trigMode = c_uint8(trig_mode)
+                    superKControls.internalPulseFreqHz = c_uint16(pulse_rate)
+                    superKControls.burstPulses = c_uint16(1) 
+                    superKControls.watchdogIntervalSec = c_uint8(0)
+                    superKControls.internalPulseFreqLimitHz = c_uint32(0) #doesn't do anything. Possibly a manufacturer option disabled in firmware.
+                    setSuperKControls(self.COMPort,superKControls)
+                    
+                    #check set parameters:
+                    new_superKControls=self.get_parameters()
+                    if superKControls!=new_superKControls:
+                        SMELLIELogger.notice('SNODROP DEBUG: SuperKDriver.set_parameters(). Error upon setting SuperK control bits. Check system.')
+                        raise SuperKDriverHWError("Error upon setting SuperK control bits. Check system.") 
+                    if superKControls.trigMode==0:
+                        SMELLIELogger.warn('SNODROP DEBUG: SuperKDriver.set_parameters(). Trigger set to INTERNAL. Rate set to {}.'.format(new_superKControls.internalPulseFreqHz))
+                    elif superKControls.trigMode==1:
+                        SMELLIELogger.warn('SNODROP DEBUG: SuperKDriver.set_parameters(). Trigger set to EXTERNAL.')
+                else:
+                    SMELLIELogger.warn('SNODROP DEBUG: SuperKDriver.set_parameters(). Specified pulse rate faster than maximum in config file.')
+                    raise SuperKDriverLogicError("Error upon setting SuperK control bits. Check system.") 
+            else:
+                SMELLIELogger.warn('SNODROP DEBUG: SuperKDriver.set_parameters(). This trigger mode not enabled.')
+                raise SuperKDriverLogicError("This SuperK trigger mode not enabled.") 
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+            
+    def get_parameters(self):
         """
         undocumented
         """
         if self.isConnected:
-            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.set_parameters()')
-            superKControls = superKControlStructure()
-            superKControls.trigLevelSetpointmV = c_uint16(1000)
-            superKControls.displayBacklightPercent = c_uint8(0)
-            superKControls.trigMode = c_uint8(1)
-            superKControls.internalPulseFreqHz = c_uint16(0)
-            superKControls.burstPulses = c_uint16(1) 
-            superKControls.watchdogIntervalSec = c_uint8(0)
-            superKControls.internalPulseFreqLimitHz = c_uint32(0) 
-            setSuperKControls(self.COMPort,superKControls)
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.get_parameters() = superKControlStructure')
+            superKControlStructure = getSuperKControls(self.COMPort)
+            return superKControlStructure
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
+            return 0
+            
+    def set_trigger_mode(self, set_mode, set_rate=0):
+        """
+        undocumented
+        """
+        if self.isConnected:
+            SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.set_trigger_mode({},{})'.format(trigger_mode,set_rate))
+            set_parameters(trig_mode=set_mode, pulse_rate=set_rate)
+        else:
+            raise SuperKDriverLogicError("SuperK port not open.")
+        
     
     def get_wavelengths(self):
         """

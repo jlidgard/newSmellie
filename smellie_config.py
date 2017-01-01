@@ -65,6 +65,7 @@ SPEC_STR_BUFFER_SIZE = 128
 SK_COM_PORT = "COM4"
 SK_DLL_PATH = r"C:\SMELLIE\software\LabView\compiled libraries\superKUtil.dll"
 SK_STR_BUFFER_SIZE = 128
+SK_MAX_INT_FREQUENCY = 20000
 
 # DAQMX Library
 FILE_LOC_WINXP      = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP
