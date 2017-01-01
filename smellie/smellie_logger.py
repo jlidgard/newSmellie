@@ -32,7 +32,7 @@ class SMELLIELogger(object):
   
     @classmethod    
     def connect(cls):
-        cls.the_logger.connect('SMELLIE',LOGGER_SERVER,LOGGER_PORT) #connect to logging server
+        cls.the_logger.connect('SMELLIE-JEFF_TESTING',LOGGER_SERVER,LOGGER_PORT) #connect to logging server
    
     @classmethod
     def debug(cls, *args, **kwargs):

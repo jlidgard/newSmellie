@@ -154,11 +154,11 @@ def getVariaStatusBits(COMPort):
     bitMaskDecimal = c_int32(0)
     bitCluster = statusBitStructure()
     dll.GetVariaStatusBits(COMPort, byref(bitMaskDecimal), bitCluster)  
-    printVariaStatusBits(bitCluster) #for use in debugging 
+    #printVariaStatusBits(bitCluster) #for use in debugging 
     
     #check for errors:
-    if (variaBitCluster.bit5 == 1 or variaBitCluster.bit6 == 1 or variaBitCluster.bit9 == 1 or variaBitCluster.bit12 == 1 or variaBitCluster.bit13 == 1 or variaBitCluster.bit14 == 1 or variaBitCluster.bit15 == 1):
-        if (variaBitCluster.bit9 == 1):
+    if (bitCluster.bit5 == 1 or bitCluster.bit6 == 1 or bitCluster.bit9 == 1 or bitCluster.bit12 == 1 or bitCluster.bit13 == 1 or bitCluster.bit14 == 1 or bitCluster.bit15 == 1):
+        if (bitCluster.bit9 == 1):
             raise SuperKHWError('ERROR (superk.getVariaStatusBits). Error from shutter sensor on Varia output. Check shutter.')          
         else:
             raise SuperKHWError('ERROR (superk.getVariaStatusBits). System error. Check system.')
@@ -226,7 +226,7 @@ def getSuperKStatusBits(COMPort):
     #printSuperKStatusBits(bitCluster) #for use in debugging
     
     #check for errors:
-    if (superKBitCluster.bit2 == 1 or superKBitCluster.bit5 == 1 or superKBitCluster.bit6 == 1 or superKBitCluster.bit7 == 1):
+    if (bitCluster.bit2 == 1 or bitCluster.bit5 == 1 or bitCluster.bit6 == 1 or bitCluster.bit7 == 1):
         raise SuperKHWError('ERROR (superk.getSuperKStatusBits). System error. Check system.')
     
     return bitCluster
@@ -307,7 +307,8 @@ def setSuperKControls(COMPort,controlCluster):
     """
     undocumented
     """
-    if (controlCluster.internalPulseFreqHz < SK_MAX_INT_FREQUENCY and controlCluster.trigLevelSetpointmV>=0 and controlCluster.trigLevelSetpointmV<=5000 and controlCluster.displayBacklightPercent>=0 and controlCluster.displayBacklightPercent<=100):
+    #the superK firmware checks set value and won't set any specified value which is out of range. This will be caught by the subsequent check 'get' confirming the 'set'.
+    if (controlCluster.internalPulseFreqHz <= SK_MAX_INT_FREQUENCY): #do customise the maximum rate so add this check.
         dll.SetSuperKControls(COMPort, controlCluster)
     else:
         raise SuperKHWError('ERROR (superk.setSuperKControls). Specified pulse rate faster than SuperK maximum (20k).')
