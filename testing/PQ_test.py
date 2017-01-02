@@ -18,7 +18,7 @@ class PQTest(object):
         self.fs = fibre_switch.FibreSwitch()
         self.ls = laser_switch.LaserSwitch()
         
-        #check laser switch channel
+        #check laser switch channel (before opening PQ laser incase we need to switch lasers which requires PQ to disconnect..)
         self.ls_original = self.ls.get_active_channel()
         logging.debug( "    Laser switch channel: {}".format(self.ls_original))
         if (self.ls_original == 0 or self.ls_original ==5):
@@ -141,7 +141,7 @@ logging.basicConfig(filename=r'C:/SMELLIE/logs/testing/test_PQ.log', filemode="a
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
-logging.debug( "Begin Testing SMELLIE PQ laser driver test. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
+logging.debug( "Begin Testing SMELLIE PQ laser driver. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )
 SMELLIELogger.new_logger("test") #give SMELLIE logger a name 
 npass = 0
 nfail = 0
