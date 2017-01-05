@@ -17,10 +17,20 @@ LOGGER_SERVER = 'minard.sp.snolab.ca'
 LOGGER_PORT = 4001
 LOGGER_CONNECT_TO_SERVER = False
 
-# Fibre Switch 
+# Fibre Switch (70 channel)
 FIBRE_SWITCH_SERIAL_PORT = 11 # = actually COM6 6(i.e. value = COM number - 1)
 FIBRE_SWITCH_BAUD_RATE   = 57600
 FIBRE_SWITCH_WAIT_TIME   = 0.1  # in seconds
+
+# Fibre Switch (4 channel)
+FIBRE_SWITCH_4CHAN_SERIAL_PORT = 0 # = actually COM6 6(i.e. value = COM number - 1)
+FIBRE_SWITCH_4CHAN_BAUD_RATE   = 9600
+FIBRE_SWITCH_4CHAN_WAIT_TIME   = 0.1  # in seconds
+
+# Laser Switch (70 channel)
+LASER_SWITCH_SERIAL_PORT = 6 # = actually COM6 6(i.e. value = COM number - 1)
+LASER_SWITCH_BAUD_RATE   = 9600
+LASER_SWITCH_WAIT_TIME   = 0.1  # in seconds
 
 # Interlock
 INTERLOCK_SERIAL_PORT = 10  # = actually COM5 (i.e. value = COM number - 1)
