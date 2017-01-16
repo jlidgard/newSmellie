@@ -1,5 +1,5 @@
 from time import sleep
-from ctypes import OleDLL, create_string_buffer, c_double, c_int16, c_int32, byref
+from ctypes import OleDLL, create_string_buffer, c_double, c_int16, c_int32, byref, c_uint64
 from smellie_config import SPEC_DLL_PATH, SPEC_STR_BUFFER_SIZE
 from functools import wraps
 import os
@@ -69,44 +69,6 @@ def raise_on_error_code(in_function):
             raise SpecDLLError(decode_error(e.winerror))
     return modified
     
-#def createWrapper(runnumber): 
-#    #set up logging
-#    logging.basicConfig(filename='c:\SMELLIE\logs\OOspectrometerLogRun{}.log'.format(runnumber), filemode="w", level=logging.DEBUG)
-#    console = logging.StreamHandler() #print logger to console
-#    console.setLevel(logging.INFO)
-#    logging.getLogger('').addHandler(console)
-    
-def initialise():
-    """   
-    :undocumented
-    """
-    wrapper = createWrapper()
-    openAllSpectrometers(wrapper)
-    getName(wrapper)
-    getFirmwareVersion(wrapper)
-    getSerialNumber(wrapper)
-    
-    #set acquisition parameters
-    setExternalTriggerMode(wrapper,0)
-    setBoxcarWidth(wrapper, 0)
-    setCorrectForDetectorNonlinearity(wrapper,1)
-    setCorrectForElectricalDark(wrapper,1)
-    setIntegrationTime(wrapper,10000)
-    setScansToAverage(wrapper,1)
-    
-    #set external trigger delay
-    extTrigDelay = getFeatureControllerExternalTriggerDelay(wrapper)
-    setExternalTriggerDelay(extTrigDelay,1000)
-
-def shutdown(wrapper):
-    """   
-    :undocumented
-    """
-    destroyExternalTriggerDelay()
-    closeAllSpectrometers(wrapper)    
-    destroyWrapper(wrapper)
-    
-    
 @raise_on_error_code
 def createWrapper():
     """   
@@ -114,7 +76,6 @@ def createWrapper():
     """
     #uint64_t __cdecl Wrapper_Create(void);
     wrapper = dll.OOUtil_Wrapper_Create()
-    #logging.info( 'Create Wrapper: {}'.format(wrapper) )
     return wrapper
 
 def destroyWrapper(wrapper):
@@ -122,9 +83,7 @@ def destroyWrapper(wrapper):
     :undocumented
     """
     #void __cdecl Wrapper_Destroy(uint64_t Wrapper);
-    #wrapperIn = c_uint64(wrapper)
     dll.OOUtil_Wrapper_Destroy(wrapper)
-    #logging.info( 'Destroy Wrapper: {}'.format(wrapper.value) )
 
 def openAllSpectrometers(wrapper):
     """   
@@ -134,8 +93,7 @@ def openAllSpectrometers(wrapper):
     #wrapperIn = c_uint64(wrapper)
     numberOfSpectrometers = c_int32(-1)
     dll.OOUtil_Wrapper_openAllSpectrometers(wrapper, byref(numberOfSpectrometers) )
-    #logging.info( 'Open All Spectrometers: {}, number of spectrometers: {}'.format(wrapper.value, numberOfSpectrometers.value) )
-    return numberOfSpectrometers
+    return numberOfSpectrometers.value
 
 def closeAllSpectrometers(wrapper):
     """   
@@ -144,7 +102,6 @@ def closeAllSpectrometers(wrapper):
     #void __cdecl Wrapper_closeAllSpectrometers(uint64_t WrapperIn);
     #wrapperIn = c_uint64(wrapper)
     dll.OOUtil_Wrapper_closeAllSpectrometers(wrapper)
-    #logging.info( 'Close All Spectrometers: {}'.format(wrapper.value) )
 
 def getFirmwareVersion(wrapper):
     """   
@@ -155,7 +112,6 @@ def getFirmwareVersion(wrapper):
     index = c_int32(0)
     message = string_buffer()
     dll.OOUtil_Wrapper_getFirmwareVersion(wrapper, index, message, c_int32(SPEC_STR_BUFFER_SIZE) )
-    #logging.info( 'get Firmware Version: {}'.format(message) )
     return message.value
 
 def getName(wrapper):
@@ -167,7 +123,6 @@ def getName(wrapper):
     index = c_int32(0)
     message = string_buffer()
     dll.OOUtil_Wrapper_getName(index, wrapper, message, c_int32(SPEC_STR_BUFFER_SIZE) )
-    #logging.info( 'Spectrometer Name: {}'.format(message) )
     return message.value
 
 def getSerialNumber(wrapper):
@@ -179,7 +134,6 @@ def getSerialNumber(wrapper):
     index = c_int32(0)
     message = string_buffer()
     dll.OOUtil_Wrapper_getSerialNumber( wrapper, index, message, c_int32(SPEC_STR_BUFFER_SIZE) )
-    #logging.info( 'Serial Number: {}'.format(message) )
     return message.value
 
 def getIntegrationTime(wrapper):
@@ -190,7 +144,6 @@ def getIntegrationTime(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getIntegrationTime(wrapper, index)
-    #logging.info( 'Get Integration Time: {}'.format(retValue.value) )
     return retValue.value
 
 def setIntegrationTime(wrapper,value):
@@ -208,9 +161,8 @@ def setIntegrationTime(wrapper,value):
         dll.OOUtil_Wrapper_setIntegrationTime(wrapper, index, integrationTime)
         #int32_t __cdecl Wrapper_getIntegrationTime(uint64_t Wrapper, int32_t Index);
         retValue = dll.OOUtil_Wrapper_getIntegrationTime(wrapper, index)
-        #logging.info( 'Set Integration Time: {}'.format(retValue.value) )
-        if (retValue.value!=integrationTime.value):
-            raise SpecDLLError( 'Unable to Set Integration Time. Tried: {}, Current: {}'.format(integrationTime.value,retValue.value) )
+        if (retValue!=integrationTime.value):
+            raise SpecDLLError( 'Unable to Set Integration Time. Tried: {}, Current: {}'.format(integrationTime.value,retValue) )
     else:
         raise SpecLogicError( 'Unable to Set Integration Time. Tried: {}. Must be greater than {} and less than {}.'.format(integrationTime.value,minIntegrationTime,maxIntegrationTime) )
 
@@ -222,8 +174,7 @@ def getScansToAverage(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getScansToAverage(wrapper, index)
-    #logging.info( 'Get Scans to average: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def setScansToAverage(wrapper,value):
     """   
@@ -237,9 +188,8 @@ def setScansToAverage(wrapper,value):
     
     #int32_t __cdecl Wrapper_getScansToAverage(uint64_t Wrapper, int32_t Index);
     retValue = dll.OOUtil_Wrapper_getScansToAverage(wrapper, index)
-    #logging.info( 'Set Scans to average: {}'.format(retValue.value) )
-    if (retValue.value!=average.value):
-        raise SpecDLLError( 'Unable to Set Scans to Average. Tried: {}, Current: {}'.format(average.value,retValue.value) )
+    if (retValue!=average.value):
+        raise SpecDLLError( 'Unable to Set Scans to Average. Tried: {}, Current: {}'.format(average.value,retValue) )
 
 def getSpectrum(wrapper):
     """   
@@ -252,7 +202,6 @@ def getSpectrum(wrapper):
     spectrumLength = c_int32(-1)
     spectrumValues = (c_double*length)()
     dll.OOUtil_Wrapper_getSpectrum(wrapper, index, byref(spectrumValues), byref(spectrumLength), c_int32(length) )
-    l#ogging.info( 'Get Spectrum, SpectrumLength: {}'.format(spectrumLength.value) )
     return list(spectrumValues)
 
 def getWavelengths(wrapper):
@@ -269,18 +218,7 @@ def getWavelengths(wrapper):
     dll.OOUtil_Wrapper_getWavelengths(wrapper, index, byref(wavelengthValues), byref(wavelengthLength), c_int32(length) )
     #print "Get Wavelengths:"
     #print list(wavelengthValues)
-    #logging.info( 'Get Wavelengths, WavelengthLength: {}'.format(wavelengthLength.value) )
     return list(wavelengthValues)
-
-def writeSpectrum(runNumber,wavelengthData,spectrumData):
-    """   
-    :undocumented
-    """
-    fileOut = open('C:\SMELLIE\data\spec\OOspectrometerDataRun{}.csv'.format(runNumber), 'a')
-    fileOut.write( 'Wavelength(nm),Intensity(arb)\n')
-    for i,j in zip(wavelengthData,spectrumData):
-        fileOut.write( '{},{}\n'.format( i,j ) )
-    fileOut.closed
 
 def getFeatureControllerIrradianceCalibrationFactor(wrapper):
     """   
@@ -290,7 +228,6 @@ def getFeatureControllerIrradianceCalibrationFactor(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getFeatureControllerIrradianceCalibrationFactor(wrapper, index)
-    #logging.info( 'Get FeatureControllerIrradianceCalibrationFactor: {}'.format(retValue.value) )
     return retValue.value
 
 def getFeatureControllerExternalTriggerDelay(wrapper):
@@ -301,8 +238,7 @@ def getFeatureControllerExternalTriggerDelay(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getFeatureControllerExternalTriggerDelay(wrapper, index)
-    #logging.info( 'Get FeatureControllerExternalTriggerDelay: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def getExternalTriggerMode(wrapper):
     """   
@@ -312,7 +248,6 @@ def getExternalTriggerMode(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getExternalTriggerMode(wrapper, index)
-    #logging.info( 'Get External Trigger Mode: {}'.format(retValue.value) )
     return retValue.value
 
 def setExternalTriggerMode(wrapper,value):
@@ -327,9 +262,8 @@ def setExternalTriggerMode(wrapper,value):
 
     #int32_t __cdecl Wrapper_getExternalTriggerMode(uint64_t Wrapper, int32_t Index);
     retValue = dll.OOUtil_Wrapper_getExternalTriggerMode(wrapper, index)
-    #logging.info( 'Set External Trigger Mode: {}'.format(retValue.value) )
-    if (retValue.value!=triggerMode.value):
-        raise SpecDLLError( 'Unable to Set External Trigger Mode. Tried: {}, Current: {}'.format(triggerMode.value,retValue.value) )
+    if (retValue!=triggerMode.value):
+        raise SpecDLLError( 'Unable to Set External Trigger Mode. Tried: {}, Current: {}'.format(triggerMode.value,retValue) )
 
 def setCorrectForElectricalDark(wrapper,value):
     """   
@@ -341,7 +275,6 @@ def setCorrectForElectricalDark(wrapper,value):
     flag = c_int32(value)
     if (flag.value==0 or flag.value==1):
         dll.OOUtil_Wrapper_setCorrectForElectricalDark(wrapper, index, flag)
-        #logging.info( 'Set Correct For Electrical Dark: {}'.format(flag.value) )
     else:
         raise SpecLogicError( 'Unable to Set Correct For Electrical Dark. Tried: {}. Note: must be 0 or 1.'.format(flag.value) )
 
@@ -355,7 +288,6 @@ def setCorrectForDetectorNonlinearity(wrapper,value):
     flag = c_int32(value)
     if (flag.value==0 or flag.value==1):
         dll.OOUtil_Wrapper_setCorrectForDetectorNonlinearity(wrapper, index, flag)
-        #logging.info( 'Set Correct For Detector Nonlinearity: {}'.format(flag.value) )
     else:
         raise SpecLogicError( 'Unable to Set Correct For Detector Nonlinearity. Tried: {}. Note: must be 0 or 1.'.format(flag.value) )
 
@@ -366,8 +298,7 @@ def getBoxcarWidth(wrapper):
     #int32_t __cdecl Wrapper_getBoxcarWidth(uint64_t Wrapper, int32_t Index);
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
-    boxcarWidth = dll.OOUtil_Wrapper_getBoxcarWidth(wrapper, index)
-    #logging.info( 'Get Boxcar Width: {}'.format(boxcarWidth.value) )
+    retValue = dll.OOUtil_Wrapper_getBoxcarWidth(wrapper, index)
     return retValue.value
 
 def setBoxcarWidth(wrapper,value):
@@ -382,9 +313,8 @@ def setBoxcarWidth(wrapper,value):
 
     #int32_t __cdecl Wrapper_getBoxcarWidth(uint64_t Wrapper, int32_t Index);
     retValue = dll.OOUtil_Wrapper_getBoxcarWidth(wrapper, index)
-    #logging.info( 'Set Boxcar Width: {}'.format(retValue.value) )
-    if (retValue.value!=boxcarWidth.value):
-        raise SpecDLLError( 'Unable to Set Boxcar Width. Tried: {}, Current: {}'.format(boxcarWidth.value,retValue.value) )
+    if (retValue!=boxcarWidth.value):
+        raise SpecDLLError( 'Unable to Set Boxcar Width. Tried: {}, Current: {}'.format(boxcarWidth.value,retValue) )
 
 def getMaximumIntensity(wrapper):
     """   
@@ -394,8 +324,7 @@ def getMaximumIntensity(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getMaximumIntensity(wrapper, index)
-    #logging.info( 'Get Maximum Intensity: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def getMaximumIntegrationTime(wrapper):
     """   
@@ -405,8 +334,7 @@ def getMaximumIntegrationTime(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getMaximumIntegrationTime(wrapper, index)
-    #logging.info( 'Get Maximum Integration Time: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def getMinimumIntegrationTime(wrapper):
     """   
@@ -416,8 +344,7 @@ def getMinimumIntegrationTime(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getMinimumIntegrationTime(wrapper, index)
-    #logging.info( 'Get Minimum Integration Time: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def getNumberOfDarkPixels(wrapper):
     """   
@@ -427,8 +354,7 @@ def getNumberOfDarkPixels(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getNumberOfDarkPixels(wrapper, index)
-    #logging.info( 'Get Number Of Dark Pixels: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def getNumberOfPixels(wrapper):
     """   
@@ -438,8 +364,7 @@ def getNumberOfPixels(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_getNumberOfPixels(wrapper, index)
-    #logging.info( 'Get Number Of Pixels: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def isSaturated(wrapper):
     """   
@@ -449,8 +374,7 @@ def isSaturated(wrapper):
     #wrapperIn = c_uint64(wrapper)
     index = c_int32(0)
     retValue = dll.OOUtil_Wrapper_isSaturated(wrapper, index)
-    #logging.info( 'is Saturated?: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def getLastException(wrapper):
     """   
@@ -460,7 +384,6 @@ def getLastException(wrapper):
     #wrapperIn = c_uint64(wrapper)
     message = string_buffer()
     dll.OOUtil_Wrapper_getLastException(wrapper, message, c_int32(SPEC_STR_BUFFER_SIZE) )
-    #logging.info( 'Get Last Exception: {}'.format(message) )
     return message.value
 
 def destroyExternalTriggerDelay():
@@ -469,7 +392,6 @@ def destroyExternalTriggerDelay():
     """
     #void __cdecl ExternalTriggerDelay_Destroy(void);
     dll.OOUtil_ExternalTriggerDelay_Destroy()
-    #logging.info( 'Destroy external Trigger Delay.' )
 
 def getExternalTriggerDelayMaximum(externalTriggerDelay):
     """   
@@ -478,8 +400,7 @@ def getExternalTriggerDelayMaximum(externalTriggerDelay):
     #int32_t __cdecl ExternalTriggerDelay_getExternalTriggerDelayMaximum(uint64_t ExternalTriggerDelay);
     externalTriggerDelayIn = c_uint64(externalTriggerDelay)
     retValue = dll.OOUtil_ExternalTriggerDelay_getExternalTriggerDelayMaximum(externalTriggerDelayIn)
-    #logging.info( 'Get External Trigger Delay Maximum: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def getExternalTriggerDelayMinimum(externalTriggerDelay):
     """   
@@ -488,8 +409,7 @@ def getExternalTriggerDelayMinimum(externalTriggerDelay):
     #int32_t __cdecl ExternalTriggerDelay_getExternalTriggerDelayMinimum(uint32_t ExternalTriggerDelay);
     externalTriggerDelayIn = c_uint64(externalTriggerDelay)
     retValue = dll.OOUtil_ExternalTriggerDelay_getExternalTriggerDelayMinimum(externalTriggerDelayIn)
-    #logging.info( 'Get External Trigger Delay Minimum: {}'.format(retValue.value) )
-    return retValue.value
+    return retValue
 
 def setExternalTriggerDelay(externalTriggerDelay,value):
     """   
@@ -502,6 +422,5 @@ def setExternalTriggerDelay(externalTriggerDelay,value):
     maxTime = getExternalTriggerDelayMaximum(externalTriggerDelay)
     if (value>=minTime or value<=maxTime):
         dll.OOUtil_ExternalTriggerDelay_setExternalTriggerDelay(externalTriggerDelayIn, delayTime)
-        #logging.info( 'Set External Trigger Delay: {}'.format(delayTime.value) )
     else:
         raise SpecLogicError( 'Unable to Set External Trigger Delay. Tried: {}. Must be greater than {} and less than {}.'.format(delayTime.value,minTime,maxTime) )

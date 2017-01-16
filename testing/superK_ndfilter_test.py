@@ -3,14 +3,14 @@
 # Test with the spectrometer (or, alternatively the power meter)
 
 import logging, time, datetime, numpy
-from smellie import superk_driver, fibre_switch, power_meter, SuperK
+from smellie import superk_driver, fibre_switch, power_meter
 #import matplotlib.pyplot as plt
 
 pm = power_meter.PowerMeter()
 fs = fibre_switch.FibreSwitch()
-sk = superk_driver.SuperK()
+sk = superk_driver.SuperKDriver()
 
-logging.basicConfig(filename=r'C:\SMELLIE\logs\test_superk_ndfilter.log', filemode="a", level=logging.DEBUG)
+logging.basicConfig(filename=r'C:/SMELLIE/logs/testing/test_superk_ndfilter.log', filemode="a", level=logging.DEBUG)
 console = logging.StreamHandler() #print logger to console
 console.setLevel(logging.DEBUG)
 logging.getLogger('').addHandler(console)
@@ -21,21 +21,16 @@ nfail = 0
 try:
     logging.debug( "Begin Testing SMELLIE ND filter. {}".format( datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S') ) )   
     
-    fs.set_global_channel_number(70)
-    
     pm.port_open()
     sk.port_open()
-    
-    COMPort = "COM4"
-    controlBits = SuperK.getSuperKControls(COMPort)
-    controlBits.trigMode = 0
-    controlBits.internalPulseFreqHz = 20000
-    SuperK.setSuperKControls(COMPort,controlBits)
+    sk.set_parameters(trig_mode=0, pulse_rate=20000)
+    fs.port_open()
+    fs.set_global_channel_number(70)
 
-    wavelengths = range(405,721,10)
+    wavelengths = range(605,606,10)
     variaBW = 10
     
-    NDPositions = range(250,501,1)
+    NDPositions = range(200,501,1)
     
     sk.go_ready(0,(wavelengths[0]-variaBW/2)*10,(wavelengths[0]+variaBW/2)*10)
     
@@ -45,17 +40,17 @@ try:
         powerDataSD = []
         sk.go_ready(0,(setWavelength-variaBW/2)*10,(setWavelength+variaBW/2)*10)
         pm.set_wavelength(setWavelength)
-        print sk.NDfilter_position()
-        sk.NDfilter_set_position(-1*250)
+        print sk.NDFilter_position()
+        sk.NDFilter_set_position(-1*200)
         time.sleep(60)
-        print sk.NDfilter_position()
+        print sk.NDFilter_position()
         time.sleep(1)
     
         for currentNDPosition in NDPositions:
 
-            sk.NDfilter_set_position(-1*currentNDPosition)
+            sk.NDFilter_set_position(-1*currentNDPosition)
             
-            time.sleep(0.1)
+            time.sleep(0.2)
             
             #get power measurement from power meter
             powerData = numpy.array([])
@@ -77,16 +72,16 @@ try:
 
             print "(Wavelength, NDPosition, Power, SD, Range): {}, {}, {}, {}, {}".format(setWavelength, currentNDPosition, powermean, powersd, powerrange)
 
-        fileOut = open(r'C:\SMELLIE\workDiary\test_superk_ndfilter_{}nm.dat'.format(setWavelength), 'a')
+        fileOut = open(r'C:/SMELLIE/workDiary/test_superk_ndfilter_{}nm.dat'.format(setWavelength), 'a')
         fileOut.write('NDposition,MeanIntensity(W),SDIntensity(W),MeterRange(W)\n')
         for i,j,k,l in zip(NDPositions,powerDataMean,powerDataSD,powerRangeDataMean):
             fileOut.write( '{},{},{},{}\n'.format( i,j,k,l ) )
         fileOut.closed
     
-    print sk.NDfilter_position()
-    sk.NDfilter_set_position(-1*1)
+    print sk.NDFilter_position()
+    sk.NDFilter_set_position(-1*1)
     time.sleep(200)
-    print sk.NDfilter_position()
+    print sk.NDFilter_position()
     
     sk.go_safe()
     sk.port_close()

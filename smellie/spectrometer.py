@@ -1,4 +1,5 @@
-from smellie.spectrometer_util import string_buffer, createWrapper, destroyWrapper, openAllSpectrometers, closeAllSpectrometers, getFirmwareVersion, getName, getSerialNumber, getIntegrationTime, setIntegrationTime, getScansToAverage, setScansToAverage, getSpectrum, getWavelengths, writeSpectrum, getFeatureControllerIrradianceCalibrationFactor, getFeatureControllerExternalTriggerDelay, getExternalTriggerMode, setExternalTriggerMode, setCorrectForElectricalDark, setCorrectForDetectorNonlinearity, getBoxcarWidth, setBoxcarWidth, getMaximumIntensity, getMaximumIntegrationTime, getMinimumIntegrationTime, getNumberOfDarkPixels, getNumberOfPixels, isSaturated, getLastException, destroyExternalTriggerDelay, getExternalTriggerDelayMaximum, getExternalTriggerDelayMinimum, setExternalTriggerDelay, initialise, shutdown
+from smellie.spectrometer_util import string_buffer, createWrapper, destroyWrapper, openAllSpectrometers, closeAllSpectrometers, getFirmwareVersion, getName, getSerialNumber, getIntegrationTime, setIntegrationTime, getScansToAverage, setScansToAverage, getSpectrum, getWavelengths, getFeatureControllerIrradianceCalibrationFactor, getFeatureControllerExternalTriggerDelay, getExternalTriggerMode, setExternalTriggerMode, setCorrectForElectricalDark, setCorrectForDetectorNonlinearity, getBoxcarWidth, setBoxcarWidth, getMaximumIntensity, getMaximumIntegrationTime, getMinimumIntegrationTime, getNumberOfDarkPixels, getNumberOfPixels, isSaturated, getLastException, destroyExternalTriggerDelay, getExternalTriggerDelayMaximum, getExternalTriggerDelayMinimum, setExternalTriggerDelay
+from operator import itemgetter
 
 class SpectrometerLogicError(Exception):
     """
@@ -25,6 +26,13 @@ class Spectrometer(object):
         if not self.isConnected:
             openAllSpectrometers(self.wrapper)
             self.isConnected = True
+            
+            #initialise external trigger delay
+            self.extTrigDelay = getFeatureControllerExternalTriggerDelay(self.wrapper)
+            setExternalTriggerDelay(self.extTrigDelay,1000)
+            
+            #set default parameters
+            self.set_parameters()
         else:
             raise SpectrometerLogicError("Spectrometer port already open.") 
 
@@ -35,9 +43,25 @@ class Spectrometer(object):
         if self.isConnected:
             closeAllSpectrometers(self.wrapper)
             destroyWrapper(self.wrapper)
+            destroyExternalTriggerDelay()
             self.isConnected = False
         else:
             raise SpectrometerLogicError("Spectrometer port not open.") 
+        
+    def set_parameters(self, triggerMode=0, integrationTime=10000, scansToAverage=1):
+        """   
+        undocumented
+        """
+        if self.isConnected:
+            #set acquisition parameters
+            setExternalTriggerMode(self.wrapper,triggerMode)
+            setBoxcarWidth(self.wrapper, 0)
+            setCorrectForDetectorNonlinearity(self.wrapper,1)
+            setCorrectForElectricalDark(self.wrapper,1)
+            setIntegrationTime(self.wrapper,integrationTime)
+            setScansToAverage(self.wrapper,scansToAverage)
+        else:
+            raise SpectrometerLogicError("Spectrometer port not open.")  
         
     def get_identity(self):
         """   
@@ -47,7 +71,42 @@ class Spectrometer(object):
             return getName(self.wrapper), getFirmwareVersion(self.wrapper), getSerialNumber(self.wrapper)
         else:
             raise SpectrometerLogicError("Spectrometer port not open.") 
-            return 0
+            
+    def get_spectrum(self):
+        """   
+        undocumented
+        """
+        if self.isConnected:
+            return getSpectrum(self.wrapper)
+        else:
+            raise SpectrometerLogicError("Spectrometer port not open.")
+            
+    def get_wavelengths(self):
+        """   
+        undocumented
+        """
+        if self.isConnected:
+            return getWavelengths(self.wrapper)
+        else:
+            raise SpectrometerLogicError("Spectrometer port not open.") 
+
+    def write_spectrum(self,filePath,wavelengthData,spectrumData):
+        """   
+        :undocumented
+        """
+        fileOut = open(str(filePath), 'a')
+        fileOut.write( 'Wavelength(nm),Intensity(arb)\n')
+        for i,j in zip(wavelengthData,spectrumData):
+            fileOut.write( '{},{}\n'.format( i,j ) )
+        fileOut.closed
+
+    def get_spectrum_maximum(self,wavelengthData,spectrumData):
+        """   
+        undocumented
+        """
+        index, maxSpec = max(enumerate(spectrumData), key=itemgetter(1))
+        maxWave = wavelengthData[index]
+        return maxWave, maxSpec
         
     def is_connected(self):
         """   
@@ -65,7 +124,6 @@ class Spectrometer(object):
             return isAlive
         else:
             raise SpectrometerLogicError("Spectrometer port not open.") 
-            return 0
         
     def system_state(self):
         """
@@ -75,7 +133,6 @@ class Spectrometer(object):
             return "Spectrometer (system):: Identity (name, Firmware, SerialNumber): {}".format( self.get_identity() )
         else:
             raise SpectrometerLogicError("Spectrometer port not open.") 
-            return 0
         
     def current_state(self):
         """
@@ -85,4 +142,3 @@ class Spectrometer(object):
             return "Spectrometer (settings):: ".format( )
         else:
             raise SpectrometerLogicError("Spectrometer port not open.") 
-            return 0
