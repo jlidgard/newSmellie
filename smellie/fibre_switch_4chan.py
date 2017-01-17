@@ -44,7 +44,7 @@ class FibreSwitch4Chan(object):
         """
         Open the serial port connection
         """
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.port_open()')
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.port_open()')
         if not self.isConnected:
             self.serial = Serial(FIBRE_SWITCH_4CHAN_SERIAL_PORT, FIBRE_SWITCH_4CHAN_BAUD_RATE, timeout=1)
             sleep(1)
@@ -57,7 +57,7 @@ class FibreSwitch4Chan(object):
         """
         Close the serial port connection
         """
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.port_close()')
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.port_close()')
         if self.isConnected:
             self.serial.close()
             self.isConnected = False
@@ -71,7 +71,7 @@ class FibreSwitch4Chan(object):
         :param msg:
         :type msg: string
         """
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.execute_message({})'.format(msg))
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.execute_message({})'.format(msg))
         if self.isConnected:
             self.serial.write(msg+"\r\n")
             sleep(FIBRE_SWITCH_4CHAN_WAIT_TIME)
@@ -88,11 +88,11 @@ class FibreSwitch4Chan(object):
         if self.isConnected:
             readback = self.serial.readline()
             sleep(FIBRE_SWITCH_4CHAN_WAIT_TIME)
-            SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.read_back = {}'.format(readback))
+            readback = str(readback).replace('\r','').replace('\n','').strip()
+            SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.read_back = {}'.format(readback))
             return readback
         else:
             raise FibreSwitchLogicError("Fibre Switch port not open.")
-            return 0
 
     def flush(self):
         """
@@ -114,7 +114,7 @@ class FibreSwitch4Chan(object):
 
         :raises: :class:`.FibreSwitchHWError` if the command is unsuccessful
         """ 
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.set_global_channel_number({})'.format(channel_num))
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.set_global_channel_number({})'.format(channel_num))
         check_global_channel_number(channel_num)
         self.execute_message("ch{0}".format(channel_num))
         if(self.get_global_channel_number() != channel_num): #check set value was set
@@ -130,8 +130,8 @@ class FibreSwitch4Chan(object):
         :type current channel: int
         """
         self.execute_message("ch?")
-        channel_num = int(str(self.read_back()).replace('\n',' ').replace('\r','').replace(' ',''))
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number() = {}\n'.format(str(channel_num)))
+        channel_num = int(self.read_back())
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.get_global_channel_number() = {}'.format(str(channel_num)))
         return channel_num
 
     def get_fwr_version(self):
@@ -139,8 +139,8 @@ class FibreSwitch4Chan(object):
         Get the current Fibre Switch firmware version as a string
         """
         self.execute_message("firmware?")
-        fwr_ver = str(self.read_back()).replace(' ','').replace('\r\n','')
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_fwr_version = {}'.format(fwr_ver))
+        fwr_ver = self.read_back()
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.get_fwr_version = {}'.format(fwr_ver))
         return fwr_ver
 
     def get_type(self):
@@ -148,8 +148,8 @@ class FibreSwitch4Chan(object):
         Get the current Fibre Switch hardware model as a string
         """ 
         self.execute_message("type?")
-        type = str(self.read_back()).replace(' ','').replace('\r\n','')
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_type = {}'.format(type))
+        type = self.read_back()
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch4Chan.get_type = {}'.format(type))
         return type
 
     def is_connected(self):
@@ -162,7 +162,7 @@ class FibreSwitch4Chan(object):
         """
         Quick check alive or not.
         """
-        if (self.get_type() == 'mol5x14'): isAlive = True #choose to check the HW model:
+        if (self.get_type() == 'eol 1x4'): isAlive = True #choose to check the HW model:
         else: isAlive = False
         return isAlive
         
@@ -176,6 +176,6 @@ class FibreSwitch4Chan(object):
         """
         Return a formatted string with the current hardware settings
 
-        :returns: 'FibreSwitch:: Port:{}, Baudrate:{}, Type:{}, Firmware version:{}, Channel:{}'
+        :returns: 'FibreSwitch4Chan:: Port:{}, Baudrate:{}, Type:{}, Firmware version:{}, Channel:{}'
         """
         return "Fibre switch (settings):: Channel:{}".format( str(self.get_global_channel_number()) )

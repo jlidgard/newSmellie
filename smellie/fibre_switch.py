@@ -109,11 +109,11 @@ class FibreSwitch(object):
         if self.isConnected:
             readback = self.serial.readline()
             sleep(FIBRE_SWITCH_WAIT_TIME)
+            readback = str(readback).replace('\r','').replace('\n','').strip()
             SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.read_back = {}'.format(readback))
-            return str(readback).replace('\r\n','')
+            return readback
         else:
             raise FibreSwitchLogicError("Fibre Switch port not open.")
-            return 0
 
     def flush(self):
         """
@@ -151,8 +151,8 @@ class FibreSwitch(object):
         :type current channel: int
         """
         self.execute_message("ch?")
-        channel_num = int(str(self.read_back()).replace('\n',' ').replace('\r','').replace(' ',''))
-        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number() = {}\n'.format(str(channel_num)))
+        channel_num = int(self.read_back())
+        SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_global_channel_number() = {}'.format(str(channel_num)))
         return channel_num
         
     def get_input_output_channel_number(self):
@@ -185,7 +185,7 @@ class FibreSwitch(object):
         Get the current Fibre Switch firmware version as a string
         """
         self.execute_message("firmware?")
-        fwr_ver = str(self.read_back()).replace(' ','').replace('\r\n','')
+        fwr_ver = self.read_back()
         SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_fwr_version = {}'.format(fwr_ver))
         return fwr_ver
 
@@ -194,7 +194,7 @@ class FibreSwitch(object):
         Get the current Fibre Switch hardware model as a string
         """ 
         self.execute_message("type?")
-        type = str(self.read_back()).replace(' ','').replace('\r\n','')
+        type = self.read_back()
         SMELLIELogger.debug('SNODROP DEBUG: FibreSwitch.get_type = {}'.format(type))
         return type
 
@@ -208,7 +208,7 @@ class FibreSwitch(object):
         """
         Quick check alive or not.
         """
-        if (self.get_type() == 'mol5x14'): isAlive = True #choose to check the HW model:
+        if (self.get_type() == 'mol 5x14'): isAlive = True #choose to check the HW model:
         else: isAlive = False
         return isAlive
         

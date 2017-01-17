@@ -27,7 +27,7 @@ class SmellieController(object):
         #self.power_meter = PowerMeter()
         self.pq_driver.port_open()
         self.superk_driver.port_open()
-        self.spectrometer.port_open()
+        #self.spectrometer.port_open()
         self.fibre_switch.port_open()
         self.laser_switch.port_open()
         #self.power_meter.port_open()
@@ -44,7 +44,7 @@ class SmellieController(object):
         self.superk_driver.varia_go_safe()
         if self.pq_driver.is_connected(): self.pq_driver.port_close()
         if self.superk_driver.is_connected(): self.superk_driver.port_close()
-        if self.spectrometer.is_connected(): self.spectrometer.port_close()
+        #if self.spectrometer.is_connected(): self.spectrometer.port_close()
         if self.fibre_switch.is_connected(): self.fibre_switch.port_close()
         if self.laser_switch.is_connected(): self.laser_switch.port_close()
         #if self.power_meter.is_connected(): self.power_meter.port_close()
@@ -99,7 +99,7 @@ class SmellieController(object):
         self.pq_driver.go_safe()
         
         #switch laser switch only if not already set
-        if (self.laser_switch.get_active_channel() != channel): 
+        if (self.laser_switch.get_active_channel() != ls_chan): 
             self.pq_driver.port_close() #close before LaserSwitch d/c
             self.laser_switch.set_active_channel(ls_chan)
             self.pq_driver.port_open()
@@ -140,7 +140,7 @@ class SmellieController(object):
         self.pq_driver.go_safe()
         
         #switch laser switch only if not already set
-        if (self.laser_switch.get_active_channel() != channel): 
+        if (self.laser_switch.get_active_channel() != ls_chan): 
             self.pq_driver.port_close() #close before LaserSwitch d/c
             self.laser_switch.set_active_channel(ls_chan)
             self.pq_driver.port_open()
@@ -177,9 +177,9 @@ class SmellieController(object):
         self.superk_driver.go_safe()
         
         #switch laser_switch only if not already set
-        if (self.laser_switch.get_active_channel() != 5): 
+        if (self.laser_switch.get_active_channel() != 0): 
             self.pq_driver.port_close() #close before LaserSwitch d/c
-            self.laser_switch.set_active_channel(5)
+            self.laser_switch.set_active_channel(0)
             self.pq_driver.port_open()
             self.pq_driver.go_safe()
 
@@ -197,16 +197,12 @@ class SmellieController(object):
         self.superk_driver.go_safe()
         return 0
         
-    def new_run(run_number=-1):
+    def new_run(self,run_number=-1):
         '''
         Collect the run information from ORCA
         '''
-        SMELLIELogger.new_logger('RunNumber_'.format(str(run_number)) )
+        SMELLIELogger.new_logger('RunNumber_{}'.format(str(run_number)) )
         SMELLIELogger.debug('SNODROP DEBUG: SmellieController.new_run({})'.format(run_number))
-
-    def log_info(self):
-        # pipe info return into logger
-        pass
 
     def set_dummy_mode_on(self, dummy_mode_on = True):
         '''
@@ -221,23 +217,24 @@ class SmellieController(object):
         '''
         Return a formatted string with the system settings
         '''
-        return "SMELLIE git SHA: {} \ngit repository dirty : {} \nCONFIGURATION: {} \nLASER DRIVER: {} \nSUPERK DRIVER: {} \nLASER SWITCH: {} \nFIBRE SWITCH: {} \nSPECTROMETER: {}\n".format(system_state.get_SHA(),
+        return "SMELLIE git SHA: {} \ngit repository dirty : {} \nCONFIGURATION: {} \nLASER DRIVER: {} \nSUPERK DRIVER: {} \nLASER SWITCH: {} \nFIBRE SWITCH: {} \nSPECTROMETER: \n".format(system_state.get_SHA(),
            True if system_state.git_is_dirty() else False,
            system_state.get_config_str(),
            self.pq_driver.system_state(),
            self.superk_driver.system_state(),
            self.laser_switch.system_state(),
            self.fibre_switch.system_state(),
-           self.spectrometer.system_state()
+           #self.spectrometer.system_state()
            )
 
     def current_state(self):
         '''
         Return a formatted string with the current system settings
         '''
-        return "LASER DRIVER: {}\nSUPERK DRIVER: {}\nLASER SWITCH: {}\nFIBRE SWITCH: {}\nGAIN CONTROL: {}\nSPECTROMETER: {}".format(self.pq_driver.current_state(),
+        return "LASER DRIVER: {}\nSUPERK DRIVER: {}\nLASER SWITCH: {}\nFIBRE SWITCH: {}\nGAIN CONTROL: {}\nSPECTROMETER: ".format(self.pq_driver.current_state(),
         self.superk_driver.current_state(),
         self.laser_switch.current_state(),
         self.fibre_switch.current_state(),
-        self.gain_voltage.current_state(),
-        self.spectrometer.current_state())
+        self.gain_voltage.current_state()
+        #self.spectrometer.current_state()
+        )

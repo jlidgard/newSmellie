@@ -77,8 +77,9 @@ class LaserSwitch(object):
         if self.isConnected:
             readback = self.serial.readline()
             sleep(LASER_SWITCH_WAIT_TIME)
+            readback = str(readback).replace('\r','').replace('\n','').strip()
             SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.read_back = {}'.format(readback))
-            return str(readback).replace('\r\n','')
+            return readback
         else:
             raise LaserSwitchLogicError("Laser Switch port not open.")
             return 0
@@ -119,7 +120,7 @@ class LaserSwitch(object):
         """
         self.execute_message("c")
         channel_num =  int(filter(str.isdigit, self.read_back()))
-        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_selected_channel() = {}\n'.format(str(channel_num)))
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_selected_channel() = {}'.format(str(channel_num)))
         return channel_num
             
     def selected_channel_up(self):
@@ -145,7 +146,7 @@ class LaserSwitch(object):
         """
         Change the active Laser Switch channel from the currently active one to the currently selected one
         """
-        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.send_select_command()\n')
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.send_select_command()')
         self.execute_message("e")
         response = self.read_back()
         if (response!="Execute. Sent."):
