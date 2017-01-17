@@ -66,7 +66,6 @@ class SuperKDriver(object):
             return superKStatus
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
-            return 0
         
     def get_varia_status(self):
         """
@@ -85,7 +84,6 @@ class SuperKDriver(object):
             return variaStatus
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
-            return 0
 
     def set_parameters(self, trig_mode=1, pulse_rate=0):
         """
@@ -141,7 +139,7 @@ class SuperKDriver(object):
             return superKControlStructure
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
-            return 0
+            
 
     def set_trigger_mode(self, set_mode=1, set_internal_trigger_rate=0):
         """
@@ -174,7 +172,7 @@ class SuperKDriver(object):
             return low_wavelength, high_wavelength
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
-            return 0
+            
     
     def set_wavelengths(self, set_low_wavelength, set_high_wavelength):
         """
@@ -375,7 +373,6 @@ class SuperKDriver(object):
             return superK_info, varia_info
         else:
             raise SuperKDriverLogicError("SuperK port not open.")
-            return 0
         
     #upon open, move until home status. then move up to step -300. set reference (moving away from home - noted for backlash).
     #set position increases position, but for a change in direction, reverse direction plus an addition 30 steps, then reverse direction again and go forward 30 steps. Backlash in both directions hopefully cancel.
@@ -396,7 +393,6 @@ class SuperKDriver(object):
     def NDFilter_set_reference(self):
         SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.NDFilter_set_reference()')
         self.NDFilter.set_reference_position()
-        return 0
         
     def is_connected(self):
         """
@@ -419,7 +415,6 @@ class SuperKDriver(object):
             return isAlive
         else:
             raise SuperKDriverLogicError("SuperK port not open.") 
-            return 0 
 
     def system_state(self):
         """
@@ -431,7 +426,6 @@ class SuperKDriver(object):
             return "SuperK laser (settings):: Compact Info: {}, Varia Info: {}{}".format(superK_info, varia_info, self.NDFilter.system_state() )
         else:
             raise SuperKDriverLogicError("SuperK port not open.") 
-            return 0
 
     def current_state(self):
         """
@@ -440,7 +434,6 @@ class SuperKDriver(object):
         if self.isConnected:
             low_wavelength, high_wavelength = self.get_wavelengths()
             SMELLIELogger.debug('SNODROP DEBUG: SuperKDriver.current_state() = {},{},{}'.format(self.NDFilter.current_state(), low_wavelength, high_wavelength ))
-            return "SuperK laser (settings):: NDFilter Step: {}, Low Wavelength: {}, High Wavelength: {}. {}".format(self.NDFilter.current_state(), low_wavelength, high_wavelength )
+            return "SuperK laser (settings):: NDFilter Step: {}, Low Wavelength: {}, High Wavelength: {}".format(self.NDFilter.current_state(), low_wavelength, high_wavelength )
         else:
-            raise SuperKDriverLogicError("SuperK port not open.") 
-            return 0    
+            raise SuperKDriverLogicError("SuperK port not open.")   

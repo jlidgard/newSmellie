@@ -368,9 +368,9 @@ def setVariaControls(COMPort, SWPFilterAngstrom, LWPFilterAngstrom):
                         if (variaBitCluster.bit12 == 1 or variaBitCluster.bit13 == 1 or variaBitCluster.bit14 == 1): #check all filter movement sensors
                             sleep(0.5)
                             variaBitCluster = getVariaStatusBits(COMPort)
-                            if (variaBitCluster.bit12 == 0 and variaBitCluster.bit13 == 0 and variaBitCluster.bit14 == 0):
-                                break
-                        if (x >= 70):
+                        if (variaBitCluster.bit12 == 0 and variaBitCluster.bit13 == 0 and variaBitCluster.bit14 == 0):
+                            break
+                        if (x>=70):
                             raise SuperKLogicError( 'ERROR (superk.setVariaControls): Filters have not stopped moving after a long time. Check system.')
                 else:
                     raise SuperKLogicError( 'ERROR (superk.setVariaControls): Cannot set to specified values. Minimum LWP wavelength is 400nm. Maximum SWP wavelength is 840nm (with 10nm <= BW <= 100nm).')

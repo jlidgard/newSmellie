@@ -1,31 +1,11 @@
-from smellie_config import RELAY_COM_CHANNEL, RELAY_SLEEP, RESET_NAME
+from smellie_config import LASER_SWITCH_SERIAL_PORT, LASER_SWITCH_BAUD_RATE, LASER_SWITCH_WAIT_TIME, LASER_SWITCH_EXECUTE_TIME
+from serial import Serial
 from time import sleep
-import u12, subprocess 
 from smellie.smellie_logger import SMELLIELogger
 
 """
 Control of the Laser Switch hardware
 """
-
-def invert(bit):
-    """
-    Invert the input bit, i.e. convert 0 to 1, or 1 to 0
-
-    :param bit: the input bit
-    """
-    if bit in (0, 1):
-        return int(not bit)
-    raise TypeError("Cannot invert bit - not a boolean!")
-
-def translate_bits(b0, b1, b2):
-    """
-    Convert a binary bit string into an integer, according to big-endian ordering
-    
-    :param b0: bit 0
-    :param b1: bit 1    
-    :param b2: bit 2
-    """
-    return int("{2}{1}{0}".format(b0, b1, b2), 2)
 
 class LaserSwitchLogicError(Exception):
     """
@@ -41,13 +21,107 @@ class LaserSwitchHWError(Exception):
 
 class LaserSwitch(object):
     """
-    Controls the Laser Switch via commands sent down a USB port.
-    The port number is set in config.py .
+    Controls the Laser Switch via commands sent down a serial port.
+    The port number and baud rate are set in config.py .
     """
     def __init__(self):
-        self.com_channel = RELAY_COM_CHANNEL
-        self.connection = u12.U12()
-    
+        self.channel_num = None
+        self.serial = None
+        self.isConnected = False
+
+    def port_open(self):
+        """
+        Open the serial port connection
+        """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.port_open()')
+        if not self.isConnected:
+            self.serial = Serial(LASER_SWITCH_SERIAL_PORT, LASER_SWITCH_BAUD_RATE, timeout=1)
+            sleep(1)
+            self.isConnected = True
+            self.flush()
+        else:
+            raise LaserSwitchLogicError("Laser switch port already open.")
+        
+    def port_close(self):
+        """
+        Close the serial port connection
+        """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.port_close()')
+        if self.isConnected:
+            self.serial.close()
+            self.isConnected = False
+        else:
+            raise LaserSwitchLogicError("Laser Switch port not open.")
+
+    def execute_message(self, msg):
+        """
+        Send a command message over the serial port for the Laser Switch to execute.
+
+        :param msg:
+        :type msg: string
+        """
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.execute_message({})'.format(msg))
+        if self.isConnected:
+            self.serial.write(msg) #dont follow with \r\n for this Arduino program
+            sleep(LASER_SWITCH_WAIT_TIME)
+        else:
+            raise LaserSwitchLogicError("Laser Switch port not open.") 
+        
+    def read_back(self):
+        """
+        Wait for a configuration-determined time, and read back a line from the hardware
+
+        :returns: message
+        :type message: string
+        """
+        if self.isConnected:
+            readback = self.serial.readline()
+            sleep(LASER_SWITCH_WAIT_TIME)
+            SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.read_back = {}'.format(readback))
+            return str(readback).replace('\r\n','')
+        else:
+            raise LaserSwitchLogicError("Laser Switch port not open.")
+            return 0
+            
+    def flush(self):
+        """
+        Flushes serial input and output buffers (used to get ready for next command).
+        """
+        if self.isConnected:
+            self.serial.flushInput()
+            self.serial.flushOutput()
+        else:
+            raise LaserSwitchLogicError("Interlock port not open.") 
+
+    def get_active_channel(self):
+        """
+        Poll the Laser Switch for the current active channel, i.e. corresponding to the currently operating laser head
+
+        :returns: active channel
+        :type active channel: int
+
+        :raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
+        """
+        self.execute_message("b")
+        channel_num = int(filter(str.isdigit, self.read_back()))
+        
+        if not channel_num in xrange(6):
+            raise LaserSwitchHWError("Laser Switch returned unphysical active channel number!  It should be between 0 and 5 inclusive.")
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_active_channel() = {}'.format(int(channel_num)))
+        return int(channel_num)
+
+    def get_selected_channel(self):
+        """
+        Poll the Laser Switch for the current selected channel number
+
+        :returns: current channel
+        :type current channel: int
+        """
+        self.execute_message("c")
+        channel_num =  int(filter(str.isdigit, self.read_back()))
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_selected_channel() = {}\n'.format(str(channel_num)))
+        return channel_num
+            
     def selected_channel_up(self):
         """
         Increment the currently selected Laser Switch channel by + 1
@@ -56,9 +130,10 @@ class LaserSwitch(object):
         """
         SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.selected_channel_up()')
         channel_original = self.get_selected_channel()
-        self.connection.eDigitalOut(self.com_channel, 1, writeD = 1) 
-        self.connection.eDigitalOut(self.com_channel, 0, writeD = 1)
-        self.connection.eDigitalOut(self.com_channel, 1, writeD = 1)
+        self.execute_message("d")
+        response = self.read_back()
+        if (response!="Channel Select. Sent."):
+            raise LaserSwitchHWError("Unrecognised response after select command. Check system.")
         
         channel_new = self.get_selected_channel()
         if (channel_original<5) and (1 + channel_original) != channel_new:
@@ -70,66 +145,13 @@ class LaserSwitch(object):
         """
         Change the active Laser Switch channel from the currently active one to the currently selected one
         """
-        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.execute()')
-        self.connection.eDigitalOut(0, 1, writeD = 1) 
-        self.connection.eDigitalOut(0, 0, writeD = 1)      
-        self.connection.eDigitalOut(0, 1, writeD = 1)
-
-        sleep(RELAY_SLEEP)
-        #self.force_USB_restart() #should not have to do this now!. Beware of other devices same hub
-        #sleep(RELAY_SLEEP)
-        
-    def get_selected_channel(self):
-        """
-        Poll the Laser Switch for the current selected channel, i.e. the one which will become "active" with the next "execute" command
-
-        :returns: selected channel
-        :type selected channel: int
-        """
-        bit1 = invert(self.connection.eDigitalIn(2, readD = 1)["state"])
-        bit2 = invert(self.connection.eDigitalIn(3, readD = 1)["state"])
-        bit3 = invert(self.connection.eDigitalIn(4, readD = 1)["state"])
-        
-        channel = translate_bits(bit1,bit2,bit3)
-        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_selected_channel() = {}'.format(channel))
-        return channel
-        
-    def get_active_channel(self):
-        """
-        Poll the Laser Switch for the current active channel, i.e. corresponding to the currently operating laser head
-
-        :returns: active channel
-        :type active channel: int
-
-        :raises: :class:`.LaserSwitchHWError` if the command is unsuccessful
-        """
-        bit1 = invert(self.connection.eDigitalIn(5, readD = 1)["state"])
-        bit2 = invert(self.connection.eDigitalIn(6, readD = 1)["state"])
-        bit3 = invert(self.connection.eDigitalIn(7, readD = 1)["state"])
-        
-        channel = translate_bits(bit1,bit2,bit3)
-        if not channel in xrange(6):
-            raise LaserSwitchHWError("Laser Switch returned unphysical active channel number!  It should be between 0 and 5 inclusive.")
-        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_active_channel() = {}'.format(int(channel)))
-        return int(channel)
-
-    # Return the currently active channel as shown on the Laser Switch front panel's LEDs
-    # Function from old code, still here for testing purposes.
-    def GetActiveChannel(self):
-        def invert(bit):
-            if (bit == 0):
-                bit = 1
-                return bit
-            elif(bit == 1):
-                bit = 0
-                return bit 
-            else:
-                return "Laser Switch (Get Active Channel) - Invalid input ... check connections to and from the Laser Switch."
-                
-        channel = invert(self.connection.eDigitalIn(5, readD = 1)["state"]) + (2.0 * float(invert(self.connection.eDigitalIn(6, readD = 1)["state"]))) + (4.0 * float(invert(self.connection.eDigitalIn(7, readD = 1)["state"])))
-        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.GetActiveChannel() = {}'.format(int(channel)))
-        return int(channel)
-        
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.send_select_command()\n')
+        self.execute_message("e")
+        response = self.read_back()
+        if (response!="Execute. Sent."):
+            raise LaserSwitchHWError("Unrecognised response after select command. Check system.")
+        sleep(LASER_SWITCH_EXECUTE_TIME) #time for mains to be switched and Sepia USB device to reconnect
+  
     def set_active_channel(self, channel):
         """
         Set the active Laser Switch channel - must be between 0 and 5 inclusive
@@ -145,54 +167,52 @@ class LaserSwitch(object):
             while(channel != self.get_selected_channel()):
                 self.selected_channel_up()
             self.execute()
-        
-    def force_USB_restart(self):
-        """
-        Resets the USB internal hub (to resolve USB errors). Should no longer need this! This was only to reset the sepia controller when it had problems being disconnected by the laser switch (when reconnecting to USB).
-        
-        :returns: successful reset (True) or otherwise (False) (boolean)
-        """
-        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.force_USB_restart()')
-        path = r"C:\Program Files (x86)\Windows Kits\10\Tools\x64\devcon.exe"
-        try:
-            response = subprocess.check_output([path,"restart",RESET_NAME]) 
-            print "response1:",response
-        except subprocess.CalledProcessError as e:
-            response = e.output
-            print "responseExc",response
             
-        if (response[-24:-2]=="1 device(s) restarted."): return True
-        else: raise LaserSwitchHWError("Failed to reset the USB hub : ".format(response))
-        
+    def get_fwr_version(self):
+        """
+        Get the current Laser Switch firmware version as a string
+        """
+        self.execute_message("x")
+        fwr_ver = self.read_back()
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_fwr_version = {}'.format(fwr_ver))
+        return fwr_ver
+
+    def get_info(self):
+        """
+        Get the current Laser Switch hardware model as a string
+        """ 
+        self.execute_message("y")
+        type = self.read_back()
+        SMELLIELogger.debug('SNODROP DEBUG: LaserSwitch.get_info = {}'.format(type))
+        return type
+
     def is_connected(self):
         """   
         Check if the connection to the device is open
-        For the laser switch, this just calls is_alive()
         """
-        return self.is_alive()
-        
+        return self.isConnected
+
     def is_alive(self):
         """
         Quick check alive or not.
         """
-        isAlive = None
-        checkValue = self.get_active_channel() #choose to check current active laser 
-        if (checkValue==1 or checkValue==2 or checkValue==3 or checkValue==4 or checkValue==5 ): isAlive = True
+        self.execute_message("z")
+        connected = self.read_back()
+        if (connected=="Connected."):
+            isAlive = True
         else: isAlive = False
         return isAlive
-            
+        
     def system_state(self):
         """
-        Returns a formatted string with the hardware info and constant settings.
-        
-        :returns: Selected channel : {1}
+        Returns a formatted string with the hardware info
         """
-        return "Laser switch (system):: Selected channel : {}".format( self.get_selected_channel() )
-
+        return "Laser switch (system):: Port: COM{}, Baudrate: {}, Timeout: {}sec, Info:{}, Firmware:{}".format( self.serial.port+1, self.serial.baudrate, self.serial.timeout, self.get_info(), self.get_fwr_version() )  
+        
     def current_state(self):
         """
         Return a formatted string with the current hardware settings
-        
-        :returns:Active channel : {0}
+
+        :returns: 'LaserSwitch:: Present channel:{}, Selected Channel:{}'
         """
-        return "Laser switch (settings):: Active channel : {}".format( self.get_active_channel() )
+        return "Laser switch (settings):: Present channel:{}, Selected Channel:{}".format( str(self.get_active_channel()), str(self.get_selected_channel()) )

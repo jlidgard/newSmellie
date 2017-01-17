@@ -28,9 +28,10 @@ FIBRE_SWITCH_4CHAN_BAUD_RATE   = 57600
 FIBRE_SWITCH_4CHAN_WAIT_TIME   = 0.1  # in seconds
 
 # Laser Switch
-LASER_SWITCH_SERIAL_PORT = 13 # = actually COM15 6(i.e. value = COM number - 1)
+LASER_SWITCH_SERIAL_PORT = 13 # = actually COM14 (i.e. value = COM number - 1)
 LASER_SWITCH_BAUD_RATE   = 9600
 LASER_SWITCH_WAIT_TIME   = 0.1  # in seconds
+LASER_SWITCH_EXECUTE_TIME   = 20 # in seconds
 
 # Interlock
 INTERLOCK_SERIAL_PORT = 0
