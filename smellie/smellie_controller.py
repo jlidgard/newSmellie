@@ -203,6 +203,7 @@ class SmellieController(object):
         '''
         SMELLIELogger.new_logger('RunNumber_{}'.format(str(run_number)) )
         SMELLIELogger.debug('SNODROP DEBUG: SmellieController.new_run({})'.format(run_number))
+        return 0
 
     def set_dummy_mode_on(self, dummy_mode_on = True):
         '''
@@ -223,9 +224,9 @@ class SmellieController(object):
            self.pq_driver.system_state(),
            self.superk_driver.system_state(),
            self.laser_switch.system_state(),
-           self.fibre_switch.system_state(),
-           #self.spectrometer.system_state()
+           self.fibre_switch.system_state() #self.spectrometer.system_state()
            )
+        return 0
 
     def current_state(self):
         '''
@@ -238,3 +239,4 @@ class SmellieController(object):
         self.gain_voltage.current_state()
         #self.spectrometer.current_state()
         )
+        return 0

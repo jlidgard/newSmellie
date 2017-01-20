@@ -9,6 +9,6 @@ setup(name = "smellie",
       author_email = "jack.dunger@physics.ox.ac.uk",
       packages = ["smellie", "sepia", "server", "daqmx"],
       py_modules = ["smellie_config"],
-      install_requires = ["pyserial==2.7", "hiredis", "LabJackPython", "numpy"], 
+      install_requires = ["pyserial==2.7", "hiredis", "numpy"], 
       scripts=glob("bin/*")
       )
