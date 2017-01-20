@@ -44,7 +44,7 @@ def decode_error(iErr):
     :returns: error message
     :type error message: string
     """
-    taskHandle = GetTaskHandle()
+    taskHandle = getTaskHandle()
     str_buff = create_string_buffer(PM_STR_BUFFER_SIZE)
     try:
         dll.PM100DErrorMessage(byref(taskHandle), c_int32(iErr), None, str_buff, c_int32(PM_STR_BUFFER_SIZE) )
@@ -71,7 +71,7 @@ def raise_on_error_code(in_function):
 
 @raise_on_error_code
 def getTaskHandle():
-    """   
+    """
     :undocumented
     """
     taskHandle = c_uint(0)
@@ -270,7 +270,7 @@ class PowerMeter(object):
         self.attributeValue = 0
         self.isConnected = False
 
-    @raise_on_error_code
+    #@raise_on_error_code
     def port_open(self, iDQueryDoQuery=1, resetDevice=1):
         """   
         :returns: ctype string buffer, the size of which is set in :mod:config
@@ -278,12 +278,13 @@ class PowerMeter(object):
         SMELLIELogger.debug('SNODROP DEBUG: PowerMeter.port_open()')
         iDQueryDoQuery = c_int16(iDQueryDoQuery)
         resetDevice = c_int16(resetDevice)
-        taskHandle = c_uint()
-        dll.Initialise(self.COMPort, iDQueryDoQuery, resetDevice, byref(taskHandle) )
+        taskHandle = getTaskHandle()
         self.taskHandle = taskHandle
+        dll.PM100DInitialize(byref(taskHandle), iDQueryDoQuery, resetDevice, byref(taskHandle) );
+
         #run a quick self test
         selfTestResult, selfTestMessage = selfTest(self.taskHandle)
-        if selfTestResult != 0:
+        if selfTestResult != 0: #result is 0 for no error.
             raise PowerMeterHWError("Self test of device failed. {}".format(message))
         #set default settings
         self.default_settings()

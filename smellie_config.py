@@ -59,7 +59,7 @@ TRIG_GEN_PIN_OUT_PQ          = "/Ctr0"
 TRIG_GEN_PIN_OUT_SUPERK      = "/Ctr1"
 
 # Power Meter
-PM_ADDRESS = "USB0::0x1313::0x8078::P0005368::INSTR"
+PM_ADDRESS = "USB0::0x1313::0x8070::P0005368::INSTR"
 PM_DLL_PATH = r"C:\SMELLIE\software\LabView\compiled libraries\powerMeterUtil.dll"
 PM_STR_BUFFER_SIZE = 128
 
