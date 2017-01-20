@@ -38,11 +38,6 @@ INTERLOCK_SERIAL_PORT = 0
 INTERLOCK_BAUD_RATE = 9600
 INTERLOCK_WAIT_TIME   = 0.1  # in seconds
 
-# Varia Motor Controller
-VARIANDFILTER_SERIAL_PORT = 7  # = actually COM8(i.e. COM number-1)
-VARIANDFILTER_BAUD_RATE = 57600
-VARIANDFILTER_WAIT_TIME   = 0.1  # in seconds
-
 # Laser Switch
 RELAY_COM_CHANNEL = 1
 RELAY_SLEEP       = 45  # in seconds
@@ -77,6 +72,9 @@ SK_COM_PORT = "COM4"
 SK_DLL_PATH = r"C:\SMELLIE\software\LabView\compiled libraries\superKUtil.dll"
 SK_STR_BUFFER_SIZE = 128
 SK_MAX_INT_FREQUENCY = 20000
+SK_ND_FILTER_SERIAL_PORT = 7  # = actually COM8(i.e. COM number-1)
+SK_ND_FILTER_BAUD_RATE = 57600
+SK_ND_FILTER_WAIT_TIME   = 0.1  # in seconds
 
 # DAQMX Library
 FILE_LOC_WINXP      = r"C:\Program Files (x86)\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include\NIDAQmx.h"  # full path of the NIDAQmx.h file if installed on Windows XP

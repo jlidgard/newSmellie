@@ -1,12 +1,15 @@
-# Test the SMELLIE SuperK laser
+# Test the SuperK laser
 # functions to test the functionality of the SuperK control code
-# Monitor test with the spectrometer (or, alternatively the power meter)
+# Monitor test with the spectrometer (alternatively the power meter)
 
 import logging, time, datetime
 from smellie import superk_driver, fibre_switch, ni_trigger_generator
 from smellie.smellie_logger import SMELLIELogger
 
 class SKTest(object):
+    """
+    Test the superK laser
+    """
     def __enter__(self):
         """
         Open the hardware required for tests.
@@ -134,10 +137,10 @@ nfail = 0
 sk_test = SKTest()
 with sk_test:
     try:
-        pass #test ability to set into ready mode and restore safe mode
-        #sk_test.test1()
+        £test ability to set into ready mode and restore safe mode
+        sk_test.test1()
         #test firing pulses (while monitoring the power meter)
-        #sk_test.test2()
+        sk_test.test2()
     except Exception as e:
         logging.debug( "Exception: {}".format(e))
 #results

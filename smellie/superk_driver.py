@@ -1,5 +1,5 @@
 from smellie_config import SK_COM_PORT, TRIG_GEN_MAX_FREQUENCY
-from varia_ndfilter import VariaNDFilter
+from superk_ndfilter import SuperKNDFilter
 from time import sleep
 from superk import string_buffer, portOpen, portClose, getSuperKInfo, getVariaInfo, getSuperKStatusBits, getVariaStatusBits, setSuperKControlEmission, setSuperKControlInterlock, setSuperKControls, getSuperKControls, setVariaControls, getVariaControls, statusBitStructure, superKControlStructure
 from smellie.smellie_logger import SMELLIELogger
@@ -22,7 +22,7 @@ class SuperKDriver(object):
 
     def __init__(self):
         self.COMPort = SK_COM_PORT
-        self.NDFilter = VariaNDFilter()
+        self.NDFilter = SuperKNDFilter()
         self.isConnected = False
         
     def port_open(self):
