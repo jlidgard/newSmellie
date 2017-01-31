@@ -1,4 +1,4 @@
-from smellie.spectrometer_util import string_buffer, createWrapper, destroyWrapper, openAllSpectrometers, closeAllSpectrometers, getFirmwareVersion, getName, getSerialNumber, getIntegrationTime, setIntegrationTime, getScansToAverage, setScansToAverage, getSpectrum, getWavelengths, getFeatureControllerIrradianceCalibrationFactor, getFeatureControllerExternalTriggerDelay, getExternalTriggerMode, setExternalTriggerMode, setCorrectForElectricalDark, setCorrectForDetectorNonlinearity, getBoxcarWidth, setBoxcarWidth, getMaximumIntensity, getMaximumIntegrationTime, getMinimumIntegrationTime, getNumberOfDarkPixels, getNumberOfPixels, isSaturated, getLastException, destroyExternalTriggerDelay, getExternalTriggerDelayMaximum, getExternalTriggerDelayMinimum, setExternalTriggerDelay
+from smellie.spectrometer_util import *#string_buffer, createWrapper, destroyWrapper, openAllSpectrometers, closeAllSpectrometers, getFirmwareVersion, getName, getSerialNumber, getIntegrationTime, setIntegrationTime, getScansToAverage, setScansToAverage, getSpectrum, getWavelengths, getFeatureControllerIrradianceCalibrationFactor, getFeatureControllerExternalTriggerDelay, getExternalTriggerMode, setExternalTriggerMode, setCorrectForElectricalDark, setCorrectForDetectorNonlinearity, getBoxcarWidth, setBoxcarWidth, getMaximumIntensity, getMaximumIntegrationTime, getMinimumIntegrationTime, getNumberOfDarkPixels, getNumberOfPixels, isSaturated, getLastException, destroyExternalTriggerDelay, getExternalTriggerDelayMaximum, getExternalTriggerDelayMinimum, setExternalTriggerDelay
 from operator import itemgetter
 
 class SpectrometerLogicError(Exception):
@@ -107,6 +107,46 @@ class Spectrometer(object):
         index, maxSpec = max(enumerate(spectrumData), key=itemgetter(1))
         maxWave = wavelengthData[index]
         return maxWave, maxSpec
+        
+    def allocate_high_speed_buffer(self,numberOfSpectra):
+        """   
+        undocumented
+        """
+        if self.isConnected:
+            allocateHighSpeedBuffer(self.wrapper,numberOfSpectra)
+        else:
+            raise SpectrometerLogicError("Spectrometer port not open.") 
+        
+    def start_high_speed_aquisition(self,numberOfSpectra):
+        """   
+        undocumented
+        """
+        if self.isConnected:
+            startHighSpeedAquisition(self.wrapper)
+        else:
+            raise SpectrometerLogicError("Spectrometer port not open.") 
+        
+    def get_high_speed_spectrum(self,spectrumNumber):
+        """   
+        undocumented
+        """
+        if self.isConnected:
+            return getHighSpeedSpectrum(self.wrapper,spectrumNumber)
+        else:
+            raise SpectrometerLogicError("Spectrometer port not open.") 
+        
+    def write_high_speed_spectrum(self,filePath,wavelengthData,spectrumData,numberOfSpectra):
+        """   
+        :undocumented
+        """
+        fileOut = open(str(filePath), 'a')
+        fileOut.write( 'Wavelength(nm),Intensity(arb)\n')
+        for spectrum in numberOfSpectra:
+            fileOut.write( 'Begin spectrum number: {}\n'.format(spectrum))
+            for i,j in zip(wavelengthData,spectrumData):
+                fileOut.write( '{},{}\n'.format( i,j ) )
+            fileOut.write( 'End spectrum number: {}\n'.format(spectrum))
+        fileOut.closed
         
     def is_connected(self):
         """   

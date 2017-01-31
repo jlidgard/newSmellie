@@ -1,5 +1,5 @@
 from time import sleep
-from ctypes import OleDLL, create_string_buffer, c_double, c_int16, c_int32, byref, c_uint64
+from ctypes import OleDLL, create_string_buffer, c_double, c_int16, c_int32, byref, c_uint64, c_uint32
 from smellie_config import SPEC_DLL_PATH, SPEC_STR_BUFFER_SIZE
 from functools import wraps
 import os
@@ -424,3 +424,52 @@ def setExternalTriggerDelay(externalTriggerDelay,value):
         dll.OOUtil_ExternalTriggerDelay_setExternalTriggerDelay(externalTriggerDelayIn, delayTime)
     else:
         raise SpecLogicError( 'Unable to Set External Trigger Delay. Tried: {}. Must be greater than {} and less than {}.'.format(delayTime.value,minTime,maxTime) )
+
+def allocateHighSpeedBuffer(wrapper,numberOfSpectra,index=0):
+    """   
+    :undocumented
+    """
+    #void __cdecl OOUtil_Wrapper_highSpdAcq_AllocateBuffer(uint64_t WrapperIN, uint32_t SpectrometerIndex, int32_t numberOfSpectra);
+    dll.OOUtil_Wrapper_highSpdAcq_AllocateBuffer(wrapper,c_uint32(index),c_int32(numberOfSpectra))
+   
+def getHighSpeedNumberOfSpectraAcquired(wrapper):
+    """   
+    :undocumented
+    """
+    #int32_t __cdecl OOUtil_Wrapper_highSpdAcq_GetNumberOfSpectraAcquired(uint64_t Wrapper);
+    retValue = dll.OOUtil_Wrapper_highSpdAcq_GetNumberOfSpectraAcquired(wrapper)
+    return retValue
+
+def getHighSpeedSpectrum(wrapper,spectrumNumber):
+    """   
+    :undocumented
+    """
+    #void __cdecl OOUtil_Wrapper_highSpdAcq_GetSpectrum(uint64_t Wrapper, int32_t SpectrumNumber, double SpectrumValues[], int32_t *Length, int32_t len);
+    length = int(getNumberOfPixels(wrapper))
+    spectrumLength = c_int32(-1)
+    spectrumValues = (c_double*length)()
+    dll.OOUtil_Wrapper_highSpdAcq_GetSpectrum(wrapper, c_int32(spectrumNumber), byref(spectrumValues), byref(spectrumLength), c_int32(length) )
+    return list(spectrumValues)
+    
+def getHighSpeedTimeStamp(wrapper,spectrumNumber):
+    """   
+    :undocumented
+    """
+    #uint64_t __cdecl OOUtil_Wrapper_highSpdAcq_GetTimeStamp(uint64_t Wrapper, int32_t SpectrumNumber);
+    retValue = dll.OOUtil_Wrapper_highSpdAcq_GetTimeStamp(wrapper,spectrumNumber)
+    return retValue
+    
+def startHighSpeedAquisition(wrapper,index=0):
+    """   
+    :undocumented
+    """
+    #void __cdecl OOUtil_Wrapper_highSpdAcq_StartAquisition(uint64_t WrapperIn, int32_t SpectrometerIndex);
+    dll.OOUtil_Wrapper_highSpdAcq_StartAquisition(wrapper,c_int32(index))
+    
+def isHighSpeedSaturated(wrapper,spectrumNumber=0):
+    """   
+    :undocumented
+    """
+    #uint8_t __cdecl OOUtil_Wrapper_hightSpdAcq_IsSaturated(uint64_t Wrapper, int32_t SpectrumNumber);
+    retValue = dll.OOUtil_Wrapper_hightSpdAcq_IsSaturated(wrapper,c_int32(spectrumNumber))
+    return retValue
